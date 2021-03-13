@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "744499617794",
+    "firebase_url": "https://drtwsel-2c511.firebaseio.com",
+    "project_id": "drtwsel-2c511",
+    "storage_bucket": "drtwsel-2c511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744499617794:android:d00892adefa5c04563871b",
+        "android_client_info": {
+          "package_name": "aait.drtawsel.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "744499617794-ikhhi3tlm8jpg2qou89lv2af4pv87sam.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM-dMwndtNiscfjmhg_3WcYbeNVvL6GxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "744499617794-ikhhi3tlm8jpg2qou89lv2af4pv87sam.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

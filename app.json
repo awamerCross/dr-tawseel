@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "د.توصيل",
+    "slug": "DRTawseel",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "2.0.3",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "aait.drtawsel.com",
+      "infoPlist": {
+        "NSCameraUsageDescription": "App need this permission to update profile photo.",
+        "NSPhotoLibraryAddUsageDescription": "App need this permission to update profile photo.",
+        "NSLocationWhenInUseUsageDescription": "App need this permission to determine your order location.",
+        "NSPhotoLibraryUsageDescription": "App need this permission to update profile photo."
+      },
+      "userInterfaceStyle": "light"
+    },
+    "android": {
+      "package": "aait.drtawsel.com",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
+      "versionCode": 10,
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "CAMERA_ROLL",
+        "READ_PHONE_STATE",
+        "NOTIFICATIONS",
+        "ACCESS_FINE_LOCATION",
+        "MEDIA_LIBRARY",
+        "MEDIA_LIBRARY_WRITE_ONLY",
+        "READ_EXTERNAL_STORAGE",
+        "READ_INTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBQu-aDY--uY14s4U3ok-XwwqhsnhLFe5Q"
+        }
+      },
+      "userInterfaceStyle": "light"
+    }
+  }
+}

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8be6f58c-d3ba-4d64-8842-9c5274e54ebf" name="Default Changelist" comment="">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+      <change afterPath="$PROJECT_DIR$/src/actions/AcceptOfferAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/AllOffersAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/reducers/AllOffersReducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReactotronConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/ReactotronConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/DelegateActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/DelegateActions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/NotificationAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/NotificationAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HomePage/Basket.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage/Basket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HomePage/CustomDrawerMenue.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage/CustomDrawerMenue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HomePage/HomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage/HomeScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MyOrders/OrderChatting.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyOrders/OrderChatting.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MyOrders/OrderDetailes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyOrders/OrderDetailes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/locale/ar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/locale/ar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/locale/en.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/locale/en.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/notifications/AllOffers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/notifications/AllOffers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/notifications/NotificationsList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/notifications/NotificationsList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/index.js" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/src/actions/LangAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/hidePhoneAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Begining/ChooseLang.js" afterDir="false" />
+=======
+>>>>>>> 740a2515248d7f5717ddc10d51c9ff0f7929c821
+=======
+      <change afterPath="$PROJECT_DIR$/src/actions/CancelOrderAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actions/CancelOrderReasonsAction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/reducers/CancelOrderReasonsReducer.js" afterDir="false" />
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+>>>>>>> 687e706fae0e163c7706d44c075d3a0a4bdd4ea8
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MyOrders/OrderChatting.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyOrders/OrderChatting.js" afterDir="false" />
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/src/components/MyOrders/OrderDetailes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MyOrders/OrderDetailes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/locale/ar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/locale/ar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/notifications/AllOffers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/notifications/AllOffers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/Auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/Auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/MainStackNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/MainStackNav.js" afterDir="false" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+>>>>>>> 687e706fae0e163c7706d44c075d3a0a4bdd4ea8
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1i8SPjtsCkuKrRlMO77XW9IAeOx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.path.for.package.jscs" value="project" />
+    <property name="node.js.selected.package.jscs" value="" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8be6f58c-d3ba-4d64-8842-9c5274e54ebf" name="Default Changelist" comment="" />
+      <created>1593332386168</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593332386168</updated>
+      <workItem from="1593332389352" duration="2896000" />
+      <workItem from="1599988984227" duration="1609000" />
+      <workItem from="1600064714712" duration="14677000" />
+      <workItem from="1600110661286" duration="269000" />
+      <workItem from="1600630568332" duration="605000" />
+      <workItem from="1601287709605" duration="36189000" />
+      <workItem from="1601458105850" duration="14127000" />
+      <workItem from="1601535557628" duration="29856000" />
+<<<<<<< HEAD
+      <workItem from="1601886740984" duration="16750000" />
+      <workItem from="1602408883119" duration="1191000" />
+      <workItem from="1602413786647" duration="44546000" />
+      <workItem from="1602675270817" duration="4008000" />
+      <workItem from="1603030278425" duration="64259000" />
+      <workItem from="1603525275773" duration="9995000" />
+      <workItem from="1603628019194" duration="11475000" />
+=======
+      <workItem from="1601886740984" duration="16932000" />
+      <workItem from="1603611099542" duration="33545000" />
+      <workItem from="1603783231190" duration="12827000" />
+      <workItem from="1603869977357" duration="4589000" />
+<<<<<<< HEAD
+      <workItem from="1603876222608" duration="61741000" />
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+      <workItem from="1603876222608" duration="37814000" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+=======
+      <workItem from="1603876222608" duration="41939000" />
+>>>>>>> 740a2515248d7f5717ddc10d51c9ff0f7929c821
+=======
+      <workItem from="1603876222608" duration="59679000" />
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+>>>>>>> 687e706fae0e163c7706d44c075d3a0a4bdd4ea8
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+<<<<<<< HEAD
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+=======
+    <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../salaty/node_modules/react-native-svg/src/index.d.ts" />
+      </list>
+    </option>
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="560" y="181" key="#Deployment" timestamp="1601452028489">
+      <screen x="0" y="23" width="1920" height="985" />
+    </state>
+    <state x="560" y="181" key="#Deployment/0.23.1920.985@0.23.1920.985" timestamp="1601452028489" />
+    <state x="667" y="312" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603957876853">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+    <state x="667" y="312" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1920.978@0.23.1920.978" timestamp="1603957876853" />
+    <state x="698" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1603797630223">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+    <state x="698" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.978@0.23.1920.978" timestamp="1603797630223" />
+    <state x="734" y="145" key="RollbackChangesDialog" timestamp="1603711762791">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+    <state x="734" y="145" key="RollbackChangesDialog/0.23.1920.978@0.23.1920.978" timestamp="1603711762791" />
+    <state width="500" height="445" key="SwitcherDM" timestamp="1604393973328">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+    <state width="500" height="445" key="SwitcherDM/0.23.1920.978@0.23.1920.978" timestamp="1604393973328" />
+    <state x="806" y="419" key="WebDeployment.AddServerDialog.v.1" timestamp="1601451948266">
+      <screen x="0" y="23" width="1920" height="985" />
+    </state>
+    <state x="806" y="419" key="WebDeployment.AddServerDialog.v.1/0.23.1920.985@0.23.1920.985" timestamp="1601451948266" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <state x="117" y="88" width="1290" height="718" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1603202853490">
+      <screen x="0" y="0" width="1440" height="900" />
+=======
+    <state x="250" y="101" width="1720" height="780" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1603789587136">
+=======
+    <state x="200" y="101" width="1720" height="780" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1604403037708">
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+      <screen x="0" y="23" width="1920" height="978" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+    </state>
+    <state x="117" y="88" width="1290" height="718" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1440.900@0.0.1440.900" timestamp="1603202853490" />
+    <state x="156" y="105" width="1720" height="861" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1601906506683" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <state x="156" y="119" width="1720" height="785" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1920.985@0.23.1920.985" timestamp="1601380289760" />
+    <state x="462" y="213" width="556" height="522" key="find.popup" timestamp="1602408953330">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="462" y="213" width="556" height="522" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1602408953330" />
+    <state x="616" y="254" width="687" height="518" key="find.popup/0.23.1920.978@0.23.1920.978" timestamp="1601885497913" />
+=======
+    <state x="250" y="101" width="1720" height="780" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1920.978@0.23.1920.978" timestamp="1603789587136" />
+=======
+    <state x="200" y="101" width="1720" height="780" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1920.978@0.23.1920.978" timestamp="1604403037708" />
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+    <state x="156" y="119" width="1720" height="785" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1920.985@0.23.1920.985" timestamp="1601380289760" />
+    <state x="100" y="123" width="1720" height="778" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog" timestamp="1603788145514">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+    <state x="100" y="123" width="1720" height="778" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog/0.23.1920.978@0.23.1920.978" timestamp="1603788145514" />
+    <state x="616" y="254" width="837" height="582" key="find.popup" timestamp="1604403804540">
+      <screen x="0" y="23" width="1920" height="978" />
+    </state>
+<<<<<<< HEAD
+    <state x="616" y="254" width="837" height="582" key="find.popup/0.23.1920.978@0.23.1920.978" timestamp="1603982509024" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+=======
+    <state x="616" y="254" width="837" height="582" key="find.popup/0.23.1920.978@0.23.1920.978" timestamp="1604403804540" />
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+    <state x="616" y="256" width="687" height="518" key="find.popup/0.23.1920.985@0.23.1920.985" timestamp="1601464394854" />
+    <state x="866" y="173" key="ftp.server.browser" timestamp="1601452026894">
+      <screen x="0" y="23" width="1920" height="985" />
+    </state>
+    <state x="866" y="173" key="ftp.server.browser/0.23.1920.985@0.23.1920.985" timestamp="1601452026894" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <state x="469" y="201" width="670" height="564" key="search.everywhere.popup" timestamp="1603806769039">
+      <screen x="0" y="0" width="1440" height="900" />
+=======
+    <state x="625" y="241" width="670" height="613" key="search.everywhere.popup" timestamp="1603801227540">
+=======
+    <state x="625" y="241" width="670" height="613" key="search.everywhere.popup" timestamp="1604412038148">
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+      <screen x="0" y="23" width="1920" height="978" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+    </state>
+    <state x="469" y="201" width="670" height="564" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1603806769039" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1601900885970" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <state x="469" y="201" width="670" height="564" key="search.everywhere.popup/0.23.1440.877@0.23.1440.877" timestamp="1603352605323" />
+=======
+    <state x="625" y="241" width="670" height="613" key="search.everywhere.popup/0.23.1920.978@0.23.1920.978" timestamp="1603801227540" />
+>>>>>>> 5b822374173e5e92c0192e2a996a0fdc1f395444
+=======
+    <state x="625" y="241" width="670" height="613" key="search.everywhere.popup/0.23.1920.978@0.23.1920.978" timestamp="1604412038148" />
+>>>>>>> ba1a4b8b4e0d59e6fb559ded12e71a68eb7e2505
+  </component>
+</project>
