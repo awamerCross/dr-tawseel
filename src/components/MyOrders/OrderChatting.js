@@ -10,6 +10,7 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import StarRating from "react-native-star-rating";
 import { useDispatch, useSelector } from "react-redux";
+import ActionSheet from 'react-native-actionsheet'
 
 import RNModal from "react-native-modal";
 import * as Permissions from "expo-permissions";
@@ -50,6 +51,7 @@ function OrderChatting({ navigation, route }) {
     let total = Number(orderDetails.shipping) + Number(cost);
 
     const [selected, setisSelected] = useState(false);
+    const [EditMaodVisible, setEditMaodVisible] = useState(false)
     const [photo, setPhoto] = useState('');
     const [base64, setBase64] = useState('');
     const [starCount, setStarCount] = useState(0);
@@ -71,10 +73,7 @@ function OrderChatting({ navigation, route }) {
     }
 
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    };
+
 
     const _pickImage = async (i) => {
         const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -100,9 +99,37 @@ function OrderChatting({ navigation, route }) {
         }
     };
 
+    const _pickImageFrpmCamera = async () => {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+
+        if (status === 'granted') {
+            let result = await ImagePicker.launchCameraAsync({
+                // mediaTypes: ImagePicker.MediaTypeOptions.Images,
+
+                base64: true,
+                aspect: [4, 3],
+                quality: .5,
+            });
+
+            if (!result.cancelled) {
+                setPhoto(result.uri);
+                setBase64(result.base64);
+            }
+
+        }
+        else {
+            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
+
+        }
+    }
+
     const setBill = () => {
+        setShowBillModal(false)
+
         dispatch(sendBill(lang, token, orderDetails.order_id, total, base64)).then(() => {
-            setShowBillModal(!showBillModal)
+            setBase64('')
+            setCost(0)
+            setShowBillModal(false)
             fetchData()
         })
     }
@@ -139,7 +166,9 @@ function OrderChatting({ navigation, route }) {
     function emitMsg() {
         socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
     }
-
+    const showActionSheet = () => {
+        ActionSheet.show()
+    }
     function updateOrder() {
         dispatch(delegateUpdateOrder(lang, token, orderDetails.order_id)).then(() => {
             fetchData()
@@ -190,29 +219,29 @@ function OrderChatting({ navigation, route }) {
                         <Image source={{ uri: message.img }} style={{ width: 40, height: 40, borderRadius: 50, }} />
                     </View>
                     <View style={{ flexBasis: '82%', paddingHorizontal: 5 }}>
-                        <View style={{ backgroundColor: message.type === 'bill' ? 'transparent' : Colors.sky, borderRadius: 15, overflow: 'hidden', flexDirection: "row", alignSelf: 'flex-start', alignItems: "center", justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <View style={{ backgroundColor: message.type === 'image' ? 'transparent' : Colors.sky, borderRadius: 15, overflow: 'hidden', flexDirection: "row", alignSelf: 'flex-start', alignItems: "center", justifyContent: 'center', flexWrap: 'wrap' }}>
                             {
                                 message.type === 'image' ?
-                                    <Image source={{ uri: message.message }} style={{ width: '100%', height: 220, borderRadius: 15, alignSelf: 'center', }} resizeMode={'contain'} />
+                                    <Image source={{ uri: message.message }} style={{ width: '100%', height: 220, borderRadius: 15, alignSelf: 'center', }} resizeMode={'cover'} />
                                     :
                                     message.type === 'bill' ?
-                                        <View style={{ flexDirection: 'row', backgroundColor: Colors.sky, alignItems: 'center', padding: 10 }}>
+                                        <View style={{ flexDirection: 'row', backgroundColor: Colors.bg, alignItems: 'center', padding: 10 }}>
                                             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                                <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, padding: 5, alignSelf: 'flex-start' }]}>{JSON.parse(message.message).tax_number_text}:</Text>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).sum_text}</Text>
-                                                <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 10, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).delivery_text}  </Text>
-                                                <Text style={[styles.sText, { fontSize: 14, color: Colors.fontBold, margin: 5, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).total_text} : </Text>
+                                                <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, padding: 5, alignSelf: 'flex-start', fontWeight: 'bold', }]}>{JSON.parse(message.message).tax_number_text}:</Text>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).sum_text}</Text>
+                                                <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).vat_text} :</Text>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 10, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).delivery_text}  </Text>
+                                                <Text style={[styles.sText, { fontSize: 14, color: Colors.fontBold, margin: 5, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).total_text} : </Text>
 
                                             </View>
 
                                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                                <Text style={[styles.sText, { fontSize: 10, color: '#fff', padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).tax_number}</Text>
-                                                <Text style={[styles.sText, { padding: 5, color: '#fff', fontSize: 10, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).sum}</Text>
-                                                <Text style={[styles.sText, { fontSize: 10, color: '#fff', padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                                <Text style={[styles.sText, { color: '#fff', fontSize: 12, padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
+                                                <Text style={[styles.sText, { fontSize: 10, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).tax_number}</Text>
+                                                <Text style={[styles.sText, { padding: 5, color: Colors.sky, fontSize: 12, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).sum}</Text>
+                                                <Text style={[styles.sText, { fontSize: 12, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).vat}</Text>
+                                                <Text style={[styles.sText, { color: Colors.sky, fontSize: 12, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).delivery}</Text>
 
-                                                <Text style={[styles.sText, { fontSize: 16, color: '#fff', padding: 5, margin: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
+                                                <Text style={[styles.sText, { fontSize: 16, color: Colors.sky, padding: 5, margin: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
 
 
                                             </View>
@@ -247,21 +276,21 @@ function OrderChatting({ navigation, route }) {
                                 <Image source={{ uri: message.message }} style={{ width: '100%', height: 220, borderRadius: 15, alignSelf: 'center' }} resizeMode={'cover'} />
                                 :
                                 message.type === 'bill' ?
-                                    <View style={{ flexDirection: 'row', backgroundColor: '#DBDBDB', alignItems: 'center', padding: 10 }}>
+                                    <View style={{ flexDirection: 'row', backgroundColor: Colors.bg, alignItems: 'center', padding: 10, borderRadius: 15 }}>
                                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, padding: 5, alignSelf: 'flex-start' }]}>{JSON.parse(message.message).tax_number_text}:</Text>
-                                            <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).sum_text}</Text>
-                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                            <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).delivery_text}  </Text>
-                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, margin: 5, alignSelf: 'flex-start', padding: 5, }]}>{JSON.parse(message.message).total_text} : </Text>
+                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, padding: 5, alignSelf: 'flex-start', fontWeight: 'bold', }]}>{JSON.parse(message.message).tax_number_text}:</Text>
+                                            <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).sum_text}</Text>
+                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).vat_text} :</Text>
+                                            <Text style={[styles.sText, { color: Colors.fontBold, fontSize: 12, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).delivery_text}  </Text>
+                                            <Text style={[styles.sText, { fontSize: 12, color: Colors.fontBold, margin: 5, alignSelf: 'flex-start', padding: 5, fontWeight: 'bold', }]}>{JSON.parse(message.message).total_text} : </Text>
 
                                         </View>
 
                                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                            <Text style={[styles.sText, { fontSize: 10, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).tax_number}</Text>
-                                            <Text style={[styles.sText, { padding: 5, color: Colors.sky, fontSize: 10, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).sum}</Text>
-                                            <Text style={[styles.sText, { fontSize: 10, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                            <Text style={[styles.sText, { color: Colors.sky, fontSize: 12, padding: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
+                                            <Text style={[styles.sText, { fontSize: 10, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).tax_number}</Text>
+                                            <Text style={[styles.sText, { padding: 5, color: Colors.sky, fontSize: 16, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).sum}</Text>
+                                            <Text style={[styles.sText, { fontSize: 16, color: Colors.sky, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).vat}</Text>
+                                            <Text style={[styles.sText, { color: Colors.sky, fontSize: 16, padding: 5, fontFamily: 'flatMedium', fontWeight: 'bold', }]}>{JSON.parse(message.message).delivery}</Text>
 
                                             <Text style={[styles.sText, { fontSize: 16, color: Colors.sky, padding: 5, margin: 5, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
 
@@ -534,6 +563,33 @@ function OrderChatting({ navigation, route }) {
                         </View> : null
                 }
             </KeyboardAvoidingView>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                style={{ bottom: -18, }}
+                visible={EditMaodVisible} >
+
+                <TouchableOpacity style={styles.centeredView2} onPress={() => setEditMaodVisible(false)}>
+
+                    <View style={styles.modalView2}>
+                        <View style={{ margin: 20, backgroundColor: Colors.bg }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                <TouchableOpacity onPress={() => { setEditMaodVisible(false); _pickImageFrpmCamera() }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                    <Image source={require('../../../assets/images/camer.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                    <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}>{i18n.t('pickImg')} </Text>
+
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => { setEditMaodVisible(false); _pickImage() }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                    <Image source={require('../../../assets/images/gallery.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                    <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}> {i18n.t('pickCamera')}</Text>
+
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
 
             <RNModal
                 onBackdropPress={() => setShowBillModal(!showBillModal)}
@@ -561,7 +617,7 @@ function OrderChatting({ navigation, route }) {
                                         onChangeText={setCost}
                                         editable={true}
                                         keyboardType='numeric'
-                                    // value={cityName ? cityName : ''}
+                                        value={cost}
                                     />
                                 </View>
                             </View>
@@ -583,7 +639,7 @@ function OrderChatting({ navigation, route }) {
                             <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{i18n.t('total')} :  <Text style={[styles.sText, { color: Colors.sky, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{total}  {i18n.t('RS')}</Text></Text>
 
                             <View>
-                                <TouchableOpacity onPress={_pickImage}>
+                                <TouchableOpacity onPress={() => { setEditMaodVisible(true); }}>
                                     <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : { uri: photo }} style={{ width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15 }} resizeMode='contain' />
                                 </TouchableOpacity>
                             </View>
@@ -592,7 +648,7 @@ function OrderChatting({ navigation, route }) {
                             <Text style={[styles.sText, { textAlign: 'center', marginTop: 5 }]}>{i18n.t('uploadImg')}</Text>
 
                         </View>
-                        <TouchableOpacity onPress={setBill} style={{ backgroundColor: Colors.sky, width: '92%', borderRadius: 20, padding: 15, marginTop: 20, marginHorizontal: '2%', marginBottom: 5 }}>
+                        <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{ backgroundColor: Colors.sky, width: '92%', borderRadius: 20, padding: 15, marginTop: 20, marginHorizontal: '2%', marginBottom: 5 }}>
                             <Text style={[styles.sText, { color: Colors.bg, fontSize: 14 }]}>{i18n.t('send')}</Text>
                         </TouchableOpacity>
                         {/* <BTN onPress={() => setBill()} title={i18n.t('send')} ContainerStyle={{ borderRadius: 35, marginBottom: 30, flex: .1, padding: 20, }} TextStyle={{ fontSize: 14, padding: 0, bottom: 10 }} /> */}
@@ -602,6 +658,7 @@ function OrderChatting({ navigation, route }) {
                 </View>
 
             </RNModal>
+
 
         </View>
     )
@@ -676,6 +733,29 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: '#737373',
         opacity: .9,
+    },
+    centeredView2: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        // backgroundColor: '#737373',
+        // opacity: Platform.OS = 'ios' ? .7 : 1,
+
+    },
+    modalView2: {
+        backgroundColor: "white",
+        borderTopRightRadius: 25,
+        borderTopLeftRadius: 25,
+        width: width,
+        height: height * .19,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     modalView: {
         backgroundColor: "white",

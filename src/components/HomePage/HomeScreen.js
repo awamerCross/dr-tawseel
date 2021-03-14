@@ -14,6 +14,7 @@ import axios from "axios";
 import HeaderHome from '../../common/HeaderHome';
 import { _renderRows } from '../../common/LoaderImage';
 import { useIsFocused } from '@react-navigation/native';
+import { ToasterNative } from '../../common/ToasterNatrive';
 
 
 
@@ -55,20 +56,53 @@ function HomeScreen({ navigation }) {
 
 
     const fetchData = async () => {
+        let { status } = await Location.requestPermissionsAsync();;
 
-        let { status } = await Location.requestPermissionsAsync();
+        if (status === 'granted') {
+            let gpsServiceStatus = await Location.hasServicesEnabledAsync();
+            if (gpsServiceStatus) {
+                console.log("sss" + gpsServiceStatus);
+                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
-        if (status !== 'granted') {
-            alert('صلاحيات تحديد موقعك الحالي ملغاه');
-        } else {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-            let userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-            setMapRegion(userLocation);
-            // mapRef.current.animateToRegion(userLocation, 500)
+            } else {
+                await Location.requestPermissionsAsync();;
+                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+
+                ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
+            }
         }
+        else {
+            await Location.requestPermissionsAsync();;
+            let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+            setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+
+            ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
+        }
+
+
+        // let { status } = await Location.requestPermissionsAsync();
+        // if (status === 'granted') {
+        //     const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+        //     let userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+        //     setMapRegion({ latitude: userLocation.latitude, longitude: userLocation.longitude, latitudeDelta, longitudeDelta });
+        //     // setMapRegion(userLocation);
+        //     // mapRef.current.animateToRegion(userLocation, 500)
+
+
+
+        // } else {
+        //     ToasterNative('لا تمتلك صلاحيه تحدي  موقعك الحالي')
+
+        // }
+
+
+
     }
 
 
+    console.log(mapRegion);
 
 
 

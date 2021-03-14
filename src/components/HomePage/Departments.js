@@ -65,7 +65,7 @@ function Department({ navigation, route }) {
 
                 {
                     spinner ?
-                        _renderRows(loadingAnimated, ProviderDetaile && ProviderDetaile.length, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
+                        _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
                         :
                         ProviderDetaile &&
                             ProviderDetaile.length == 0 ?

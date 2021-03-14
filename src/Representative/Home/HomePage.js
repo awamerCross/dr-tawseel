@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView,RefreshControl, Dimensions, TouchableOpacity, I18nManager, Switch, Platform } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, TouchableOpacity, I18nManager, Switch, Platform } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import { getDelegateOrders, GetDeligate } from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
+import { ToasterNative } from '../../common/ToasterNatrive';
 
 
 const { width, height } = Dimensions.get('window')
@@ -22,7 +23,8 @@ function HomePage({ navigation }) {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false),  setRefreshing(false))
+        FetchLocations()
+        dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false), setRefreshing(false))
 
     }, []);
 
@@ -48,6 +50,36 @@ function HomePage({ navigation }) {
         dispatch(GetDeligate(lang, token))
     }
 
+
+    const FetchLocations = async () => {
+
+
+        let { status } = await Location.requestPermissionsAsync();;
+
+        if (status === 'granted') {
+            let gpsServiceStatus = await Location.hasServicesEnabledAsync();
+            if (gpsServiceStatus) {
+                console.log("sss" + gpsServiceStatus);
+                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+
+            } else {
+                await Location.requestPermissionsAsync();;
+                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+
+                ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
+            }
+        }
+        else {
+            await Location.requestPermissionsAsync();;
+            let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+            setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+
+            ToasterNative("Enable Location services", 'danger', 'bottom');
+        }
+    }
+    console.log(mapRegion);
     useEffect(() => {
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
@@ -60,18 +92,10 @@ function HomePage({ navigation }) {
             }
         });
 
-        const unsubscribe = navigation.addListener('focus', async () => {
+        const unsubscribe = navigation.addListener('focus', () => {
             setSpinner(true)
-            let { status } = await Location.requestPermissionsAsync();
-            let userLocation = {};
-            if (status !== 'granted') {
-                alert('صلاحيات تحديد موقعك الحالي ملغاه');
-            } else {
-                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-                userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-                setMapRegion(userLocation);
-            }
-            dispatch(getDelegateOrders(lang, token, 'READY', userLocation.latitude, userLocation.longitude)).then(() => setSpinner(false))
+            FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).then(() => setSpinner(false))
+
 
 
         })
@@ -115,9 +139,9 @@ function HomePage({ navigation }) {
             </View>
             <ScrollView style={[styles.container,]}
 
-                        contentContainerStyle={styles.scrollView}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                        showsVerticalScrollIndicator={false}>
+                contentContainerStyle={styles.scrollView}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                showsVerticalScrollIndicator={false}>
 
                 {
                     myOrders ?

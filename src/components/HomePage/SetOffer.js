@@ -110,37 +110,40 @@ function SetOffer({ navigation, route }) {
     };
 
     return (
-        <ScrollView style={{ flex: 1, }}>
-            <Header navigation={navigation} label={i18n.t('sendOffer')} />
+        <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+        >
+            <ScrollView style={{ flex: 1, }}>
+                <Header navigation={navigation} label={i18n.t('sendOffer')} />
 
-            <View style={{ flex: 1, height: height * .93, width: width }}>
-                {
-                    !initMap && mapRegion.latitude != null ? (
-                        <MapView
-                            ref={mapRef}
-                            style={{ width: '100%', height: '100%', flex: 1 }}
-                            initialRegion={mapRegion}>
-                            <Polyline
-                                coordinates={[
-                                    { latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
-                                    { latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to },
-                                ]}
-                                strokeColor={Colors.sky} // fallback for when `strokeColors` is not supported by the map-provider
-                                strokeWidth={3}
-                            />
+                <View style={{ flex: 1, height: height * .93, width: width }}>
+                    {
+                        !initMap && mapRegion.latitude != null ? (
+                            <MapView
+                                ref={mapRef}
+                                style={{ width: '100%', height: '100%', flex: 1 }}
+                                initialRegion={mapRegion}>
+                                <Polyline
+                                    coordinates={[
+                                        { latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
+                                        { latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to },
+                                    ]}
+                                    strokeColor={Colors.sky} // fallback for when `strokeColors` is not supported by the map-provider
+                                    strokeWidth={3}
+                                />
 
-                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} >
-                                <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                            </MapView.Marker>
+                                <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} >
+                                    <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                </MapView.Marker>
 
-                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to }} >
-                                <Image source={require('../../../assets/images/driver_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                            </MapView.Marker>
+                                <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to }} >
+                                    <Image source={require('../../../assets/images/driver_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                </MapView.Marker>
 
-                        </MapView>
-                    ) : (<View />)
-                }
-                <KeyboardAvoidingView behavior={'padding'} style={[{ position: 'absolute', bottom: 0, alignSelf: 'center', alignItems: 'center', width: '100%', backgroundColor: '#fff' }]}>
+                            </MapView>
+                        ) : (<View />)
+                    }
                     <View style={{ width: '100%', marginBottom: 40 }}>
 
                         <View style={{ flexDirection: 'row', width: '100%', borderBottomColor: '#ddd', borderBottomWidth: 1, paddingVertical: 5 }}>
@@ -176,34 +179,35 @@ function SetOffer({ navigation, route }) {
 
                         <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10 }]}>{i18n.t('priceRange')} <Text style={[styles.sText, { color: Colors.sky }]}> {orderDetails.shipping_range.from} - {orderDetails.shipping_range.to} </Text> {i18n.t('RS')}</Text>
 
-                        <BTN title={i18n.t('confirm')} onPress={() => setNewOffer()} ContainerStyle={{ width: '90%' }} TextStyle={{ fontSize: 13 }} />
-                    </View>
-                </KeyboardAvoidingView>
-            </View>
-
-
-            <Modal
-                onBackdropPress={() => setShowModal(!showModal)}
-                onBackButtonPress={() => setShowModal(!showModal)}
-                isVisible={showModal}
-                style={styles.bgModel}
-                avoidKeyboard={true}
-            >
-                <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', padding: 10 }]}>
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16, width: '80%', lineHeight: 20 }]}>{i18n.t('sendOfferToUser')}</Text>
-                        <View style={{ width: '100%' }}>
-                            <View style={{ marginTop: 10, alignItems: 'flex-start', flexDirection: 'row', paddingHorizontal: 20, width: '100%', justifyContent: 'space-around' }}>
-                                <BTN onPress={() => { navigation.navigate('RebHome'); setShowModal(false) }} title={i18n.t('home')} ContainerStyle={{ width: '45%', borderRadius: 20 }} TextStyle={{ fontSize: 13 }} />
-
-                                <BTN onPress={() => { dispatch(removeOffer(lang, token, orderDetails.order_id)).then(() => navigation.navigate('RebHome')); setShowModal(false) }} title={i18n.t('cancelOffer')} ContainerStyle={{ width: '45%', borderRadius: 20, backgroundColor: '#999' }} TextStyle={{ fontSize: 13, }} />
-                            </View>
-                        </View>
+                        <BTN title={i18n.t('confirm')} onPress={() => setNewOffer()} ContainerStyle={{ width: '90%', paddingVertical: 20 }} TextStyle={{ fontSize: 13 }} />
                     </View>
                 </View>
 
-            </Modal>
-        </ScrollView>
+
+                <Modal
+                    onBackdropPress={() => setShowModal(!showModal)}
+                    onBackButtonPress={() => setShowModal(!showModal)}
+                    isVisible={showModal}
+                    style={styles.bgModel}
+                    avoidKeyboard={true}
+                >
+                    <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', padding: 10 }]}>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16, width: '80%', lineHeight: 20 }]}>{i18n.t('sendOfferToUser')}</Text>
+                            <View style={{ width: '100%' }}>
+                                <View style={{ marginTop: 10, alignItems: 'flex-start', flexDirection: 'row', paddingHorizontal: 20, justifyContent: 'space-between' }}>
+                                    <BTN onPress={() => { navigation.navigate('RebHome'); setShowModal(false) }} title={i18n.t('home')} ContainerStyle={{ width: '45%', borderRadius: 20, marginEnd: 5 }} TextStyle={{ fontSize: 13 }} />
+
+                                    <BTN onPress={() => { dispatch(removeOffer(lang, token, orderDetails.order_id)).then(() => navigation.navigate('RebHome')); setShowModal(false) }} title={i18n.t('cancelOffer')} ContainerStyle={{ width: '45%', borderRadius: 20, backgroundColor: '#999' }} TextStyle={{ fontSize: 13, }} />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
+                </Modal>
+            </ScrollView>
+        </KeyboardAvoidingView>
+
     );
 }
 

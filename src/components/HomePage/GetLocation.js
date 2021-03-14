@@ -19,7 +19,7 @@ const longitudeDelta = 0.0421;
 const isIOS = Platform.OS === 'ios';
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
- function GetLocation({ navigation, route }) {
+function GetLocation({ navigation, route }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const lang = useSelector(state => state.lang.lang);
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
@@ -77,6 +77,9 @@ const { height } = Dimensions.get('window')
 
 
     useEffect(() => {
+        // requestAnimationFrame(() => {
+        //     mapRef.animateToRegion(mapRegion, 1)
+        // })
         fetchData();
     }, [route.params]);
 
@@ -93,9 +96,20 @@ const { height } = Dimensions.get('window')
     // }, [city,]);
 
     const _handleMapRegionChange = async (mapCoordinate) => {
+
         console.log(mapCoordinate);
         setShowAddress(true)
         setMapRegion({ latitude: mapCoordinate.latitude, longitude: mapCoordinate.longitude, latitudeDelta, longitudeDelta });
+
+        // if (parseFloat(mapCoordinate.latitude).toFixed(6) == parseFloat(mapRegion.latitude).toFixed(6)
+        //     && parseFloat(mapCoordinate.longitude).toFixed(6) == parseFloat(mapRegion.longitude).toFixed(6)) {
+        //     return;
+        // }
+        // setMapRegion({ latitude: mapCoordinate.latitude, longitude: mapCoordinate.longitude, latitudeDelta, longitudeDelta });
+        // pathName === 'SpecialOrder' || pathName === 'DeliveryReceiptLoaction' || pathName === 'AddAddress' || pathName === 'EditAddress' || pathName == 'OrderDetailes' ?
+        //     null :
+        //     dispatch(GetDliveryCost(providerID, mapCoordinate.latitude, mapCoordinate.longitude, token))
+
 
         let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
         getCity += mapCoordinate.latitude + ',' + mapCoordinate.longitude;
@@ -112,6 +126,8 @@ const { height } = Dimensions.get('window')
         } catch (e) {
             console.log(e);
         }
+
+
 
     };
 
@@ -264,12 +280,9 @@ const { height } = Dimensions.get('window')
                                 <MapView
                                     ref={mapRef}
 
-
                                     onRegionChangeComplete={(e) => {
-                                        pathName === 'SpecialOrder' || pathName === 'DeliveryReceiptLoaction' || pathName === 'AddAddress' || pathName === 'EditAddress' || pathName == 'OrderDetailes' ?
-                                            _handleMapRegionChange(e)
-                                            :
-                                            _handleMapRegionChange(e).then(() => dispatch(GetDliveryCost(providerID, mapRegion.latitude, mapRegion.longitude, token)))
+
+                                        _handleMapRegionChange(e)
                                     }}
                                     style={{ width: '100%', height: '100%', flex: 1, }}
                                     initialRegion={mapRegion}
@@ -290,7 +303,7 @@ const { height } = Dimensions.get('window')
                 <View style={[{ position: 'absolute', bottom: 70, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: '100%' }]}>
 
                     {
-                        showAddress && MinPriceCoast && MinPriceCoast.delivery && pathName === 'PaymentDetailes' ?
+                        showAddress && pathName === 'PaymentDetailes' ?
                             <View style={{ backgroundColor: '#fff', padding: 10, width: '85%', borderRadius: 5, alignItems: 'center' }}>
                                 <Text style={[{
                                     fontFamily: 'flatMedium',
@@ -299,8 +312,8 @@ const { height } = Dimensions.get('window')
                                     fontSize: 13,
                                     lineHeight: 20
                                 }]}>{i18n.t('delevierAddress')} : {city}</Text>
-                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 10 }]}>{i18n.t('delevierPrice')}</Text>
-                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 5 }]}>{MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
+                                {/* <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 10 }]}>{i18n.t('delevierPrice')}</Text>
+                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 5 }]}>{MinPriceCoast.delivery.min}{i18n.t('RS')}</Text> */}
                             </View>
                             :
                             null

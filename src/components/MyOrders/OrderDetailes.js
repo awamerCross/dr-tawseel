@@ -35,7 +35,6 @@ function OrderDetailes({ navigation, route }) {
     const [ModelProduct, setModelProduct] = useState([])
 
     const [counterID, setCounterID] = useState(1);
-    console.log(orderDetails);
     function fetchData() {
         setSpinner(true)
         dispatch(getOrderDetails(lang, token, orderId)).then(() => setSpinner(false))
@@ -133,8 +132,7 @@ function OrderDetailes({ navigation, route }) {
         }
     }
 
-   function  navigateToMap(lat,lng)
-    {
+    function navigateToMap(lat, lng) {
         const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
         const latLng = `${lat},${lng}`;
         const label = 'Custom Label';
@@ -280,7 +278,7 @@ function OrderDetailes({ navigation, route }) {
                                             <Image source={require('../../../assets/images/pinblue.png')} style={{ width: 20, height: 20 }} resizeMode={'contain'} />
                                             <Text style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_to).substr(0, 25)}...</Text>
 
-                                            <TouchableOpacity onPress={() => navigateToMap(orderDetails.address.latitude_to,orderDetails.address.longitude_to) } >
+                                            <TouchableOpacity onPress={() => navigateToMap(orderDetails.address.latitude_to, orderDetails.address.longitude_to)} >
                                                 <Text style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
                                             </TouchableOpacity>
                                         </View> : null
@@ -332,7 +330,7 @@ function OrderDetailes({ navigation, route }) {
                                                     ))
                                                     :
                                                     <View style={{ width: '100%' }}>
-                                                        <TouchableOpacity onPress={()=>{setClickImg(true)}} style={{ flexDirection: 'row', padding: 5 }}>
+                                                        <TouchableOpacity onPress={() => { setClickImg(true) }} style={{ flexDirection: 'row', padding: 5 }}>
                                                             {
                                                                 orderDetails.images.map((img, i) => (
                                                                     <Image source={{ uri: img }} key={i} style={{ width: 100, height: 100, borderRadius: 5, marginHorizontal: 5 }} resizeMode={'contain'} />
@@ -404,39 +402,39 @@ function OrderDetailes({ navigation, route }) {
 
                                 </Modal>
                                 {
-                                    orderDetails && orderDetails.images?
+                                    orderDetails && orderDetails.images ?
 
                                         <Modal
-                                    onBackdropPress={() => setClickImg(false)}
-                                    onBackButtonPress={() => setClickImg(false)}
-                                    isVisible={clickImg}
-                                    style={{ flex: 1, alignSelf: 'center', }}
-                                >
+                                            onBackdropPress={() => setClickImg(false)}
+                                            onBackButtonPress={() => setClickImg(false)}
+                                            isVisible={clickImg}
+                                            style={{ flex: 1, alignSelf: 'center', }}
+                                        >
 
-                                    <View style={styles.modalView}>
+                                            <View style={styles.modalView}>
 
 
-                                        <View style={{ flexDirection: 'column', marginTop: 10, marginLeft: 10, }}>
-                                            <View style={{ flexDirection: 'row', padding: 5 , justifyContent:'center' , alignItems:'center' }}>
-                                                {
+                                                <View style={{ flexDirection: 'column', marginTop: 10, marginLeft: 10, }}>
+                                                    <View style={{ flexDirection: 'row', padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+                                                        {
 
-                                                    orderDetails.images.map((img, i) => (
-                                                        <Image source={{uri: img}} key={i} style={{
-                                                            width: 300,
-                                                            height: 400,
-                                                            borderRadius: 5,
-                                                            marginHorizontal: 5
-                                                        }} resizeMode={'contain'}/>
-                                                    ))
-                                                }
+                                                            orderDetails.images.map((img, i) => (
+                                                                <Image source={{ uri: img }} key={i} style={{
+                                                                    width: 300,
+                                                                    height: 400,
+                                                                    borderRadius: 5,
+                                                                    marginHorizontal: 5
+                                                                }} resizeMode={'contain'} />
+                                                            ))
+                                                        }
+
+                                                    </View>
+                                                </View>
 
                                             </View>
-                                        </View>
 
-                                    </View>
-
-                                </Modal>
-                                        :null
+                                        </Modal>
+                                        : null
                                 }
                                 {
                                     user && user.user_type === 2 && orderDetails.delegate ?

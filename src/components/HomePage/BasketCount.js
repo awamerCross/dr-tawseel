@@ -20,11 +20,11 @@ const { height } = Dimensions.get('window')
 
 const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
 
-    const [count, setCount] = useState(1)
+    const [count, setCount] = useState(pro.quantity)
     const [click, setClick] = useState(false)
     const [ModelProduct, setModelProduct] = useState([])
     useEffect(() => {
-        setCount(pro.quantity)
+        // setCount()
     }, [])
 
 

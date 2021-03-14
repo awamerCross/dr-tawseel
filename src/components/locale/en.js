@@ -16,6 +16,8 @@ const en = {
   code: "verification code",
   confirmPass: "confirm new password",
   register: "Register",
+  pickImg: 'Pick Image from Camera',
+  pickCamera: 'Pick Image from Photo Gallery',
   Products: 'Products',
   Banktransfer: 'Bank Transfer',
   RecoverWallet: 'The amount will be recovered from the wallet',

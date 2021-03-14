@@ -146,7 +146,7 @@ function PaymentDetailes({ navigation, route }) {
                             <View>
                                 <View style={{ paddingVertical: 10, width, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', borderColor: '#DBDBDB', borderTopWidth: 1, borderBottomWidth: 1, marginTop: 20, backgroundColor: Colors.bg }}>
                                     <Text style={[{ fontFamily: 'flatMedium', marginLeft: 25, }]}>{i18n.t('delevierPrice')}</Text>
-                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25 }}> {MinPriceCoast && MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
+                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25 }}> {MinPriceCoast.delivery && MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
                                 </View>
 
 
