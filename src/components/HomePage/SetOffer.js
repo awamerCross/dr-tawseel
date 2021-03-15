@@ -179,7 +179,7 @@ function SetOffer({ navigation, route }) {
 
                         <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10 }]}>{i18n.t('priceRange')} <Text style={[styles.sText, { color: Colors.sky }]}> {orderDetails.shipping_range.from} - {orderDetails.shipping_range.to} </Text> {i18n.t('RS')}</Text>
 
-                        <BTN title={i18n.t('confirm')} onPress={() => setNewOffer()} ContainerStyle={{ width: '90%', paddingVertical: 20 }} TextStyle={{ fontSize: 13 }} />
+                        <BTN title={i18n.t('confirm')} onPress={() => setNewOffer()} ContainerStyle={{ width: '90%', paddingVertical: 30 }} TextStyle={{ fontSize: 16, padding: 15, bottom: 10 }} />
                     </View>
                 </View>
 

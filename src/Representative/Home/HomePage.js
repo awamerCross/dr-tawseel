@@ -23,8 +23,9 @@ function HomePage({ navigation }) {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        FetchLocations()
-        dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false), setRefreshing(false))
+        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)))
+
+            .then(() => setSpinner(false), setRefreshing(false))
 
     }, []);
 
