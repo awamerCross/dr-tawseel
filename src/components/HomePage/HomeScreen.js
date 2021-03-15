@@ -102,7 +102,6 @@ function HomeScreen({ navigation }) {
     }
 
 
-    console.log(mapRegion);
 
 
 
@@ -111,17 +110,18 @@ function HomeScreen({ navigation }) {
 
         if (isFocused) {
             setSpinner(true)
-            fetchData()
+
             dispatch(getLatestProviders());
             dispatch(getBanners(lang))
-            dispatch(getCategories(lang)).then(() => setSpinner(false))
+            dispatch(getCategories(lang))
+            fetchData().then(() => setSpinner(false))
 
 
         }
 
     }, [isFocused]);
 
-
+    console.log(mapRegion);
 
 
     useEffect(() => {

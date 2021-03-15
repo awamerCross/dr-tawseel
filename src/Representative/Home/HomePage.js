@@ -23,8 +23,9 @@ function HomePage({ navigation }) {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        FetchLocations()
-        dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false), setRefreshing(false))
+        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)))
+
+            .then(() => setSpinner(false), setRefreshing(false))
 
     }, []);
 
@@ -50,11 +51,12 @@ function HomePage({ navigation }) {
         dispatch(GetDeligate(lang, token))
     }
 
-
     const FetchLocations = async () => {
 
 
-        let { status } = await Location.requestPermissionsAsync();;
+
+        setSpinner(true)
+         let { status } = await Location.requestPermissionsAsync();;
 
         if (status === 'granted') {
             let gpsServiceStatus = await Location.hasServicesEnabledAsync();
@@ -81,6 +83,10 @@ function HomePage({ navigation }) {
     }
     console.log(mapRegion);
     useEffect(() => {
+        setSpinner(true)
+        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).catch(e => {
+            console.log('a77777a')
+        }).then(() => setSpinner(false))
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
             console.log(notification);

@@ -15,6 +15,7 @@ import ActionSheet from 'react-native-actionsheet'
 import RNModal from "react-native-modal";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
+import { Camera } from 'expo-camera';
 
 import Modal from "react-native-modal";
 import { Textarea } from "native-base";
@@ -90,8 +91,12 @@ function OrderChatting({ navigation, route }) {
             if (!result.cancelled) {
                 setPhoto(result.uri);
                 setBase64(result.base64);
-            }
 
+            }
+            setTimeout(() => {
+                setShowBillModal(true)
+
+            }, 200);
         }
         else {
             ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
@@ -100,11 +105,11 @@ function OrderChatting({ navigation, route }) {
     };
 
     const _pickImageFrpmCamera = async () => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await Camera.requestPermissionsAsync();
 
         if (status === 'granted') {
             let result = await ImagePicker.launchCameraAsync({
-                // mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
                 base64: true,
                 aspect: [4, 3],
@@ -115,7 +120,10 @@ function OrderChatting({ navigation, route }) {
                 setPhoto(result.uri);
                 setBase64(result.base64);
             }
+            setTimeout(() => {
+                setShowBillModal(true)
 
+            }, 200);
         }
         else {
             ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
@@ -144,6 +152,8 @@ function OrderChatting({ navigation, route }) {
     useEffect(() => {
 
         if (isFocused) {
+            setEditMaodVisible(false)
+            setShowBillModal(false)
             fetchData()
             joinRoom()
             socket.on('get_message', () => fetchData());
@@ -574,12 +584,12 @@ function OrderChatting({ navigation, route }) {
                     <View style={styles.modalView2}>
                         <View style={{ margin: 20, backgroundColor: Colors.bg }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                                <TouchableOpacity onPress={() => { setEditMaodVisible(false); _pickImageFrpmCamera() }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                <TouchableOpacity onPress={() => { _pickImageFrpmCamera().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
                                     <Image source={require('../../../assets/images/camer.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
                                     <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}>{i18n.t('pickImg')} </Text>
 
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { setEditMaodVisible(false); _pickImage() }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                <TouchableOpacity onPress={() => { _pickImage().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
                                     <Image source={require('../../../assets/images/gallery.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
                                     <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}> {i18n.t('pickCamera')}</Text>
 
@@ -595,70 +605,82 @@ function OrderChatting({ navigation, route }) {
                 onBackdropPress={() => setShowBillModal(!showBillModal)}
                 onBackButtonPress={() => setShowBillModal(!showBillModal)}
                 isVisible={showBillModal}
-                style={{ width: "95%", flex: 1, alignSelf: 'center', }}
+                style={{ width: "95%", alignSelf: 'center', }}
                 avoidKeyboard={true}
             >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ flex: 1 }}
+                >
 
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', }]}>
 
-                <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', }]}>
-
-                    <View style={{ alignItems: 'center', }}>
-                        <View style={{ width: '100%', height: 50, backgroundColor: Colors.sky, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={[styles.sText, { color: '#fff', textAlign: 'center', marginTop: 10, fontSize: 16, lineHeight: 20 }]}>{i18n.t('exportBill')}</Text>
-                        </View>
-                        <View style={{ width: '100%' }}>
-                            <View style={{ marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
-                                <View style={{ flexDirection: 'row', width: '100%' }}>
-                                    <InputIcon
-                                        label={i18n.t('productsCost')}
-                                        inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                                        styleCont={{ height: 45, width: '90%' }}
-                                        LabelStyle={{ bottom: 50, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
-                                        onChangeText={setCost}
-                                        editable={true}
-                                        keyboardType='numeric'
-                                        value={cost}
-                                    />
+                            <View style={{ alignItems: 'center', }}>
+                                <View style={{ width: '100%', height: 50, backgroundColor: Colors.sky, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={[styles.sText, { color: '#fff', textAlign: 'center', marginTop: 10, fontSize: 16, lineHeight: 20 }]}>{i18n.t('exportBill')}</Text>
                                 </View>
-                            </View>
 
-                            <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
-                                <View style={{ flexDirection: 'row', width: '100%' }}>
-                                    <InputIcon
-                                        label={i18n.t('productsCostWithShaping')}
-                                        inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                                        styleCont={{ height: 45, width: '90%' }}
-                                        LabelStyle={{ bottom: 50, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
-                                        editable={false}
-                                        keyboardType='numeric'
-                                        value={total.toString()}
-                                    />
+                                <View style={{ width: '100%' }}>
+                                    <View style={{ marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
+                                        <View style={{ flexDirection: 'row', width: '100%' }}>
+                                            <InputIcon
+                                                label={i18n.t('productsCost')}
+                                                inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
+                                                styleCont={{ height: 45, width: '90%' }}
+                                                LabelStyle={{ bottom: 50, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                                                onChangeText={setCost}
+                                                editable={true}
+                                                keyboardType='numeric'
+                                                value={cost}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
+                                        <View style={{ flexDirection: 'row', width: '100%' }}>
+                                            <InputIcon
+                                                label={i18n.t('productsCostWithShaping')}
+                                                inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
+                                                styleCont={{ height: 45, width: '90%' }}
+                                                LabelStyle={{ bottom: 50, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                                                editable={false}
+                                                keyboardType='numeric'
+                                                value={total.toString()}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{i18n.t('total')} :  <Text style={[styles.sText, { color: Colors.sky, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{total}  {i18n.t('RS')}</Text></Text>
+
+                                    <View>
+                                        <TouchableOpacity onPress={() => {
+                                            setShowBillModal(!showBillModal);
+                                            setTimeout(() => {
+                                                setEditMaodVisible(true);
+                                            }, 500);
+                                        }}>
+                                            <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : { uri: photo }} style={{ width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15 }} resizeMode='contain' />
+                                        </TouchableOpacity>
+                                    </View>
+
+
+                                    <Text style={[styles.sText, { textAlign: 'center', marginTop: 5 }]}>{i18n.t('uploadImg')}</Text>
+
                                 </View>
-                            </View>
 
-                            <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{i18n.t('total')} :  <Text style={[styles.sText, { color: Colors.sky, textAlign: 'center', marginTop: 10, fontSize: 16 }]}>{total}  {i18n.t('RS')}</Text></Text>
-
-                            <View>
-                                <TouchableOpacity onPress={() => { setEditMaodVisible(true); }}>
-                                    <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : { uri: photo }} style={{ width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15 }} resizeMode='contain' />
+                                <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{ backgroundColor: Colors.sky, width: '92%', borderRadius: 20, padding: 15, marginTop: 20, marginHorizontal: '2%', marginBottom: 5 }}>
+                                    <Text style={[styles.sText, { color: Colors.bg, fontSize: 14 }]}>{i18n.t('send')}</Text>
                                 </TouchableOpacity>
+                                {/* <BTN onPress={() => setBill()} title={i18n.t('send')} ContainerStyle={{ borderRadius: 35, marginBottom: 30, flex: .1, padding: 20, }} TextStyle={{ fontSize: 14, padding: 0, bottom: 10 }} /> */}
+
                             </View>
 
-
-                            <Text style={[styles.sText, { textAlign: 'center', marginTop: 5 }]}>{i18n.t('uploadImg')}</Text>
-
                         </View>
-                        <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{ backgroundColor: Colors.sky, width: '92%', borderRadius: 20, padding: 15, marginTop: 20, marginHorizontal: '2%', marginBottom: 5 }}>
-                            <Text style={[styles.sText, { color: Colors.bg, fontSize: 14 }]}>{i18n.t('send')}</Text>
-                        </TouchableOpacity>
-                        {/* <BTN onPress={() => setBill()} title={i18n.t('send')} ContainerStyle={{ borderRadius: 35, marginBottom: 30, flex: .1, padding: 20, }} TextStyle={{ fontSize: 14, padding: 0, bottom: 10 }} /> */}
-
-                    </View>
-
-                </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
 
             </RNModal>
-
 
         </View>
     )
