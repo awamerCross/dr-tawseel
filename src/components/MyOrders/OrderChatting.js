@@ -96,7 +96,7 @@ function OrderChatting({ navigation, route }) {
             setTimeout(() => {
                 setShowBillModal(true)
 
-            }, 500);
+            }, 200);
         }
         else {
             ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
@@ -123,7 +123,7 @@ function OrderChatting({ navigation, route }) {
             setTimeout(() => {
                 setShowBillModal(true)
 
-            }, 500);
+            }, 200);
         }
         else {
             ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
