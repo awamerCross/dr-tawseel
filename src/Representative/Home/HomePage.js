@@ -3,14 +3,13 @@ import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, 
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
 import { getDelegateOrders, GetDeligate } from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
 import { ToasterNative } from '../../common/ToasterNatrive';
-
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 import { _renderRows } from '../../common/LoaderImage';
 
 const { width, height } = Dimensions.get('window')
@@ -20,112 +19,80 @@ const longitudeDelta = 0.0421;
 
 
 function HomePage({ navigation }) {
-    const dispatch = useDispatch();
-    const [spinner, setSpinner] = useState(true);
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-         (async () => {
-            let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                return;
-            }
+        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)))
 
-            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
-            if(location)
-            {
-                dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setRefreshing(false))
-            }
-
-        })();
+            .then(() => setSpinner(false), setRefreshing(false))
 
     }, []);
 
-    let loadingAnimated = [];
 
+    const [spinner, setSpinner] = useState(true);
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const myOrders = useSelector(state => state.delegate.orders);
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
+    let loadingAnimated = []
 
+    const dispatch = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
-        latitude: '',
-        longitude: '',
+        latitude: null,
+        longitude: null,
         latitudeDelta,
         longitudeDelta
     });
 
     const HandleChangeStatue = () => {
         setIsEnabled(!isEnabled)
+        dispatch(GetDeligate(lang, token))
     }
 
     const FetchLocations = async () => {
 
-        let { status }  = await Location.requestPermissionsAsync();;
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status === 'granted') {
-            let gpsServiceStatus = await Location.hasServicesEnabledAsync();
-            if (gpsServiceStatus) {
-                let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+            const userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+            setMapRegion(userLocation)
+            dispatch(getDelegateOrders(lang, token, 'READY', latitude, longitude))
+        } else {
+            alert('صلاحيات تحديد موقعك الحالي ملغاه');
 
-            } else {
-                await Location.requestPermissionsAsync();;
-                let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
-
-                ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
-            }
         }
-        else {
-            await Location.requestPermissionsAsync();;
-            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
-            setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
-            ToasterNative("Enable Location services", 'danger', 'bottom');
-        }
+
+
+
+
     }
-     useEffect(()   => {
-         (async () => {
-            let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                return;
-            }
+    console.log(mapRegion);
+    useEffect(() => {
 
-             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
-             if(location)
-             {
-                 dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setSpinner(false))
-             }
-
-        })();
+        setSpinner(true)
+        FetchLocations().then(() => setSpinner(false))
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification);
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
             if (type === 'special_order' && OrderId) {
-                (async () => {
-                    let { status } = await Location.requestPermissionsAsync();
-                    if (status !== 'granted') {
-                        return;
-                    }
+                dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
 
-                    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
-                    if(location)
-                    {
-                        dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setSpinner(false))
-                    }
-
-                })();
             }
         });
 
-        const unsubscribe = navigation.addListener('focus', () => {
-            FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).then(() => setSpinner(false))
-        })
-        return () => { subscription.remove(), unsubscribe }
+
+
+
+
+
+
+        return () => { subscription.remove() }
     }, []);
 
     return (
@@ -165,36 +132,36 @@ function HomePage({ navigation }) {
             </View>
             <ScrollView style={[styles.container,]}
 
-                contentContainerStyle={styles.scrollView}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                showsVerticalScrollIndicator={false}>
-                {
-                    spinner ?
-                        _renderRows(loadingAnimated, 2, '2rows', width * .43, height * .25, { flexDirection: 'row', marginHorizontal: 20, marginTop: 25, alignItems: 'center' }, { borderRadius: 25, })
+                        contentContainerStyle={styles.scrollView}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        showsVerticalScrollIndicator={false}>
 
+                {
+
+                    spinner ?
+                        _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
                         :
-                        myOrders ?
-                            myOrders.map((order, i) => (
-                                <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
-                                                  style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
-                                    <View style={styles.card}>
-                                        <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
-                                        <View style={{ flexDirection: 'column', width: '60%' }}>
-                                            <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
-                                            <View style={{ flexDirection: 'row', paddingStart: 5 }}>
-                                                <Text style={styles.yText}> {order.date}</Text>
-                                            </View>
-                                        </View>
-                                        <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
-                                        <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
-                                            <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
-                                            <Text style={[styles.sText, { marginVertical: 5 }]}>{order.order_id}</Text>
+                        myOrders &&
+                        myOrders.map((order, i) => (
+                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
+                                              style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
+                                <View style={styles.card}>
+                                    <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
+                                    <View style={{ flexDirection: 'column', width: '60%' }}>
+                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
+                                        <View style={{ flexDirection: 'row', paddingStart: 5 }}>
+                                            <Text style={styles.yText}> {order.date}</Text>
                                         </View>
                                     </View>
-                                </TouchableOpacity>
-                            )) : null
+                                    <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
+                                    <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
+                                        <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
+                                        <Text style={[styles.sText, { marginVertical: 5 }]}>{order.order_id}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        ))
                 }
-
 
             </ScrollView>
         </View >
