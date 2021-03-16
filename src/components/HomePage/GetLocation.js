@@ -321,7 +321,8 @@ function GetLocation({ navigation, route }) {
 
                     {
                         pathName !== 'OrderDetailes' ?
-                            <BTN title={i18n.t('confirm')} onPress={() => getLoc()} ContainerStyle={{ marginTop: 10, borderRadius: 20, padding: 15 }} TextStyle={{ fontSize: 13 }} />
+
+                            <BTN title={i18n.t('confirm')} disable={mapRegion.latitude == null} onPress={() => getLoc()} ContainerStyle={{ marginTop: 10, borderRadius: 20, padding: 15 }} TextStyle={{ fontSize: 13 }} />
                             :
                             null
                     }

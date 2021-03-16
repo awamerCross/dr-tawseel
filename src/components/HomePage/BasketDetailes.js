@@ -63,7 +63,7 @@ function BasketDetailes({ navigation, route }) {
 
     useMemo(() => {
         Products && Products.length == 0 && setTimeout(() => {
-            navigation.navigate('GoHome')
+            navigation.navigate('Basket')
         }, 1000)
     }, [Products])
 

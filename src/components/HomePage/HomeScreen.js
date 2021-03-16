@@ -110,11 +110,10 @@ function HomeScreen({ navigation }) {
 
         if (isFocused) {
             setSpinner(true)
-
+            fetchData()
             dispatch(getLatestProviders());
             dispatch(getBanners(lang))
-            dispatch(getCategories(lang))
-            fetchData().then(() => setSpinner(false))
+            dispatch(getCategories(lang)).then(() => setSpinner(false))
 
 
         }
