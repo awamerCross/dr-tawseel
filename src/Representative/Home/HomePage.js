@@ -3,14 +3,14 @@ import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, 
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
 import { getDelegateOrders, GetDeligate } from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
 import { ToasterNative } from '../../common/ToasterNatrive';
-
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import { _renderRows } from '../../common/LoaderImage';
 
 const { width, height } = Dimensions.get('window')
 
@@ -35,13 +35,14 @@ function HomePage({ navigation }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const myOrders = useSelector(state => state.delegate.orders);
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
+    let loadingAnimated = []
 
     const dispatch = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
-        latitude: '',
-        longitude: '',
+        latitude: null,
+        longitude: null,
         latitudeDelta,
         longitudeDelta
     });
@@ -54,34 +55,27 @@ function HomePage({ navigation }) {
 
     const FetchLocations = async () => {
 
-
-        let { status } = await Location.requestPermissionsAsync();;
-
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status === 'granted') {
-            let gpsServiceStatus = await Location.hasServicesEnabledAsync();
-            if (gpsServiceStatus) {
-                console.log("sss" + gpsServiceStatus);
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+            const userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+            setMapRegion(userLocation)
+            dispatch(getDelegateOrders(lang, token, 'READY', latitude, longitude))
+        } else {
+            alert('صلاحيات تحديد موقعك الحالي ملغاه');
 
-            } else {
-                await Location.requestPermissionsAsync();;
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
-
-                ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
-            }
         }
-        else {
-            await Location.requestPermissionsAsync();;
-            let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-            setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
-            ToasterNative("Enable Location services", 'danger', 'bottom');
-        }
+
+
+
+
     }
     console.log(mapRegion);
     useEffect(() => {
+
+        setSpinner(true)
+        FetchLocations().then(() => setSpinner(false))
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
             console.log(notification);
@@ -93,14 +87,13 @@ function HomePage({ navigation }) {
             }
         });
 
-        const unsubscribe = navigation.addListener('focus', () => {
-            setSpinner(true)
-            FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).then(() => setSpinner(false))
 
 
 
-        })
-        return () => { subscription.remove(), unsubscribe }
+
+
+
+        return () => { subscription.remove() }
     }, []);
 
     return (
@@ -145,7 +138,11 @@ function HomePage({ navigation }) {
                 showsVerticalScrollIndicator={false}>
 
                 {
-                    myOrders ?
+
+                    spinner ?
+                        _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
+                        :
+                        myOrders &&
                         myOrders.map((order, i) => (
                             <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
                                 style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
@@ -164,7 +161,7 @@ function HomePage({ navigation }) {
                                     </View>
                                 </View>
                             </TouchableOpacity>
-                        )) : null
+                        ))
                 }
 
             </ScrollView>
