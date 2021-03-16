@@ -11,6 +11,7 @@ import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
 import { ToasterNative } from '../../common/ToasterNatrive';
 
+import { _renderRows } from '../../common/LoaderImage';
 
 const { width, height } = Dimensions.get('window')
 
@@ -19,24 +20,35 @@ const longitudeDelta = 0.0421;
 
 
 function HomePage({ navigation }) {
+    const dispatch = useDispatch();
+    const [spinner, setSpinner] = useState(true);
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)))
+         (async () => {
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                return;
+            }
 
-            .then(() => setSpinner(false), setRefreshing(false))
+            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
+            if(location)
+            {
+                dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setRefreshing(false))
+            }
+
+        })();
 
     }, []);
 
+    let loadingAnimated = [];
 
-    const [spinner, setSpinner] = useState(true);
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const myOrders = useSelector(state => state.delegate.orders);
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
 
-    const dispatch = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
@@ -48,26 +60,20 @@ function HomePage({ navigation }) {
 
     const HandleChangeStatue = () => {
         setIsEnabled(!isEnabled)
-        dispatch(GetDeligate(lang, token))
     }
 
     const FetchLocations = async () => {
 
-
-
-        setSpinner(true)
-         let { status } = await Location.requestPermissionsAsync();;
-
+        let { status }  = await Location.requestPermissionsAsync();;
         if (status === 'granted') {
             let gpsServiceStatus = await Location.hasServicesEnabledAsync();
             if (gpsServiceStatus) {
-                console.log("sss" + gpsServiceStatus);
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
                 setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
             } else {
                 await Location.requestPermissionsAsync();;
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+                let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
                 setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
                 ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
@@ -75,35 +81,49 @@ function HomePage({ navigation }) {
         }
         else {
             await Location.requestPermissionsAsync();;
-            let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
+            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,})
             setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
 
             ToasterNative("Enable Location services", 'danger', 'bottom');
         }
     }
-    console.log(mapRegion);
-    useEffect(() => {
-        setSpinner(true)
-        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).catch(e => {
-            console.log('a77777a')
-        }).then(() => setSpinner(false))
+     useEffect(()   => {
+         (async () => {
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                return;
+            }
+
+             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
+             if(location)
+             {
+                 dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setSpinner(false))
+             }
+
+        })();
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
-            console.log(notification);
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
             if (type === 'special_order' && OrderId) {
-                dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
+                (async () => {
+                    let { status } = await Location.requestPermissionsAsync();
+                    if (status !== 'granted') {
+                        return;
+                    }
 
+                    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced ,});
+                    if(location)
+                    {
+                        dispatch(getDelegateOrders( lang, token, 'READY', location.coords.latitude, location.coords.longitude)  ).then(() => setSpinner(false))
+                    }
+
+                })();
             }
         });
 
         const unsubscribe = navigation.addListener('focus', () => {
-            setSpinner(true)
             FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).then(() => setSpinner(false))
-
-
-
         })
         return () => { subscription.remove(), unsubscribe }
     }, []);
@@ -148,29 +168,33 @@ function HomePage({ navigation }) {
                 contentContainerStyle={styles.scrollView}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 showsVerticalScrollIndicator={false}>
-
                 {
-                    myOrders ?
-                        myOrders.map((order, i) => (
-                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
-                                style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
-                                <View style={styles.card}>
-                                    <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
-                                    <View style={{ flexDirection: 'column', width: '60%' }}>
-                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
-                                        <View style={{ flexDirection: 'row', paddingStart: 5 }}>
-                                            <Text style={styles.yText}> {order.date}</Text>
+                    spinner ?
+                        _renderRows(loadingAnimated, 2, '2rows', width * .43, height * .25, { flexDirection: 'row', marginHorizontal: 20, marginTop: 25, alignItems: 'center' }, { borderRadius: 25, })
+
+                        :
+                        myOrders ?
+                            myOrders.map((order, i) => (
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
+                                                  style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
+                                    <View style={styles.card}>
+                                        <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
+                                        <View style={{ flexDirection: 'column', width: '60%' }}>
+                                            <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
+                                            <View style={{ flexDirection: 'row', paddingStart: 5 }}>
+                                                <Text style={styles.yText}> {order.date}</Text>
+                                            </View>
+                                        </View>
+                                        <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
+                                        <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
+                                            <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
+                                            <Text style={[styles.sText, { marginVertical: 5 }]}>{order.order_id}</Text>
                                         </View>
                                     </View>
-                                    <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
-                                    <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
-                                        <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
-                                        <Text style={[styles.sText, { marginVertical: 5 }]}>{order.order_id}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        )) : null
+                                </TouchableOpacity>
+                            )) : null
                 }
+
 
             </ScrollView>
         </View >
