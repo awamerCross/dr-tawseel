@@ -132,9 +132,9 @@ function HomePage({ navigation }) {
             </View>
             <ScrollView style={[styles.container,]}
 
-                contentContainerStyle={styles.scrollView}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                showsVerticalScrollIndicator={false}>
+                        contentContainerStyle={styles.scrollView}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        showsVerticalScrollIndicator={false}>
 
                 {
 
@@ -144,7 +144,7 @@ function HomePage({ navigation }) {
                         myOrders &&
                         myOrders.map((order, i) => (
                             <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
-                                style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
+                                              style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
                                 <View style={styles.card}>
                                     <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
                                     <View style={{ flexDirection: 'column', width: '60%' }}>
