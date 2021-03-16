@@ -152,7 +152,7 @@ function PaymentDetailes({ navigation, route }) {
 
                                 <View style={{ paddingVertical: 10, width, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15, borderColor: '#DBDBDB', borderBottomWidth: 1, backgroundColor: Colors.bg }}>
                                     <Text style={[{ fontFamily: 'flatMedium', marginLeft: 25, }]}>{i18n.t('sum')}</Text>
-                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25 }}> {(BasketDetailes.prices.total + MinPriceCoast.delivery.min)}{i18n.t('RS')}</Text>
+                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25 }}> {MinPriceCoast.delivery && (BasketDetailes.prices.total + (MinPriceCoast.delivery.min))}{i18n.t('RS')}</Text>
                                 </View>
 
 

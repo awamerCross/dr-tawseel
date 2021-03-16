@@ -5,10 +5,9 @@ import { AsyncStorage } from "react-native";
 import { ToasterNative } from "../common/ToasterNatrive";
 
 
-export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude,) => {
+export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude, navigation) => {
 
     return async (dispatch) => {
-        dispatch({ type: 'Loaders', loading: true, });
 
         await AsyncStorage.getItem('deviceID').then(async deviceId => {
             await axios({
@@ -18,7 +17,9 @@ export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude
                 headers: token ? { Authorization: 'Bearer ' + token, } : null,
                 params: { lang }
             }).then(response => {
-                dispatch({ type: 'BasketDetailes', data: response.data, });
+                dispatch({ type: 'BasketDetailes', data: response.data, Loader: response.data.success });
+
+
 
             }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
         })

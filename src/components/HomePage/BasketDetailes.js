@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
     ScrollView,
     View,
@@ -37,29 +37,38 @@ function BasketDetailes({ navigation, route }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const lang = useSelector(state => state.lang.lang);
     const BasketDtailes = useSelector(state => state.BasketDetailes.BaketDetailes)
+    const Products = useSelector(state => state.BasketDetailes.Products)
+    const Loader = useSelector(state => state.BasketDetailes.Loader)
     const [loading, setLoading] = useState(false);
-    const Myloader = useSelector(state => state.BasketDetailes.Loader)
 
-
+    console.log(BasketDtailes);
 
     const dispatch = useDispatch();
     const [Cuboun, setCuboun] = useState('')
-    const [spinner, setSpinner] = useState(true);
 
 
 
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
-            setSpinner(true)
-            setCuboun('')
-            dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun, mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
+            dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun, mapRegion.latitude, mapRegion.longitude, navigation)).then(() => {
+
+                setCuboun('')
+            })
+
         })
-        return unsubscribe;
-    }, [navigation, route])
+        return unsubscribe
+    }, [])
+
+
+    useMemo(() => {
+        Products && Products.length == 0 && setTimeout(() => {
+            navigation.navigate('GoHome')
+        }, 1000)
+    }, [Products])
 
     function DeleteCartItem(CartId, ProviderId) {
-        dispatch(DeleteBasketStoreCart(CartId, ProviderId, token)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun)))
+        dispatch(DeleteBasketStoreCart(CartId, ProviderId, token)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun, mapRegion.latitude, mapRegion.longitude, navigation)))
 
 
 
@@ -67,13 +76,13 @@ function BasketDetailes({ navigation, route }) {
 
     function Increase(CartId, ProviderId, type) {
         setLoading(true)
-        dispatch(CalculateCountProduct(CartId, ProviderId, token, type)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun))).then(() => setLoading(false))
+        dispatch(CalculateCountProduct(CartId, ProviderId, token, type)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun,))).then(() => setLoading(false))
 
     }
 
     function Decrease(CartId, ProviderId, type) {
         setLoading(true)
-        dispatch(CalculateCountProduct(CartId, ProviderId, token, type)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun)))
+        dispatch(CalculateCountProduct(CartId, ProviderId, token, type)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun,)))
 
     }
 
@@ -85,121 +94,117 @@ function BasketDetailes({ navigation, route }) {
     }
 
 
+    console.log('LoaderHere', Loader);
 
     return (
 
-        <Container loading={spinner}>
+        <LoadingBtn loading={Loader}>
 
 
             <Header navigation={navigation} label={i18n.t('cart')} />
 
             <ScrollView style={{ flex: 1, }} showsVerticalScrollIndicator={false}>
+                {
+                    BasketDtailes &&
+                    <View style={{ backgroundColor: Colors.bg, }}>
+                        {BasketDtailes.provider &&
+                            <View style={styles.card}>
 
-                <View style={{ backgroundColor: Colors.bg, }}>
-                    {
-                        BasketDtailes && BasketDtailes.provider &&
-                        <View style={styles.card}>
+                                <Image source={{ uri: BasketDtailes.provider.avatar }} style={styles.ImgCard} />
+                                <View style={{ flexDirection: 'column', justifyContent: 'space-between', }}>
 
-                            <Image source={{ uri: BasketDtailes.provider.avatar }} style={styles.ImgCard} />
-                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', }}>
+                                    <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, marginStart: 5 }]}>{BasketDtailes.provider.name}</Text>
+                                    <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 5, fontSize: 12, }]}>{BasketDtailes.provider.available}</Text>
 
-                                <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, marginStart: 5 }]}>{BasketDtailes.provider.name}</Text>
-                                <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 5, fontSize: 12, }]}>{BasketDtailes.provider.available}</Text>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', width: '85%' }}>
-                                    <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
-                                    <Text style={[styles.yText, { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', alignSelf: 'flex-start', lineHeight: 22 }]}>{BasketDtailes.provider.distance}</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '85%' }}>
+                                        <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
+                                        <Text style={[styles.yText, { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', alignSelf: 'flex-start', lineHeight: 22 }]}>{BasketDtailes.provider.distance}</Text>
+                                    </View>
                                 </View>
+
                             </View>
-
-                        </View>
-                    }
-                    <View style={styles.product}>
-                        <Image source={require('../../../assets/images/product.png')} style={[styles.iconImg, { alignSelf: 'center', width: 25, height: 25, }]} resizeMode='contain' />
-                        <Text style={[styles.pro, { fontSize: 20, }]}>{i18n.t('Products')}</Text>
-                    </View>
-
-                    {
-                        !BasketDtailes ? [] :
-
-                            !BasketDtailes.products ? []
-                                :
-                                BasketDtailes.products.length ?
-
-
-                                    <FlatList
-                                        data={BasketDtailes.products}
-                                        extraData={loading}
-                                        keyExtractor={(item) => (item.id).toString()}
-                                        renderItem={({ item, index }) => {
-                                            return (
-
-                                                <BasketCount pro={item} i={index} DeleteCartItem={() => DeleteCartItem(item.id, BasketDtailes.provider.id)} Decrease={() => Decrease(item.id, BasketDtailes.provider.id, 'minus')} Increase={() => Increase(item.id, BasketDtailes.provider.id, 'increase')} key={(item.id).toString()} />
-
-                                            )
-                                        }}
-                                    />
-                                    :
-                                    navigation.navigate('Basket')
-
-
-
-
-
-                    }
-
-                    <KeyboardAvoidingView>
+                        }
                         <View style={styles.product}>
-                            <Image source={require('../../../assets/images/cpon.png')} style={[styles.iconImg, { alignSelf: 'center', width: 18, height: 18, }]} resizeMode='contain' />
-                            <Text style={[styles.yText, { color: '#fff', fontSize: width * .04, marginTop: 0, opacity: 1, }]}> {i18n.t('addCoupon')}</Text>
+                            <Image source={require('../../../assets/images/product.png')} style={[styles.iconImg, { alignSelf: 'center', width: 25, height: 25, }]} resizeMode='contain' />
+                            <Text style={[styles.pro, { fontSize: 20, }]}>{i18n.t('Products')}</Text>
                         </View>
 
-                        <InputIcon
-                            label={i18n.t('discountCode')}
-                            value={Cuboun}
-                            onChangeText={(e) => HandleChange(e)}
-
-                        />
 
 
-                        <View>
-                            {BasketDtailes &&
-                                BasketDtailes.prices &&
-                                <View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
-                                        <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 14 }]}>{i18n.t('taxes')} </Text>
-                                        <Text style={[styles.sText, { color: Colors.sky, marginRight: 0 }]}>{BasketDtailes.prices.added_value} {i18n.t('RS')}</Text>
-                                    </View>
-                                    <View style={{ width, height: height * .06, justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 5, flexDirection: 'row', backgroundColor: Colors.bg }}>
-                                        <Text style={[styles.oText, { color: Colors.fontBold, fontSize: 14, }]}>{i18n.t('sum')}</Text>
-                                        <Text style={[styles.SPrice, { marginRight: 0 }]}> {BasketDtailes.prices.sum} {i18n.t('RS')}</Text>
-                                    </View>
-                                    <View style={{ width: '90%', marginHorizontal: '4%', height: 60, paddingHorizontal: 10, alignItems: 'center', flexDirection: 'row', marginTop: 20, borderColor: '#DBDBDB', justifyContent: 'space-between', backgroundColor: Colors.sky }}>
-                                        <Text style={[styles.oText, { marginLeft: 0, color: Colors.bg }]}>{i18n.t('total')}</Text>
-                                        <Text style={{ color: Colors.bg, fontFamily: 'flatMedium', fontSize: 16 }}> {(BasketDtailes.prices.total)} {i18n.t('RS')}</Text>
-                                    </View>
+                        <Container loading={Loader} >
 
-                                </View>
+                            {
+
+                                Products &&
+                                Products.map((item, index) => {
+                                    return (
+
+                                        <BasketCount pro={item} i={index} DeleteCartItem={() => DeleteCartItem(item.id, BasketDtailes.provider.id)} Decrease={() => Decrease(item.id, BasketDtailes.provider.id, 'minus')} Increase={() => Increase(item.id, BasketDtailes.provider.id, 'increase')} key={(item.id).toString()} />
+
+                                    )
+                                })
 
                             }
-                            <BTN title={i18n.t('confirm')} onPress={() => token ? navigation.navigate('PaymentDetailes', { providerID: BasketDtailes.provider.id, BasketId: BasketId, Cuboun: Cuboun }) : navigation.navigate('Login')} ContainerStyle={{ marginVertical: width * .1, borderRadius: 20, }} TextStyle={{ fontSize: 16 }} />
 
-                        </View>
-                    </KeyboardAvoidingView>
+                        </Container>
 
 
 
 
 
 
+                        <KeyboardAvoidingView>
+                            <View style={styles.product}>
+                                <Image source={require('../../../assets/images/cpon.png')} style={[styles.iconImg, { alignSelf: 'center', width: 18, height: 18, }]} resizeMode='contain' />
+                                <Text style={[styles.yText, { color: '#fff', fontSize: width * .04, marginTop: 0, opacity: 1, }]}> {i18n.t('addCoupon')}</Text>
+                            </View>
 
-                </View>
+                            <InputIcon
+                                label={i18n.t('discountCode')}
+                                value={Cuboun}
+                                onChangeText={(e) => HandleChange(e)}
+
+                            />
+
+
+                            <View>
+                                {
+                                    BasketDtailes.prices &&
+                                    <View>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
+                                            <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 14 }]}>{i18n.t('taxes')} </Text>
+                                            <Text style={[styles.sText, { color: Colors.sky, marginRight: 0 }]}>{BasketDtailes.prices.added_value} {i18n.t('RS')}</Text>
+                                        </View>
+                                        <View style={{ width, height: height * .06, justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 5, flexDirection: 'row', backgroundColor: Colors.bg }}>
+                                            <Text style={[styles.oText, { color: Colors.fontBold, fontSize: 14, }]}>{i18n.t('sum')}</Text>
+                                            <Text style={[styles.SPrice, { marginRight: 0 }]}> {BasketDtailes.prices.sum} {i18n.t('RS')}</Text>
+                                        </View>
+                                        <View style={{ width: '90%', marginHorizontal: '4%', height: 60, paddingHorizontal: 10, alignItems: 'center', flexDirection: 'row', marginTop: 20, borderColor: '#DBDBDB', justifyContent: 'space-between', backgroundColor: Colors.sky }}>
+                                            <Text style={[styles.oText, { marginLeft: 0, color: Colors.bg }]}>{i18n.t('total')}</Text>
+                                            <Text style={{ color: Colors.bg, fontFamily: 'flatMedium', fontSize: 16 }}> {(BasketDtailes.prices.total)} {i18n.t('RS')}</Text>
+                                        </View>
+
+                                    </View>
+
+                                }
+                                <BTN title={i18n.t('confirm')} onPress={() => token ? navigation.navigate('PaymentDetailes', { providerID: BasketDtailes.provider.id, BasketId: BasketId, Cuboun: Cuboun }) : navigation.navigate('Login')} ContainerStyle={{ marginVertical: width * .1, borderRadius: 20, }} TextStyle={{ fontSize: 16 }} />
+
+                            </View>
+                        </KeyboardAvoidingView>
 
 
 
+
+
+
+
+                    </View>
+
+
+                }
             </ScrollView>
 
-        </Container>
+        </LoadingBtn>
 
 
     )

@@ -77,7 +77,7 @@ function DepartmentsDetailes({ navigation, route }) {
                                 :
                                 categories ?
                                     categories.map((category, i) => (
-                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 1, backgroundColor: active === i ? Colors.sky : Colors.bg, borderLeftColor: '#ddd' }]} key={i} onPress={() => { fetchGooglePlaces(category.key); setactive(i) }}>
+                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 1, borderRightWidth: 1, backgroundColor: active === i ? Colors.sky : Colors.bg, borderLeftColor: '#ddd', borderRadius: 25, marginHorizontal: 5, borderRightColor: '#ddd', }]} key={i} onPress={() => { fetchGooglePlaces(category.key); setactive(i) }}>
                                             <Image source={{ uri: category.img }} style={{ width: 25, height: 25, marginHorizontal: 5 }} />
                                             <Text style={styles.sText}>{category.name}</Text>
                                         </TouchableOpacity>

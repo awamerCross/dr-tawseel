@@ -34,7 +34,6 @@ function Basket({ navigation }) {
         latitudeDelta,
         longitudeDelta
     });
-    const [city, setCity] = useState('');
     const [error, setError] = useState(false);
     let loadingAnimated = []
 
@@ -56,15 +55,7 @@ function Basket({ navigation }) {
 
             setMapRegion(userLocation);
         }
-        let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-        getCity += userLocation.latitude + ',' + userLocation.longitude;
-        getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
-        // ReactotronConfig.log(getCity);
-        try {
-            const { data } = await axios.get(getCity);
-            setCity(data.results[0].formatted_address)
-        } catch (e) {
-        }
+
     }
 
 
@@ -74,11 +65,7 @@ function Basket({ navigation }) {
         if (isFocused) {
             setSpinner(true)
             fetchData()
-            dispatch(BasketStore(token, lang, search)).then(() => setSpinner(false)).catch(e => {
-                setError(true);
-                setSpinner(false)
-            })
-
+            dispatch(BasketStore(token, lang, search)).then(() => setSpinner(false))
 
 
         }

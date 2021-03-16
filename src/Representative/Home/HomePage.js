@@ -54,7 +54,7 @@ function HomePage({ navigation }) {
 
     const FetchLocations = async () => {
 
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        let { status } = await Location.requestPermissionsAsync();;
         if (status === 'granted') {
             const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
             const userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
