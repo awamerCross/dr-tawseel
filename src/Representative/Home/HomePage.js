@@ -72,10 +72,6 @@ function HomePage({ navigation }) {
     }
     console.log(mapRegion);
     useEffect(() => {
-        setSpinner(true)
-        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude))).catch(e => {
-            console.log('a77777a')
-        }).then(() => setSpinner(false))
 
         setSpinner(true)
         FetchLocations().then(() => setSpinner(false))
