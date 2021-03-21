@@ -51,37 +51,38 @@ function Login({ navigation }) {
 
 
     useEffect(() => {
+        (async () => {
+            await registerForPushNotificationsAsync().then((token) =>
+                setExpoPushToken(token)
+            );
+            Notifications.addListener(
+                _handleNotification
+            );
+            notificationListener.current = NOtify.addNotificationReceivedListener(
+                (notification) => {
+
+                    setNotification(notification);
+                }
+            );
+
+            responseListener.current = NOtify.addNotificationResponseReceivedListener(
+                (response) => {
+                    console.log("response in UseNotification.js", response);
+                }
+            );
+
+            return () => {
+                NOtify.removeNotificationSubscription(notificationListener);
+                NOtify.removeNotificationSubscription(responseListener);
+            };
+        })();
         if (isFocused) {
             dispatch(getAppInfo(lang));
 
         }
     }, [isFocused])
 
-    useEffect(() => {
-        registerForPushNotificationsAsync().then((token) =>
-            setExpoPushToken(token)
-        );
-        Notifications.addListener(
-            _handleNotification
-        );
-        notificationListener.current = NOtify.addNotificationReceivedListener(
-            (notification) => {
 
-                setNotification(notification);
-            }
-        );
-
-        responseListener.current = NOtify.addNotificationResponseReceivedListener(
-            (response) => {
-                console.log("response in UseNotification.js", response);
-            }
-        );
-
-        return () => {
-            NOtify.removeNotificationSubscription(notificationListener);
-            NOtify.removeNotificationSubscription(responseListener);
-        };
-    }, []);
 
 
 
@@ -163,6 +164,7 @@ function Login({ navigation }) {
                 _displayInForeground: true
             }
         });
+        return notificationId
     };
     console.log(expoPushToken);
     return (

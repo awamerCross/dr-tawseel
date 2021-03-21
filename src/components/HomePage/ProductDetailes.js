@@ -65,6 +65,7 @@ function ProductDetailes({ navigation, route }) {
             setExtraPrice(0)
             setExtraArr([])
             setCount(1)
+            setGetID([])
             setTotal(0)
             setAvailableKiloes('')
             setAdditoonPrice(0)

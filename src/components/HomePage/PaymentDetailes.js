@@ -49,7 +49,7 @@ function PaymentDetailes({ navigation, route }) {
         // { id: 5, title: i18n.t('byApple') }
     ]);
 
-
+    console.log(cityName);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {

@@ -23,7 +23,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Container from '../../common/Container';
 import BasketCount from './BasketCount'
 import LoadingBtn from '../../common/Loadbtn';
-import { SwipeItem, SwipeButtonsContainer } from 'react-native-swipe-item';
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -58,14 +57,14 @@ function BasketDetailes({ navigation, route }) {
 
         })
         return unsubscribe
-    }, [])
+    }, [navigation])
 
 
-    useMemo(() => {
-        Products && Products.length == 0 && setTimeout(() => {
-            navigation.navigate('Basket')
-        }, 1000)
-    }, [Products])
+    // useMemo(() => {
+    //     Products && Products.length == 0 && setTimeout(() => {
+    //         navigation.navigate('Basket')
+    //     }, 1000)
+    // }, [Products])
 
     function DeleteCartItem(CartId, ProviderId) {
         dispatch(DeleteBasketStoreCart(CartId, ProviderId, token)).then(() => dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun, mapRegion.latitude, mapRegion.longitude, navigation)))
@@ -131,22 +130,21 @@ function BasketDetailes({ navigation, route }) {
 
 
 
-                        <Container loading={Loader} >
 
-                            {
+                        {
 
-                                Products &&
-                                Products.map((item, index) => {
-                                    return (
+                            BasketDtailes.products &&
+                            BasketDtailes.products.map((item, index) => {
+                                console.log(item);
+                                return (
 
-                                        <BasketCount pro={item} i={index} DeleteCartItem={() => DeleteCartItem(item.id, BasketDtailes.provider.id)} Decrease={() => Decrease(item.id, BasketDtailes.provider.id, 'minus')} Increase={() => Increase(item.id, BasketDtailes.provider.id, 'increase')} key={(item.id).toString()} />
+                                    <BasketCount pro={item} i={index} DeleteCartItem={() => DeleteCartItem(item.id, BasketDtailes.provider.id)} Decrease={() => Decrease(item.id, BasketDtailes.provider.id, 'minus')} Increase={() => Increase(item.id, BasketDtailes.provider.id, 'increase')} key={(item.id).toString()} />
 
-                                    )
-                                })
+                                )
+                            })
 
-                            }
+                        }
 
-                        </Container>
 
 
 

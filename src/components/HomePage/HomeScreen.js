@@ -62,23 +62,20 @@ function HomeScreen({ navigation }) {
             let gpsServiceStatus = await Location.hasServicesEnabledAsync();
             if (gpsServiceStatus) {
                 console.log("sss" + gpsServiceStatus);
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+                setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
 
             } else {
-                await Location.requestPermissionsAsync();;
-                let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-                setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+                setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
 
                 ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
             }
         }
         else {
-            await Location.requestPermissionsAsync();;
-            let location = await Location.getCurrentPositionAsync({ accuracy: 6 })
-            setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+            setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
 
-            ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
         }
 
 

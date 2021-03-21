@@ -17,7 +17,14 @@ export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude
                 headers: token ? { Authorization: 'Bearer ' + token, } : null,
                 params: { lang }
             }).then(response => {
-                dispatch({ type: 'BasketDetailes', data: response.data, Loader: response.data.success });
+                console.log("response" + response.data.data.products);
+                if ((response.data.data.products).length <= 0) {
+                    navigation.navigate('Basket')
+                }
+                else {
+                    dispatch({ type: 'BasketDetailes', data: response.data, Loader: response.data.success });
+
+                }
 
 
 

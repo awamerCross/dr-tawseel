@@ -16,6 +16,7 @@ import { I18nManager } from "react-native-web";
 
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
+
 const isIOS = Platform.OS === 'ios';
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -43,61 +44,83 @@ function GetLocation({ navigation, route }) {
         longitudeDelta
     });
 
-    const fetchData = async () => {
-        setMapRegion({})
-        let { status } = await Location.requestPermissionsAsync();
-        let userLocation = {};
-        if (status !== 'granted') {
-            alert('صلاحيات تحديد موقعك الحالي ملغاه');
-        } else {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+    // const fetchData = async () => {
+    //     setMapRegion({})
+    //     let { status } = await Location.requestPermissionsAsync();
+    //     let userLocation = {};
+    //     if (status !== 'granted') {
+    //         alert('صلاحيات تحديد موقعك الحالي ملغاه');
+    //     } else {
+    //         const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
 
-            if (route.params && route.params.latitude) {
-                userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
+    //         if (route.params && route.params.latitude) {
+    //             userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
+    //         } else {
+    //             userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+    //         }
+
+    //         setInitMap(false);
+    //         setMapRegion(userLocation);
+    //         isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
+    //     }
+
+    //     let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
+    //     getCity += userLocation.latitude + ',' + userLocation.longitude;
+    //     getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
+    //     try {
+    //         const { data } = await axios.get(getCity);
+    //         setCity(data.results[0].formatted_address)
+    //         setSearch(data.results[0].formatted_address)
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // };
+
+    console.log(mapRegion);
+    useEffect(() => {
+
+        (async () => {
+
+
+            let { status } = await Location.requestPermissionsAsync();
+            let userLocation = {};
+            if (status !== 'granted') {
+                alert('صلاحيات تحديد موقعك الحالي ملغاه');
             } else {
-                userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+
+                if (route.params && route.params.latitude) {
+                    userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
+                } else {
+                    userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+                }
+
+                setInitMap(false);
+                setMapRegion(userLocation);
+                // isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
             }
 
-            setInitMap(false);
-            setMapRegion(userLocation);
-            isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
-        }
-
-        let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-        getCity += userLocation.latitude + ',' + userLocation.longitude;
-        getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
-        try {
-            const { data } = await axios.get(getCity);
-            setCity(data.results[0].formatted_address)
-            setSearch(data.results[0].formatted_address)
-        } catch (e) {
-            console.log(e);
-        }
-    };
+            let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
+            getCity += userLocation.latitude + ',' + userLocation.longitude;
+            getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
+            try {
+                const { data } = await axios.get(getCity);
+                setCity(data.results[0].formatted_address)
+                setSearch(data.results[0].formatted_address)
+            } catch (e) {
+                console.log(e);
+            }
 
 
-    useEffect(() => {
-        // requestAnimationFrame(() => {
-        //     mapRef.animateToRegion(mapRegion, 1)
-        // })
-        fetchData();
-    }, [route.params]);
-
-    // useEffect(() => {
-
-    //     pathName === 'SpecialOrder' || pathName === 'DeliveryReceiptLoaction' ?
-    //         null :
-    //         setTimeout(() => {
-    //             dispatch(GetDliveryCost(providerID, mapRegion.latitude, mapRegion.longitude, token))
-
-    //         }, 3000);
+        })();
 
 
-    // }, [city,]);
+    }, [route.params])
+
+
 
     const _handleMapRegionChange = async (mapCoordinate) => {
 
-        console.log(mapCoordinate);
         setShowAddress(true)
         setMapRegion({ latitude: mapCoordinate.latitude, longitude: mapCoordinate.longitude, latitudeDelta, longitudeDelta });
 
@@ -117,6 +140,7 @@ function GetLocation({ navigation, route }) {
 
 
         try {
+
             const { data } = await axios.get(getCity)
             setCity(data.results[0].formatted_address)
             setSearch(data.results[0].formatted_address)
@@ -275,19 +299,13 @@ function GetLocation({ navigation, route }) {
 
                 <View style={{ width: '100%', height: '100%', flex: 1, zIndex: -1 }}>
                     {
-                        !initMap && mapRegion.latitude != null ? (
+                        mapRegion.latitude != null ? (
                             <>
                                 <MapView
                                     ref={mapRef}
-
-                                    onRegionChangeComplete={(e) => {
-
-                                        _handleMapRegionChange(e)
-                                    }}
-                                    style={{ width: '100%', height: '100%', flex: 1, }}
                                     initialRegion={mapRegion}
-                                    region={mapRegion}
-                                    onMapReady={() => Platform.OS === 'ios' && mapRef.current.animateToRegion(mapRegion, 0.1)}
+                                    onRegionChangeComplete={(e) => { _handleMapRegionChange(e) }}
+                                    style={{ width: '100%', height: '100%', flex: 1, }}
 
                                 />
 
