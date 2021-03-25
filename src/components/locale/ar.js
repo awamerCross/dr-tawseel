@@ -447,6 +447,7 @@ const ar = {
   resendCode: 'اعاده الارسال',
   noData: 'لا يوجد بيانات',
   iban: 'الايبان',
+  showBill: 'عرض الفاتوره',
   locationName: 'اسم الموقع مطلوب',
   usertype: 'لا تمتلك صلاحيات للدخول',
   extraCount: 'لقد تخطيت الكميه المتاحة',

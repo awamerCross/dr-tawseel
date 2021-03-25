@@ -35,6 +35,7 @@ const en = {
   cnagePass: 'Change Password',
   Accnum: 'Account number',
   AccountUser: 'Account owner',
+  showBill: 'Show Bill',
   moneyPaied: 'The amount to be paid',
   profile: 'profile',
   sure: 'confirm',

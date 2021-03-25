@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Image, ScrollView, Dimensions, StyleSheet, TextInput, I18nManager, KeyboardAvoidingView } from "react-native";
+import { View, Text, Image, ScrollView, Dimensions, StyleSheet, TextInput, I18nManager, KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
 import i18n from "../locale/i18n";
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
@@ -23,18 +23,18 @@ function SetOffer({ navigation, route }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
 
-    const lang = useSelector(state => state.lang.lang);
-    let pathName = route.params ? route.params.pathName : null;
-    let type = route.params ? route.params.type : null;
-    const { orderDetails } = route.params;
-    const dispatch = useDispatch();
-    let mapRef = useRef(null);
-    const [city, setCity] = useState('');
-    const [cost, setCost] = useState('');
+    const lang                      = useSelector(state => state.lang.lang);
+    let pathName                    = route.params ? route.params.pathName : null;
+    let type                        = route.params ? route.params.type : null;
+    const { orderDetails }          = route.params;
+    const dispatch                  = useDispatch();
+    let mapRef                      = useRef(null);
+    const [city, setCity]           = useState('');
+    const [cost, setCost]           = useState('');
     const [showModal, setShowModal] = useState(false);
     const [mapRegion, setMapRegion] = useState({
-        latitude: '',
-        longitude: '',
+        latitude: 24.774265,
+        longitude: 46.738586,
         latitudeDelta,
         longitudeDelta
     });
@@ -43,6 +43,7 @@ function SetOffer({ navigation, route }) {
     const [showAddress, setShowAddress] = useState(false);
 
     const fetchData = async () => {
+
         setCost('')
 
         let { status } = await Location.requestPermissionsAsync();
@@ -55,15 +56,18 @@ function SetOffer({ navigation, route }) {
             userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
 
             setInitMap(false);
-            setMapRegion(userLocation);
-            isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
+            // setMapRegion(userLocation);
+
+            console.log('opppsppsps', userLocation, mapRegion)
+
+            mapRef.current.getMapRef().animateToRegion(userLocation, 500)
         }
     };
 
     useEffect(() => {
         setCost('')
         fetchData();
-    }, []);
+    }, [city, mapRegion]);
 
     //
     // useEffect(() => {
@@ -117,33 +121,33 @@ function SetOffer({ navigation, route }) {
             <ScrollView style={{ flex: 1, }}>
                 <Header navigation={navigation} label={i18n.t('sendOffer')} />
 
+                <TouchableOpacity onPress={() => fetchData()} style={{ height: 200 , backgroundColor: 'red' }}>
+                    <Text>damn</Text>
+                </TouchableOpacity>
+
                 <View style={{ flex: 1, height: height * .93, width: width }}>
-                    {
-                        !initMap && mapRegion.latitude != null ? (
-                            <MapView
-                                ref={mapRef}
-                                style={{ width: '100%', height: '100%', flex: 1 }}
-                                initialRegion={mapRegion}>
-                                <Polyline
-                                    coordinates={[
-                                        { latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
-                                        { latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to },
-                                    ]}
-                                    strokeColor={Colors.sky} // fallback for when `strokeColors` is not supported by the map-provider
-                                    strokeWidth={3}
-                                />
+                    <MapView
+                        ref={mapRef}
+                        style={{ width: '100%', height: '100%', flex: 1 }}
+                        initialRegion={mapRegion}>
+                        <Polyline
+                            coordinates={[
+                                { latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
+                                { latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to },
+                            ]}
+                            strokeColor={Colors.sky} // fallback for when `strokeColors` is not supported by the map-provider
+                            strokeWidth={3}
+                        />
 
-                                <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} >
-                                    <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                                </MapView.Marker>
+                        <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} >
+                            <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                        </MapView.Marker>
 
-                                <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.latitude_to }} >
-                                    <Image source={require('../../../assets/images/driver_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                                </MapView.Marker>
+                        <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to }} >
+                            <Image source={require('../../../assets/images/driver_location.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                        </MapView.Marker>
 
-                            </MapView>
-                        ) : (<View />)
-                    }
+                    </MapView>
                     <View style={{ width: '100%', marginBottom: 40 }}>
 
                         <View style={{ flexDirection: 'row', width: '100%', borderBottomColor: '#ddd', borderBottomWidth: 1, paddingVertical: 5 }}>

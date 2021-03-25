@@ -77,7 +77,7 @@ function DepartmentsDetailes({ navigation, route }) {
                                 :
                                 categories ?
                                     categories.map((category, i) => (
-                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 1, borderRightWidth: 1, backgroundColor: active === i ? Colors.sky : Colors.bg, borderLeftColor: '#ddd', borderRadius: 25, marginHorizontal: 5, borderRightColor: '#ddd', }]} key={i} onPress={() => { fetchGooglePlaces(category.key); setactive(i) }}>
+                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 2, borderRightWidth: 2, borderWidth: 2, borderLeftColor: active === i ? Colors.sky : '#fff', borderRadius: 25, marginHorizontal: 5, borderColor: active === i ? Colors.sky : '#fff', }]} key={i} onPress={() => { fetchGooglePlaces(category.key); setactive(i) }}>
                                             <Image source={{ uri: category.img }} style={{ width: 25, height: 25, marginHorizontal: 5 }} />
                                             <Text style={styles.sText}>{category.name}</Text>
                                         </TouchableOpacity>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
         opacity: .6
     },
     card: {
-        shadowColor: Colors.bg,
+   //     shadowColor: Colors.bg,
         backgroundColor: Colors.bg,
         flexDirection: 'row',
         marginHorizontal: 20,

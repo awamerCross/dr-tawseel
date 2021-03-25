@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Image, TouchableOpacity, Platform, ScrollView, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, Platform, ScrollView, Dimensions, StyleSheet, Alert } from "react-native";
 import { Container, Content, Form, Input, Icon } from 'native-base'
 import i18n from "../locale/i18n";
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import axios from "axios";
-import MapView from 'react-native-maps';
+import MapView, { AnimatedRegion, Marker,  Animated } from 'react-native-maps';
 import Header from '../../common/Header';
 import BTN from "../../common/BTN";
 import Colors from '../../consts/Colors';
@@ -21,98 +21,137 @@ const isIOS = Platform.OS === 'ios';
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 function GetLocation({ navigation, route }) {
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
-    const lang = useSelector(state => state.lang.lang);
-    const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
+    const token                             = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
+    const lang                              = useSelector(state => state.lang.lang);
+    const MinPriceCoast                     = useSelector(state => state.BasketDetailes.DeliverCoast)
 
-    const [search, setSearch] = useState('');
-    const [searchResult, setSearchResult] = useState([]);
-    const [selectedLocation, setLocation] = useState(null);
-    const [searchHeight, setSearchHeight] = useState(70);
-    let pathName = route.params ? route.params.pathName : null;
-    let type = route.params ? route.params.type : null;
-    const { providerID } = route.params
-    const dispatch = useDispatch()
-    let mapRef = useRef(null);
-    const [initMap, setInitMap] = useState(true);
-    const [showAddress, setShowAddress] = useState(false);
-    const [city, setCity] = useState('');
-    const [mapRegion, setMapRegion] = useState({
-        latitude: null,
-        longitude: null,
+    const [search, setSearch]               = useState('');
+    const [searchResult, setSearchResult]   = useState([]);
+    const [currentLocation, setCurrentLocation]   = useState([]);
+
+    const [selectedLocation, setLocation]   = useState(null);
+    const [searchHeight, setSearchHeight]   = useState(70);
+    let pathName                            = route.params ? route.params.pathName : null;
+    let type                                = route.params ? route.params.type : null;
+    const { providerID }                    = route.params
+    const dispatch                          = useDispatch()
+    let mapRef                              = useRef(null);
+    const [initMap, setInitMap]             = useState(true);
+    const [showAddress, setShowAddress]     = useState(false);
+    const [city, setCity]                   = useState('');
+    const [mapRegion, setMapRegion]         = useState(new AnimatedRegion({
+        latitude: 24.774265,
+        longitude: 46.738586,
         latitudeDelta,
         longitudeDelta
-    });
+    }));
 
-    // const fetchData = async () => {
-    //     setMapRegion({})
-    //     let { status } = await Location.requestPermissionsAsync();
-    //     let userLocation = {};
-    //     if (status !== 'granted') {
-    //         alert('صلاحيات تحديد موقعك الحالي ملغاه');
-    //     } else {
-    //         const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+    function getInitialState() {
+        return {
+            region: new AnimatedRegion({
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta,
+            }),
+        };
+    }
 
-    //         if (route.params && route.params.latitude) {
-    //             userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
-    //         } else {
-    //             userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-    //         }
+    const fetchData = async () => {
 
-    //         setInitMap(false);
-    //         setMapRegion(userLocation);
-    //         isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
-    //     }
+        setMapRegion({})
+        let { status } = await Location.requestPermissionsAsync();
+        let userLocation = {};
+        if (status !== 'granted') {
+            alert('صلاحيات تحديد موقعك الحالي ملغاه');
+            setCurrentLocation({latitude:24.774265, longitude:46.738586});
+        } else {
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+            setCurrentLocation({ latitude, longitude })
 
-    //     let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-    //     getCity += userLocation.latitude + ',' + userLocation.longitude;
-    //     getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
-    //     try {
-    //         const { data } = await axios.get(getCity);
-    //         setCity(data.results[0].formatted_address)
-    //         setSearch(data.results[0].formatted_address)
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
-
-    console.log(mapRegion);
-    useEffect(() => {
-
-        (async () => {
-
-
-            let { status } = await Location.requestPermissionsAsync();
-            let userLocation = {};
-            if (status !== 'granted') {
-                alert('صلاحيات تحديد موقعك الحالي ملغاه');
+            if (route.params && route.params.latitude) {
+                userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
             } else {
-                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-
-                if (route.params && route.params.latitude) {
-                    userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
-                } else {
-                    userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-                }
-
-                setInitMap(false);
-                setMapRegion(userLocation);
-                // isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
+                userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
             }
 
-            let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-            getCity += userLocation.latitude + ',' + userLocation.longitude;
-            getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
-            try {
-                const { data } = await axios.get(getCity);
-                setCity(data.results[0].formatted_address)
-                setSearch(data.results[0].formatted_address)
-            } catch (e) {
-                console.log(e);
-            }
+            setInitMap(false);
+            setMapRegion(userLocation);
+            // isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
+        }
 
+        let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
+        getCity += userLocation.latitude + ',' + userLocation.longitude;
+        getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
+        try {
+            const { data } = await axios.get(getCity);
+            setCity(data.results[0].formatted_address)
+            setSearch(data.results[0].formatted_address)
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
-        })();
+    console.log('currentLocation ....', mapRegion, currentLocation.latitude);
+
+    useEffect(() => {
+        // alert(1)
+
+        fetchData()
+
+        // (async () => {
+        //     alert('2')
+        //     let { status } = await Location.requestPermissionsAsync();
+        //     if (status !== 'granted') {
+        //         alert('Permission to access location was denied');
+        //         //setUserLocation({latitude:'24.774265', longitude:'46.738586'});
+        //         setInitMap(false)
+        //     }
+        //
+        //     const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+        //     const location = { latitude, longitude };
+        //     alert('3')
+        //     console.log('new location', location)
+        //
+        //     // setUserLocation(location);
+        //     // setInitMap(false)
+        //
+        //
+        //     // let { status } = await Location.requestPermissionsAsync();
+        //     // let userLocation = {};
+        //     // if (status !== 'granted') {
+        //     //     alert('صلاحيات تحديد موقعك الحالي ملغاه');
+        //     // } else {
+        //     //     const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+        //     //
+        //     //     console.log('fuck user coords', latitude, longitude);
+        //     //
+        //     //     if (route.params && route.params.latitude) {
+        //     //         userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
+        //     //     } else {
+        //     //         userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
+        //     //     }
+        //     //
+        //     //     setInitMap(false);
+        //     //     setMapRegion(userLocation);
+        //     //     // isIOS ? mapRef.current.animateToRegion(userLocation, 1000) : false;
+        //     // }
+        //     //
+        //     // console.log('damn user location', userLocation);
+        //     //
+        //     // let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
+        //     // getCity += userLocation.latitude + ',' + userLocation.longitude;
+        //     // getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
+        //     // try {
+        //     //     const { data } = await axios.get(getCity);
+        //     //     setCity(data.results[0].formatted_address)
+        //     //     setSearch(data.results[0].formatted_address)
+        //     // } catch (e) {
+        //     //     console.log(e);
+        //     // }
+        //
+        //
+        // })();
 
 
     }, [route.params])
@@ -151,31 +190,22 @@ function GetLocation({ navigation, route }) {
             console.log(e);
         }
 
-
-
     };
 
 
-    const getCurrentLocation = async () => {
+    async function getCurrentLocation(){
+        getInitialState();
         let { status } = await Location.requestPermissionsAsync();
+
         if (status !== 'granted') {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
         } else {
             const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
             let userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-            setMapRegion({ latitude: userLocation.latitude, longitude: userLocation.longitude, latitudeDelta, longitudeDelta });
-            // setMapRegion(userLocation);
-            mapRef.current.animateToRegion(userLocation, 500)
-            let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-            getCity += userLocation.latitude + ',' + userLocation.longitude;
-            getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
-            try {
-                const { data } = await axios.get(getCity);
-                setCity(data.results[0].formatted_address)
-                setSearch(data.results[0].formatted_address)
-            } catch (e) {
-                console.log(e);
-            }
+
+            console.log('fucken user location', userLocation, mapRegion)
+            setMapRegion(userLocation);
+            mapRef.current ? mapRef.current.animateToRegion(userLocation, 300) : false;
 
         }
     }
@@ -229,6 +259,7 @@ function GetLocation({ navigation, route }) {
         setSearchHeight(60);
         setLocation(formattedItem);
 
+
         mapRef.current.animateToRegion(
             {
                 latitude: formattedItem.latitude,
@@ -254,14 +285,11 @@ function GetLocation({ navigation, route }) {
                     <View style={{ width: '80%', marginHorizontal: 10 }}>
                         <InputIcon
                             placeholder={i18n.t('selectLocation')}
-                            inputStyle={{ borderRadius: 5, height: 40, backgroundColor: '#eaeaea', borderColor: '#eaeaea', width: '100%', paddingHorizontal: 5, }}
-                            styleCont={{ height: 60, width: '100%' }}
-                            LabelStyle={{ backgroundColor: 0, color: Colors.IconBlack }}
+                            inputStyle={{ borderRadius: 5, height: 40, backgroundColor: '#eaeaea', borderColor: '#eaeaea', width: '100%', paddingHorizontal: 20, }}
+                            styleCont={{ height: 40, marginHorizontal: 5, width: '100%' }}
+                            LabelStyle={{  backgroundColor: 0, color: Colors.IconBlack }}
                             image={require('../../../assets/images/pingray.png')}
-                            editable={false}
-                            multiline={true}
-                            numberOfLines={10}
-
+                            editable={true}
                             value={search}
                             onChangeText={(search) => setSearch(search)}
                             onSubmitEditing={() => onSearch()}
@@ -269,18 +297,18 @@ function GetLocation({ navigation, route }) {
 
                         {
                             searchResult && searchResult.length > 0 ?
-                                <View style={{ alignSelf: 'center', width: '100%', maxHeight: 200, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, overflow: 'hidden', top: 52, left: 5, minHeight: 60, position: 'absolute' }}>
+                                <View style={{ alignSelf: 'center', width: '100%', maxHeight: 200, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, overflow: 'hidden',  top: 52, left: 5, minHeight: 60, position: 'absolute' }}>
                                     <TouchableOpacity style={{ position: 'absolute', zIndex: 3, right: -2, top: -2 }} onPress={() => setSearchResult([])}>
                                         <Icon type={'AntDesign'} name={'closecircle'} style={{ color: Colors.sky }} />
                                     </TouchableOpacity>
 
-                                    <View style={{ alignSelf: 'center', width: '100%', height: 220, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 20, backgroundColor: '#fff', borderRadius: 10 }}>
+                                    <View style={{ alignSelf: 'center', width: '100%', height: 220, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, paddingBottom: 20, backgroundColor: '#fff', borderRadius: 10}}>
                                         <ScrollView>
                                             {
                                                 searchResult.map((item, i) => (
                                                     <TouchableOpacity onPress={() => setSelectedLocation(item)} style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', marginHorizontal: 10, width: '95%', height: 50, alignItems: 'center', alignSelf: 'center', overflow: 'hidden', zIndex: 9999 }}>
-                                                        <Icon type={'Entypo'} name={'location'} style={{ marginHorizontal: 10, color: '#000', fontSize: 16 }} />
-                                                        <Text style={[styles.sText, { alignSelf: 'center', textAlign: I18nManager.isRTL ? 'right' : 'left', }]}>{(item.formatted_address).substr(0, 40) + '...'}</Text>
+                                                        <Icon type={'Entypo'} name={'location'} style={{ marginHorizontal: 10, color: '#000', fontSize: 16 }}/>
+                                                        <Text style={[ styles.sText, { alignSelf: 'center', textAlign: I18nManager.isRTL ? 'right' : 'left',  } ]}>{ (item.formatted_address).substr(0, 40) + '...' }</Text>
                                                     </TouchableOpacity>
                                                 ))
                                             }
@@ -291,30 +319,35 @@ function GetLocation({ navigation, route }) {
                         }
                     </View>
 
-                    <TouchableOpacity onPress={getCurrentLocation} style={{ backgroundColor: Colors.sky, padding: 10, marginHorizontal: 5, borderRadius: 5, height: 40 }}>
+                    <TouchableOpacity onPress={() => getCurrentLocation()} style={{ backgroundColor: Colors.sky, padding: 10, marginHorizontal: 5, borderRadius: 5, height: 40 }}>
                         <Icon type='Ionicons' name='locate' style={{ color: '#fff', fontSize: 22 }} />
                     </TouchableOpacity>
                 </View>
 
 
                 <View style={{ width: '100%', height: '100%', flex: 1, zIndex: -1 }}>
-                    {
-                        mapRegion.latitude != null ? (
-                            <>
-                                <MapView
-                                    ref={mapRef}
-                                    initialRegion={mapRegion}
-                                    onRegionChangeComplete={(e) => { _handleMapRegionChange(e) }}
-                                    style={{ width: '100%', height: '100%', flex: 1, }}
+                    <MapView
+                        ref={mapRef}
+                        initialRegion={mapRegion}
+                        onRegionChangeComplete={(e) => { _handleMapRegionChange(e) }}
+                        style={{ width: '100%', height: '100%', flex: 1, }}
 
-                                />
+                    >
+                        {
+                            currentLocation.latitude ?
+                                <MapView.Marker
+                                    title={i18n.t('currentLocation')}
+                                    coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}
+                                >
+                                    <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 45, height: 45 }}/>
 
-                                <View style={{ left: '50%', marginLeft: -24, marginTop: -48, position: 'absolute', top: '50%', zIndex: 9999999, width: 25, height: 25 }}>
-                                    <Image source={require('../../../assets/images/circleblue.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                                </View>
-                            </>
-                        ) : (<View />)
-                    }
+                                </MapView.Marker> : null
+                        }
+                    </MapView>
+
+                    <View style={{ left: '50%', marginLeft: -24, marginTop: -48, position: 'absolute', top: '50%', zIndex: 9999999, width: 25, height: 25 }}>
+                        <Image source={require('../../../assets/images/circleblue.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                    </View>
                 </View>
 
 

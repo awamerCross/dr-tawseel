@@ -47,41 +47,27 @@ function YourOrder({ navigation, route }) {
         return imgBlock
     }
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    };
 
     const _pickImage = async (i) => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
+            aspect: [4, 3],
+            quality: .5,
+        });
 
-                base64: true,
-                aspect: [4, 3],
-                quality: .5,
-            });
-
-            if (!result.cancelled) {
-                let tempPhotos = photos;
-                if (photos[i]) {
-                    tempPhotos[i] = { id: i, image: result.uri };
-                    base64[i] = result.base64;
-                } else {
-                    tempPhotos.push({ id: i, image: result.uri });
-                    base64.push(result.base64);
-                }
-
-                setPhotos([...tempPhotos]);
+        if (!result.cancelled) {
+            let tempPhotos = photos;
+            if (photos[i]) {
+                tempPhotos[i] = { id: i, image: result.uri };
+                base64[i] = result.base64;
+            } else {
+                tempPhotos.push({ id: i, image: result.uri });
+                base64.push(result.base64);
             }
 
-        }
-        else {
-            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
-
+            setPhotos([...tempPhotos]);
         }
     }
 

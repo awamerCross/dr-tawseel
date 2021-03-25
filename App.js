@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, I18nManager, AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading'
 import { Root } from 'native-base';
 import MainRoot from './src/routes/Auth';
 import { Provider } from 'react-redux';
