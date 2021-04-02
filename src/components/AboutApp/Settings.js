@@ -14,9 +14,9 @@ const { height } = Dimensions.get('window')
 
 function Settings({ navigation }) {
 
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
-    const lang = useSelector(state => state.lang.lang);
-    const appInfo = useSelector(state => state.appInfo.appInfo);
+    const token     = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
+    const lang      = useSelector(state => state.lang.lang);
+    const appInfo   = useSelector(state => state.appInfo.appInfo);
 
     const dispatch = useDispatch()
 

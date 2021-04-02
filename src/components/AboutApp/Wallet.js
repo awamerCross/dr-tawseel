@@ -16,9 +16,10 @@ const { height } = Dimensions.get('window')
 function Wallet({ navigation }) {
 
     const [spinner, setSpinner] = useState(true);
-    const WalletTotal = useSelector(state => state.wallet.wallet);
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
-    const lang = useSelector(state => state.lang.lang);
+    const WalletTotal           = useSelector(state => state.wallet.wallet);
+    const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
+    const lang                  = useSelector(state => state.lang.lang);
+    const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
 
 
     const dispatch = useDispatch()
@@ -43,7 +44,7 @@ function Wallet({ navigation }) {
                     <View style={styles.card}>
                         {
                             !WalletTotal ? null :
-                                <Text style={styles.TPrice}>{WalletTotal.amount} {i18n.t('RS')}</Text>
+                                <Text style={[styles.TPrice, { color: WalletTotal.amount == 0 ? Colors.sky : WalletTotal.amount < 0 ? 'red' : 'green' }]}>{WalletTotal.amount} {i18n.t('RS')}</Text>
 
                         }
 
@@ -52,7 +53,12 @@ function Wallet({ navigation }) {
                 </View>
 
                 <BTN title={i18n.t('Recharge')} onPress={() => navigation.navigate('Rescharge')} ContainerStyle={[styles.Btn, { marginTop: width * .15, borderRadius: 5 }]} TextStyle={{ fontSize: 14, }} />
-                <BTN title={i18n.t('withdraw')} onPress={() => navigation.navigate('ReCallBalance')} ContainerStyle={[styles.Btn, { marginTop: 5, backgroundColor: Colors.fontNormal, borderRadius: 5 }]} TextStyle={{ fontSize: 14, }} />
+
+                {
+                    user && user.user_type !== 2 ?
+                        <BTN title={i18n.t('withdraw')} onPress={() => navigation.navigate('ReCallBalance')} ContainerStyle={[styles.Btn, { marginTop: 5, backgroundColor: Colors.fontNormal, borderRadius: 5 }]} TextStyle={{ fontSize: 14, }} />
+                        : null
+                }
 
             </ScrollView>
         </Container>

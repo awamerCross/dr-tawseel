@@ -16,12 +16,12 @@ const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 
 function OrderYourStore({ navigation, route }) {
-    const { placeId, mapRegion } = route.params;
-    const lang = useSelector(state => state.lang.lang);
-    const place = useSelector(state => state.categories.placeDetails);
-    const dispatch = useDispatch();
-    const [spinner, setSpinner] = useState(true);
-    const isFocused = useIsFocused();
+    const { placeId, mapRegion }    = route.params;
+    const lang                      = useSelector(state => state.lang.lang);
+    const place                     = useSelector(state => state.categories.placeDetails);
+    const dispatch                  = useDispatch();
+    const [spinner, setSpinner]     = useState(true);
+    const isFocused                 = useIsFocused();
 
     useEffect(() => {
         if (isFocused) {

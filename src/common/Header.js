@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: Colors.bg,
-        marginTop: isIOS ? 25 : 10
+        // marginTop: isIOS ? 25 : 10
         // marginTop: isIOS ? 20 : 0
     },
     BigImg: {

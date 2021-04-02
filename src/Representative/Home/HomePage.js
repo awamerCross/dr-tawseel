@@ -21,23 +21,13 @@ const longitudeDelta = 0.0421;
 function HomePage({ navigation }) {
     const [refreshing, setRefreshing] = React.useState(false);
 
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-        FetchLocations().then(() => dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)))
-
-            .then(() => setSpinner(false), setRefreshing(false))
-
-    }, []);
-
-
-    const [spinner, setSpinner] = useState(true);
-    const lang = useSelector(state => state.lang.lang);
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const myOrders = useSelector(state => state.delegate.orders);
-    const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
-    let loadingAnimated = []
-
-    const dispatch = useDispatch();
+    const [spinner, setSpinner]     = useState(true);
+    const lang                      = useSelector(state => state.lang.lang);
+    const token                     = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const myOrders                  = useSelector(state => state.delegate.orders);
+    const user                      = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
+    let loadingAnimated             = []
+    const dispatch                  = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
@@ -47,6 +37,13 @@ function HomePage({ navigation }) {
         longitudeDelta
     });
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setSpinner(true)
+        FetchLocations().then(() => setSpinner(false), setRefreshing(false))
+
+    }, []);
+
     const HandleChangeStatue = () => {
         setIsEnabled(!isEnabled)
         dispatch(GetDeligate(lang, token))
@@ -54,23 +51,19 @@ function HomePage({ navigation }) {
 
     const FetchLocations = async () => {
 
-        let { status } = await Location.requestPermissionsAsync();;
+        let { status } = await Location.requestPermissionsAsync();
         if (status === 'granted') {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
             const userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
             setMapRegion(userLocation)
             dispatch(getDelegateOrders(lang, token, 'READY', latitude, longitude))
         } else {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
-
         }
-
-
-
-
-
     }
+
     console.log(mapRegion);
+
     useEffect(() => {
 
         setSpinner(true)
@@ -85,10 +78,6 @@ function HomePage({ navigation }) {
 
             }
         });
-
-
-
-
 
 
 
@@ -143,7 +132,7 @@ function HomePage({ navigation }) {
                         :
                         myOrders &&
                         myOrders.map((order, i) => (
-                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id })}
+                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })}
                                               style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
                                 <View style={styles.card}>
                                     <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />

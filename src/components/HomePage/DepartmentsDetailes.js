@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text } from 'react-native'
+import {ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, AsyncStorage} from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
@@ -7,58 +7,120 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
 import { getGooglePlaces, getPlacesType } from '../../actions';
+import * as Location from 'expo-location';
 import Container from '../../common/Container';
 import LoadingBtn from '../../common/Loadbtn';
 import { _renderRows } from '../../common/LoaderImage';
+import axios from "axios";
+import CONST from "../../consts";
+import {ToasterNative} from "../../common/ToasterNatrive";
 
 const { width, height } = Dimensions.get('window')
 
 function DepartmentsDetailes({ navigation, route }) {
-    const { mapRegion, key } = route.params;
-    const lang = useSelector(state => state.lang.lang);
-    const categories = useSelector(state => state.categories.placesTypes);
-    let allCategories = categories;
-    const places = useSelector(state => state.categories.googlePlaces);
-    const dispatch = useDispatch();
-    const [spinner, setSpinner] = useState(true);
-    const [loading, setloading] = useState(true);
-    const [StoreKey, setStoreKey] = useState('supermarket')
-    const [active, setactive] = useState(0);
-    let loadingAnimated = [];
+    const {  key }                              = route.params;
+    const lang                                  = useSelector(state => state.lang.lang);
+    const categories                            = useSelector(state => state.categories.placesTypes);
+    let allCategories                           = categories;
+    let places                                  = [];
+    const dispatch                              = useDispatch();
+    const [spinner, setSpinner]                 = useState(true);
+    const [loading, setloading]                 = useState(true);
+    const [StoreKey, setStoreKey]               = useState('supermarket')
+    const [active, setactive]                   = useState(0);
+    const [loadMore, setLoadMore]               = useState(false);
+    const [search, setSearch]                   = useState(null);
+    const [nextPageToken, setNextPageToken]     = useState( null );
+    let loadingAnimated                         = [];
+    let [allPlaces, setAllPlaces]               = useState([]);
+    const [mapRegion, setMapRegion]             = useState({
+        latitude: 24.7135517,
+        longitude: 46.6752957,
+    });
+
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        const unsubscribe = navigation.addListener('focus', async () => {
             setSpinner(true)
             setloading(true)
+            setNextPageToken(null)
             setactive(0)
+            setAllPlaces([])
             setStoreKey('supermarket')
-            dispatch(getPlacesType(lang)).then(() => {
-                if (allCategories && allCategories.length > 0)
-                    fetchGooglePlaces(allCategories[0].key)
-                else
-                    fetchGooglePlaces(null)
-            }).then(() => setSpinner(false)).then(() => setloading(false))
+
+            let { status } = await Location.requestPermissionsAsync();
+            let userLocation = {};
+            if (status !== 'granted') {
+                alert('صلاحيات تحديد موقعك الحالي ملغاه');
+            } else {
+                const {coords: {latitude, longitude}} = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Balanced});
+                setMapRegion({ latitude, longitude  })
+                dispatch(getPlacesType(lang)).then(() => setSpinner(false)).then(() => setloading(false))
+                fetchGooglePlaces(null, latitude, longitude, null)
+            }
         })
         return unsubscribe
     }, [navigation, route]);
 
-    function fetchGooglePlaces(key) {
-        setStoreKey(key)
-        setloading(true)
-        dispatch(getGooglePlaces(lang, key, null, mapRegion.latitude, mapRegion.longitude)).then(() => setloading(false))
+    function fetchGooglePlaces(key, latitude, longitude, nextPage ) {
+        console.log('last locations__|||__', allPlaces, nextPageToken)
+
+
+        if (nextPageToken !== 'last_page'){
+            if (StoreKey != key){
+                setAllPlaces([])
+                setNextPageToken(null)
+            }
+
+            setStoreKey(key)
+            setloading(true)
+            axios({
+                url: CONST.url + 'google/places',
+                method: 'POST',
+                data: { type: key, keyword: search, latitude, longitude, next_page_token: nextPage },
+                params: { lang }
+            }).then(response => {
+                setNextPageToken(response.data.extra.next_page_token)
+                setAllPlaces(nextPage ? [ ...allPlaces, ...response.data.data] : response.data.data)
+                setloading(false)
+                setSearch(null)
+            }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }
     }
 
-    function placeSearch(search) {
+    function placeSearch() {
         setloading(true)
-        dispatch(getGooglePlaces(lang, StoreKey, search, mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false)).then(() => setloading(false))
+        setAllPlaces([]);
+        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, null )
     }
-    console.log("StoreKey" + StoreKey);
+
+    function fetchMoreListItems(){
+        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, nextPageToken)
+    }
+
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
+    };
+
+    function changePlaceType(i, category){
+        setNextPageToken(null);
+        // alert(category.key)
+        setAllPlaces([])
+        fetchGooglePlaces(category.key, mapRegion.latitude, mapRegion.longitude, null );
+        setactive(i);
+    }
+
+    console.log("StoreKey ____++", allPlaces);
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.bg, }}>
             <Header navigation={navigation} />
 
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <ScrollView onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent) && !loadMore) {
+                    fetchMoreListItems();
+                }
+            }} style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
                 <InputIcon
                     placeholder={i18n.t('search')}
@@ -66,7 +128,9 @@ function DepartmentsDetailes({ navigation, route }) {
                     styleCont={{ height: 45 }}
                     image={require('../../../assets/images/search.png')}
                     LabelStyle={{ backgroundColor: 'transparent' }}
-                    onChangeText={placeSearch}
+                    onChangeText={(search) => setSearch(search)}
+                    value={search}
+                    onSubmitEditing={() => placeSearch()}
                 />
 
                 <View style={{ height: 45, backgroundColor: '#fff' }}>
@@ -77,7 +141,7 @@ function DepartmentsDetailes({ navigation, route }) {
                                 :
                                 categories ?
                                     categories.map((category, i) => (
-                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 2, borderRightWidth: 2, borderWidth: 2, borderLeftColor: active === i ? Colors.sky : '#fff', borderRadius: 25, marginHorizontal: 5, borderColor: active === i ? Colors.sky : '#fff', }]} key={i} onPress={() => { fetchGooglePlaces(category.key); setactive(i) }}>
+                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 2, borderRightWidth: 2, borderWidth: 2, borderLeftColor: active === i ? Colors.sky : '#fff', borderRadius: 25, marginHorizontal: 5, borderColor: active === i ? Colors.sky : '#fff', }]} key={i} onPress={() => changePlaceType(i, category)}>
                                             <Image source={{ uri: category.img }} style={{ width: 25, height: 25, marginHorizontal: 5 }} />
                                             <Text style={styles.sText}>{category.name}</Text>
                                         </TouchableOpacity>
@@ -90,15 +154,12 @@ function DepartmentsDetailes({ navigation, route }) {
                     loading ?
                         _renderRows(loadingAnimated, 10, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
                         :
-                        places &&
-
-                        places.map((place, i) => (
-
+                        allPlaces.map((place, i) => (
                             <TouchableOpacity onPress={() => navigation.navigate('OrderFromYourStore', { placeId: place.place_id, mapRegion })} key={i}>
                                 <View style={styles.card}>
                                     <Image source={{ uri: place.icon }} style={styles.ImgCard} />
                                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10 }}>
-                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{place.name.length > 30 ? (place.name).substr(0, 30) + '...' : place.name}</Text>
+                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{place.name.length > 30 ? (place.name).substr(0, 30) + '...' : place.name} </Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
                                             <Text style={styles.yText}> {place.distance}</Text>
@@ -106,7 +167,6 @@ function DepartmentsDetailes({ navigation, route }) {
                                     </View>
                                 </View>
                             </TouchableOpacity>
-
                         ))
                 }
 

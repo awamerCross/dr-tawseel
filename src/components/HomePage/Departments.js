@@ -22,11 +22,11 @@ function Department({ navigation, route }) {
     const [name, setname] = useState('')
     const [label, setLabel] = useState('')
 
-    const ProviderDetaile = useSelector(state => state.categories.Detailes ? state.categories.Detailes : []);
-    const lang = useSelector(state => state.lang.lang);
+    const ProviderDetaile       = useSelector(state => state.categories.Detailes ? state.categories.Detailes : []);
+    const lang                  = useSelector(state => state.lang.lang);
     const [spinner, setSpinner] = useState(true);
-    const dispatch = useDispatch();
-    let loadingAnimated = []
+    const dispatch              = useDispatch();
+    let loadingAnimated         = []
 
 
     useEffect(() => {

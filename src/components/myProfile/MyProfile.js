@@ -16,6 +16,7 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useDispatch, useSelector } from 'react-redux';
 import { EditPasswordSettingsProfile, GetProfileAction, UpdateProfileAction } from '../../actions/ProfileAction';
+import { LogoutUser } from '../../actions';
 import Container from '../../common/Container';
 import Modal from "react-native-modal";
 import { ToasterNative } from '../../common/ToasterNatrive';
@@ -102,30 +103,18 @@ function MyProfile({ navigation }) {
 
     const _pickImage = async () => {
 
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+            base64: true,
+            aspect: [4, 3],
+            quality: .5,
+        });
 
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-
-                base64: true,
-                aspect: [4, 3],
-                quality: .5,
-            });
-
-            if (!result.cancelled) {
-                setUserImage(result.uri);
-                setBase64(result.base64);
-            }
-
+        if (!result.cancelled) {
+            setUserImage(result.uri);
+            setBase64(result.base64);
         }
-        else {
-            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
-
-        }
-
-
 
     };
 
@@ -136,7 +125,12 @@ function MyProfile({ navigation }) {
         if (!isVal) {
 
             setloading(true)
-            dispatch(UpdateProfileAction(token, name, phone, email, base64, lang, navigation)).then(() => setloading(false))
+            if (phone == Profile.phone)
+                dispatch(UpdateProfileAction(token, name, phone, email, base64, lang, navigation)).then(() => setloading(false))
+            else {
+                navigation.navigate('activationCode', { token })
+                dispatch(LogoutUser(token))
+            }
         }
 
         else {
@@ -145,10 +139,6 @@ function MyProfile({ navigation }) {
         }
 
     }
-
-
-
-
 
 
     return (
@@ -184,6 +174,7 @@ function MyProfile({ navigation }) {
                                 inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky, paddingTop: Platform.OS == 'ios' ? 25 : 0 }}
 
                             />
+
                             <InputIcon
                                 label={i18n.t('phone')}
                                 value={phone}
@@ -191,8 +182,8 @@ function MyProfile({ navigation }) {
                                 inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky, paddingTop: Platform.OS == 'ios' ? 25 : 0 }}
                                 styleCont={{ marginTop: 20, }}
                                 image={require('../../../assets/images/edit.png')}
-
                             />
+
                             <InputIcon
                                 label={i18n.t('email')}
                                 placeholder={i18n.t('enterEmail')}
@@ -204,6 +195,7 @@ function MyProfile({ navigation }) {
                                 image={require('../../../assets/images/edit.png')}
 
                             />
+
                             <BTN title={i18n.t('changePass')} onPress={() => { setShowModal(true); }} ContainerStyle={[styles.Btn, { borderRadius: 20 }]} TextStyle={{ fontSize: 13 }} />
                             <LoadingBtn loading={loading}>
                                 <BTN title={i18n.t('confirm')} onPress={UpdateProfile} ContainerStyle={[styles.Btn, { marginTop: 10, borderRadius: 20, marginBottom: 10 }]} TextStyle={{ fontSize: 13 }} />

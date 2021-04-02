@@ -42,8 +42,11 @@ function MyOrders({ navigation }) {
         return unsubscribe
     }, [navigation]);
 
-    const [routes] = useState([
-        { key: 'first', title: user && user.user_type == 2 ? i18n.t('waiting') : i18n.t('New') },
+    const [routes] = useState(user && user.user_type == 2 ? [
+        { key: 'first', title:  i18n.t('waiting') },
+        { key: 'second', title: i18n.t('underimplement') },
+        { key: 'third', title: i18n.t('CompletedOrder') },
+    ] : [
         { key: 'second', title: i18n.t('underimplement') },
         { key: 'third', title: i18n.t('CompletedOrder') },
     ]);
@@ -58,7 +61,7 @@ function MyOrders({ navigation }) {
         if (index === 0)
             newStatus = user && user.user_type == 2 ? 'WAITING' : 'RUNNING';
         else if (index === 1)
-            newStatus = user && user.user_type == 2 ? 'RUNNING' : 'DELIVERED';
+            newStatus = user && user.user_type == 2 ? 'RUNNING' : 'FINISHED';
         else if (index === 2)
             newStatus = 'FINISHED';
         setStatus(newStatus)
@@ -118,8 +121,11 @@ function MyOrders({ navigation }) {
         )
     }
 
-    const renderScene = SceneMap({
+    const renderScene =  user && user.user_type == 2 ? SceneMap({
         first: renderOrders,
+        second: renderOrders,
+        third: renderOrders,
+    }) : SceneMap({
         second: renderOrders,
         third: renderOrders,
     });
@@ -202,7 +208,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: Colors.bg,
-        marginTop: isIOS ? 20 : 0
         // marginTop: isIOS ? 20 : 0
     },
     BigImg: {

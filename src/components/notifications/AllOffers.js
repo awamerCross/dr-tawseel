@@ -16,8 +16,9 @@ import BTN from '../../common/BTN';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllOffers, acceptOffer } from '../../actions';
+import {getAllOffers, acceptOffer, logout} from '../../actions';
 import StarRating from "react-native-star-rating";
+import * as Notifications from "expo-notifications";
 
 
 
@@ -25,12 +26,12 @@ const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 function AllOffers({ navigation, route }) {
 
-    const id = route.params.id;
-    const lang = useSelector(state => state.lang.lang);
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const allOffers = useSelector(state => state.allOffers.allOffers);
-    const dispatch = useDispatch();
-    const [spinner, setSpinner] = useState(false);
+    const id                            = route.params.id;
+    const lang                          = useSelector(state => state.lang.lang);
+    const token                         = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const allOffers                     = useSelector(state => state.allOffers.allOffers);
+    const dispatch                      = useDispatch();
+    const [spinner, setSpinner]         = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
 
@@ -44,7 +45,25 @@ function AllOffers({ navigation, route }) {
             fetchData()
         })
         return unsubscribe
-    }, [navigation]);
+    }, [navigation, route.params?.id]);
+
+    useEffect(() => {
+        Notifications.addNotificationReceivedListener(handleNotification);
+    }, []);
+
+    function handleNotification(notification) {
+        if (notification && notification.origin !== 'received') {
+            let type            = notification.request.content.data.type;
+
+            console.log('damn type___', type)
+
+            if (type === 'order_offer') {
+                fetchData()
+            }
+        }
+
+    }
+
 
     function renderConfirm(offerID) {
         if (isSubmitted) {

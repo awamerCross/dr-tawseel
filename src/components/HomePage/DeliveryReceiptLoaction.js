@@ -21,13 +21,13 @@ const longitudeDelta = 0.0421;
 
 function DeliveryReceiptLoaction({ navigation, route }) {
 
-    const { place, desc, base64 } = route.params;
-    const [isSpin, setIsSpin] = useState(false);
-    const [deliverCityName, setDeliverCityName] = useState('');
-    const [activeDeliverAddress, setActiveDeliverAddress] = useState(false);
-    const [deliverAddressName, setDeliverAddressName] = useState('');
-    const [initMap, setInitMap] = useState(true);
-    const [deliverMapRegion, setDeliverMapRegion] = useState({
+    const { place, desc, base64 }                           = route.params;
+    const [isSpin, setIsSpin]                               = useState(false);
+    const [deliverCityName, setDeliverCityName]             = useState('');
+    const [activeDeliverAddress, setActiveDeliverAddress]   = useState(false);
+    const [deliverAddressName, setDeliverAddressName]       = useState('');
+    const [initMap, setInitMap]                             = useState(true);
+    const [deliverMapRegion, setDeliverMapRegion]           = useState({
         latitude: null,
         longitude: null,
         latitudeDelta,
@@ -35,7 +35,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
     });
 
     const [selectedRadion, setSelectedRadio] = useState(0);
-    const [paymentType, setPaymentType] = useState(i18n.t('recievePay'));
+    const [paymentType, setPaymentType]      = useState('cash');
     const [data, setData] = useState([
         { id: 1, title: i18n.t('recievePay'), key: 'cash' },
         { id: 2, title: i18n.t('byWallet'), key: 'wallet' },
@@ -51,16 +51,14 @@ function DeliveryReceiptLoaction({ navigation, route }) {
         longitudeDelta: 0.005
     });
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [orderTime, setOrderTime] = useState(i18n.t('_2h'));
-    const [isMapReady, SetIsmapReady] = useState(false)
-    const dispatch = useDispatch();
-    const lang = useSelector(state => state.lang.lang);
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const [Cuboun, setCuboun] = useState('')
+    const [modalVisible, setModalVisible]   = useState(false);
+    const [orderTime, setOrderTime]         = useState(i18n.t('_1h'));
+    const [isMapReady, SetIsmapReady]       = useState(false)
+    const dispatch                          = useDispatch();
+    const lang                              = useSelector(state => state.lang.lang);
+    const token                             = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const [Cuboun, setCuboun]               = useState('')
 
-
-    console.log('damn delivering order');
 
     const onMapLayout = () => {
         SetIsmapReady(true)
@@ -90,7 +88,9 @@ function DeliveryReceiptLoaction({ navigation, route }) {
 
     function setSpecialOrder() {
         setIsSpin(true)
-        dispatch(specialOrder(lang, token, place.latitude, place.longitude, place.formatted_address, deliverMapRegion.latitude, deliverMapRegion.longitude, deliverCityName, orderTime, desc, base64, paymentType, place.icon, place.phone, place.rating, place.name, Cuboun, navigation)).then(() => setIsSpin(false))
+        dispatch(specialOrder(lang, token, place.latitude, place.longitude, place.formatted_address, deliverMapRegion.latitude, deliverMapRegion.longitude, deliverCityName, orderTime, desc, base64, paymentType, place.icon, place.phone, place.rating, place.name, Cuboun, navigation)).then(() =>{
+            setIsSpin(false)
+        })
     }
 
     function renderBtn() {
@@ -111,7 +111,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
         }
 
         return (
-            <BTN title={i18n.t('sentOrder')} onPress={() => setSpecialOrder()} ContainerStyle={{ marginVertical: 10, borderRadius: 20, }} />
+            <BTN title={i18n.t('sentOrder')} onPress={() => setSpecialOrder()} ContainerStyle={{ marginVertical: 10, borderRadius: 20, height: 50 }} />
         )
     }
 
@@ -309,28 +309,36 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                     <View style={{ backgroundColor: '#FFA903', width: '100%', height: height * .08, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={[styles.sText, { color: Colors.bg }]}>{i18n.t('orderTime')}</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', padding: 17 }}>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_1h'))} style={{ backgroundColor: orderTime === i18n.t('_1h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_1h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_1h')}</Text>
+                    <View style={{ flexDirection: 'row' , justifyContent:'space-between' , flexWrap:'wrap' , padding:17}}>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_1h'))} style={{ backgroundColor: orderTime === i18n.t('_1h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center' , alignItems:'center' , marginBottom:15 }}>
+                            <Text style={[styles.sText, { color: orderTime ===i18n.t('_1h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_1h') }</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_2h'))} style={{ backgroundColor: orderTime === i18n.t('_2h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_2h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_2h')}</Text>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_2h'))} style={{ backgroundColor: orderTime === i18n.t('_2h') ?  Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center' , alignItems:'center' , marginBottom:15 }}>
+                            <Text style={[styles.sText, { color: orderTime ===i18n.t('_2h') ? '#ffffff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_2h') }</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_3h'))} style={{ backgroundColor: orderTime === i18n.t('_3h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_3h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_3h')}</Text>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_3h'))} style={{ backgroundColor: orderTime === i18n.t('_3h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center' , alignItems:'center' , marginBottom:15 }}>
+                            <Text style={[styles.sText, { color: orderTime ===i18n.t('_3h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_3h') }</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_4h'))} style={{ backgroundColor: orderTime === i18n.t('_4h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_4h') ? '#ffffff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_4h')}</Text>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_4h'))} style={{ backgroundColor: orderTime === i18n.t('_4h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center' , alignItems:'center' , marginBottom:15 }}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_4h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_4h') }</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_5h'))} style={{ backgroundColor: orderTime === i18n.t('_5h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_5h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_5h')}</Text>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_5h'))} style={{ backgroundColor: orderTime === i18n.t('_5h') ? Colors.sky : '#dcdada94',width: width * .25, height: 40, justifyContent: 'center'  , alignItems:'center' , marginBottom:15}}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_5h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_5h') }</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_6h'))} style={{ backgroundColor: orderTime === i18n.t('_6h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_6h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_6h')}</Text>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_6h'))} style={{ backgroundColor: orderTime === i18n.t('_6h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center'  , alignItems:'center' , marginBottom:15}}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_6h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_6h') }</Text>
                         </TouchableOpacity>
-
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_7h'))} style={{ backgroundColor: orderTime === i18n.t('_7h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center'  , alignItems:'center' , marginBottom:15}}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_7h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_7h') }</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_8h'))} style={{ backgroundColor: orderTime === i18n.t('_8h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center'  , alignItems:'center' , marginBottom:15}}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_8h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_8h') }</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_9h'))} style={{ backgroundColor: orderTime === i18n.t('_9h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center'  , alignItems:'center' , marginBottom:15}}>
+                            <Text style={[styles.sText, { color: orderTime === i18n.t('_9h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{ i18n.t('_9h') }</Text>
+                        </TouchableOpacity>
                     </View>
-                    <BTN title={i18n.t('done')} onPress={() => { setModalVisible(false); }} ContainerStyle={{ marginBottom: 20, borderRadius: 20, }} TextStyle={{ fontSize: 13 }} />
+                    <BTN title={i18n.t('done')} onPress={() => { setModalVisible(false); }} ContainerStyle={{ marginBottom: 20, borderRadius: 20, }} TextStyle={{ height: 30 }} />
 
                 </View>
             </Modal>
@@ -460,7 +468,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 5,
         width: width * .9,
-        height: 310,
+        height: 330,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

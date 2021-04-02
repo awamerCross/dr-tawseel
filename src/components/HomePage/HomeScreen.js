@@ -17,7 +17,6 @@ import { useIsFocused } from '@react-navigation/native';
 import { ToasterNative } from '../../common/ToasterNatrive';
 
 
-
 const { width } = Dimensions.get('window');
 const { height } = Dimensions.get('window');
 
@@ -25,10 +24,10 @@ const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
 function HomeScreen({ navigation }) {
-    const lang = useSelector(state => state.lang.lang);
-    const categories = useSelector(state => state.categories.categories);
-    const providers = useSelector(state => state.providers.providers);
-    const banners = useSelector(state => state.banners.banners);
+    const lang          = useSelector(state => state.lang.lang);
+    const categories    = useSelector(state => state.categories.categories);
+    const providers     = useSelector(state => state.providers.providers);
+    const banners       = useSelector(state => state.banners.banners);
 
     const dispatch = useDispatch();
     let loadingAnimated = [];
@@ -45,6 +44,7 @@ function HomeScreen({ navigation }) {
         latitudeDelta,
         longitudeDelta
     });
+
     const [city, setCity] = useState('');
     const [loadingImage, setloadingImage] = useState(false);
 
@@ -63,6 +63,7 @@ function HomeScreen({ navigation }) {
             if (gpsServiceStatus) {
                 console.log("sss" + gpsServiceStatus);
                 const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
+
                 setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
 
             } else {
@@ -97,10 +98,6 @@ function HomeScreen({ navigation }) {
 
 
     }
-
-
-
-
 
 
     useEffect(() => {
@@ -141,7 +138,7 @@ function HomeScreen({ navigation }) {
             else if (type === 'wallet')
                 navigation.navigate('Wallet')
             else if (type === 'order' && OrderId) {
-                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id })
+                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }
 
         });

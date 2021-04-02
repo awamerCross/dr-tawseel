@@ -1,4 +1,4 @@
-const INITIAL_STATE = { categories: [], loader: false, placeDetails: [], placesTypes: [], googlePlaces: [], Detailes: [], Resture: [], product: [], ProdDetailes: {}, cart: [], BasketStore: [] };
+const INITIAL_STATE = { categories: [], loader: false, placeDetails: [], placesTypes: [], googlePlaces: [], nextPage: null, Detailes: [], Resture: [], product: [], ProdDetailes: {}, cart: [], BasketStore: [] };
 
 export default (state = INITIAL_STATE, action) => {
 	switch (action.type) {
@@ -6,8 +6,10 @@ export default (state = INITIAL_STATE, action) => {
 			return { ...state, categories: action.payload.data, loader: action.payload.success };
 		case 'placesType':
 			return { ...state, placesTypes: action.payload.data, loader: action.payload.success };
-		case 'getGooglePlaces':
-			return { ...state, googlePlaces: action.payload.data };
+		case 'getGooglePlaces':{
+
+			return { ...state, googlePlaces: action.payload.data, nextPage: action.payload.extra };
+		}
 		case 'placeDetails': {
 			console.log('action.payload.data', action.data)
 			return { ...state, placeDetails: action.data.data };

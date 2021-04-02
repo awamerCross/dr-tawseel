@@ -13,7 +13,7 @@ export const specialOrder = (lang, token, latitude, longitude, address, latitude
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             if (response.data.success)
-                navigation.navigate('SendYourOrderSuccess', { orderId: response.data.data.id })
+                navigation.navigate('AllOffers', { id: response.data.data.id });
 
             Toast.show({
                 text: response.data.message,
@@ -45,13 +45,13 @@ export const getMyOrders = (lang, token, status, delegate) => {
 };
 
 
-export const getOrderDetails = (lang, token, id) => {
+export const getOrderDetails = (lang, token, id, latitude, longitude) => {
     return async (dispatch) => {
         await axios({
             url: CONST.url + 'order-details',
             method: 'POST',
             params: { lang },
-            data: { id },
+            data: { id, latitude, longitude },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             dispatch({ type: 'getOrderDetails', payload: response.data });

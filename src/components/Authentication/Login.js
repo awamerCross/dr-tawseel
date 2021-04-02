@@ -8,10 +8,8 @@ import Colors from '../../consts/Colors'
 import BTN from '../../common/BTN';
 import { SText } from '../../common/SText';
 import { useIsFocused } from '@react-navigation/native';
-import { Notifications } from 'expo';
 import i18n from "../locale/i18n";
-import * as NOtify from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { SignIn } from '../../actions/AuthAction';
@@ -22,10 +20,10 @@ import { getAppInfo } from '../../actions';
 
 const { width } = Dimensions.get('window')
 
-NOtify.setNotificationHandler({
+Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
-        shouldPlaySound: true,
+        shouldPlaySound: false,
         shouldSetBadge: false,
     }),
 });
@@ -51,72 +49,59 @@ function Login({ navigation }) {
 
 
     useEffect(() => {
-        (async () => {
-            await registerForPushNotificationsAsync().then((token) =>
-                setExpoPushToken(token)
-            );
-            Notifications.addListener(
-                _handleNotification
-            );
-            notificationListener.current = NOtify.addNotificationReceivedListener(
-                (notification) => {
 
-                    setNotification(notification);
-                }
-            );
-
-            responseListener.current = NOtify.addNotificationResponseReceivedListener(
-                (response) => {
-                    console.log("response in UseNotification.js", response);
-                }
-            );
-
-            return () => {
-                NOtify.removeNotificationSubscription(notificationListener);
-                NOtify.removeNotificationSubscription(responseListener);
-            };
-        })();
         if (isFocused) {
             dispatch(getAppInfo(lang));
 
         }
     }, [isFocused])
 
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
 
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
 
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener);
+            Notifications.removeNotificationSubscription(responseListener);
+        };
+    }, []);
 
 
     async function registerForPushNotificationsAsync() {
         let token;
         if (Constants.isDevice) {
-            const { status: existingStatus } = await NOtify.getPermissionsAsync();
-
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
             let finalStatus = existingStatus;
-            if (existingStatus !== "granted") {
-                const { status } = await NOtify.requestPermissionsAsync();
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
                 finalStatus = status;
             }
-            if (finalStatus !== "granted") {
-                alert("Failed to get push token for push notification!");
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
                 return;
             }
-            token = (await NOtify.getExpoPushTokenAsync()).data;
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            await AsyncStorage.setItem('deviceID', token)
+            console.log(token);
         } else {
-            alert("Must use physical device for Push NOtify");
+            alert('Must use physical device for Push Notifications');
         }
 
         if (Platform.OS === 'android') {
-            NOtify.setNotificationChannelAsync('default', {
+            Notifications.setNotificationChannelAsync('default', {
                 name: 'default',
-                importance: NOtify.AndroidImportance.HIGH,
+                importance: Notifications.AndroidImportance.MAX,
                 vibrationPattern: [0, 250, 250, 250],
                 lightColor: '#FF231F7C',
             });
         }
-
-        if (token)
-            AsyncStorage.setItem('deviceID', token);
 
         return token;
     }
@@ -141,32 +126,7 @@ function Login({ navigation }) {
 
     }
 
-    // async function schedulePushNotification() {
-    //     await NOtify.scheduleNotificationAsync({
-    //         content: {
-    //             title: "You've got mail! 📬",
-    //             body: 'Here is the notification body',
-    //             data: { data: 'goes here' },
-    //         },
-    //         trigger: { seconds: 2 },
-    //     });
-    // }
 
-
-    const _handleNotification = async (notification) => {
-        console.log(notification);
-        Vibration.vibrate();
-        let notificationId = await Notifications.scheduleNotificationAsync({
-            title: notification.data.title,
-            body: notification.data.body,
-            ios: {
-                sound: true,
-                _displayInForeground: true
-            }
-        });
-        return notificationId
-    };
-    console.log(expoPushToken);
     return (
 
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>

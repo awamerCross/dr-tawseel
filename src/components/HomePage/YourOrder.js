@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, I18nManager } from 'react-native'
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
@@ -9,6 +9,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { Button, Textarea } from "native-base";
 import { ToasterNative } from '../../common/ToasterNatrive';
+import {getPlaceDetails} from "../../actions";
+import {useIsFocused} from "@react-navigation/native";
 
 
 const { width } = Dimensions.get('window')
@@ -17,15 +19,26 @@ let base64 = [];
 
 function YourOrder({ navigation, route }) {
 
-    const [photos, setPhotos] = useState([]);
-    const { place } = route.params;
-    const [desc, setDesc] = useState('');
+    const [photos, setPhotos]   = useState([]);
+    const { place }             = route.params;
+    const [desc, setDesc]       = useState('');
+    const isFocused             = useIsFocused();
 
     function confirmDelete(i) {
         photos.splice(i, 1);
         setPhotos([...photos]);
         base64.splice(i, 1);
     };
+
+    useEffect(() => {
+        if (isFocused) {
+            setPhotos([])
+            setDesc('')
+            base64 = [];
+        }
+
+
+    }, [isFocused]);
 
     function renderUploadImgs() {
         let imgBlock = [];

@@ -190,6 +190,7 @@ export function DrawerNavRebresentative() {
             <StackTwo.Screen name="SetOffer" component={SetOffer} />
             <StackTwo.Screen name="Contact" component={ContactUs} />
             <StackTwo.Screen name="Profile" component={MyProfile} />
+            <StackTwo.Screen name="activationCode" component={AccountActivation} />
             <StackTwo.Screen name="politics" component={Politics} />
             <StackTwo.Screen name="CompSuggest" component={CompSugget} />
             <StackTwo.Screen name="ShareApp" component={ShareApp} />

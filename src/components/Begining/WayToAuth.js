@@ -37,9 +37,6 @@ function WayToAuth({ navigation }) {
 
 	}
 
-
-
-
 	return (
 		<View style={styles.container}>
 			<SwiperFlatList

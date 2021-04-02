@@ -234,7 +234,7 @@ const en = {
   signIn: "Sign in",
   logInAsVisitor: "Login as visitor",
   clickHere: "Click here",
-  delegateReg: "Register as a delegate",
+  delegateReg: "Register as a captain",
   clientReg: "Register as a client",
   createAcc: "Create account",
   fullName: "Full name",
@@ -445,6 +445,12 @@ const en = {
   exNum: "You have exceeded the specified number",
   selectPaymentway: 'Select Payment Way',
   enterMsg: 'Enter Message',
+  _1h: '1 Hour',
+  _3h: '3 Hours',
+  _5h: '5 Hours',
+  _6h: '6 Hours',
+  _7h: '7 Hours',
+  _9h: '9 Hours',
 
 };
 export default en;

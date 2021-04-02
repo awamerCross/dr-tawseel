@@ -21,7 +21,7 @@ const isIOS = Platform.OS === 'ios';
 function OrderDetailes({ navigation, route }) {
 
     const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
-    const { orderId } = route.params;
+    const { orderId, latitude, longitude } = route.params;
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
@@ -37,7 +37,7 @@ function OrderDetailes({ navigation, route }) {
     const [counterID, setCounterID] = useState(1);
     function fetchData() {
         setSpinner(true)
-        dispatch(getOrderDetails(lang, token, orderId)).then(() => setSpinner(false))
+        dispatch(getOrderDetails(lang, token, orderId, latitude, longitude)).then(() => setSpinner(false))
     }
 
     function getLocation() {
@@ -437,7 +437,7 @@ function OrderDetailes({ navigation, route }) {
                                         : null
                                 }
                                 {
-                                    user && user.user_type === 2 && orderDetails.delegate ?
+                                    user && user.user_type === 2 && orderDetails.delegate && orderDetails.status !== 'DELIVERED' ?
                                         <View style={{ flexDirection: 'column' }}>
                                             <Text style={[styles.nText, { marginHorizontal: width * .08, marginVertical: 10 }]}>{i18n.t('RebName')}</Text>
                                             <View style={[styles.warb, { width: '90%', alignSelf: 'center', borderRadius: 3, paddingHorizontal: 20 }]}>
@@ -463,7 +463,7 @@ function OrderDetailes({ navigation, route }) {
                                 }
 
                                 {
-                                    user && orderDetails.user && user.user_type === 3 ?
+                                    user && orderDetails.user && user.user_type === 3 && orderDetails.status !== 'DELIVERED' ?
                                         <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
                                             <View style={styles.accordion}>
                                                 <Text style={[styles.DText, { color: Colors.sky, fontSize: 16 }]}>{i18n.t('clientName')}</Text>

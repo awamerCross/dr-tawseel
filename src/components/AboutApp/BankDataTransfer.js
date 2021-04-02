@@ -46,26 +46,17 @@ function BankDataTransfer({ navigation, route }) {
 
     const _pickImage = async () => {
 
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
+            aspect: [4, 3],
+            quality: .5,
+        });
 
-                base64: true,
-                aspect: [4, 3],
-                quality: .5,
-            });
-
-            if (!result.cancelled) {
-                setUserImage(result.uri);
-                setBase64(result.base64);
-            }
-
-        }
-        else {
-            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
-
+        if (!result.cancelled) {
+            setUserImage(result.uri);
+            setBase64(result.base64);
         }
     };
 

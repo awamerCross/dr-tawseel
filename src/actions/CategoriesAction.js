@@ -33,13 +33,13 @@ export const getPlacesType = lang => {
 	}
 };
 
-export const getGooglePlaces = (lang, category, keyword, latitude, longitude) => {
+export const getGooglePlaces = (lang, category, keyword, latitude, longitude, next_page_token) => {
 	return async (dispatch) => {
 		await AsyncStorage.getItem('deviceID').then(async deviceId => {
 			await axios({
 				url: CONST.url + 'google/places',
 				method: 'POST',
-				data: { type: category, keyword, latitude, longitude, next_page_token: null, device_id: deviceId },
+				data: { type: category, keyword, latitude, longitude, next_page_token, device_id: deviceId },
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'getGooglePlaces', payload: response.data });

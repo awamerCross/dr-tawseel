@@ -34,19 +34,19 @@ function OrderChatting({ navigation, route }) {
 
     const { receiver, sender, orderDetails } = route.params;
 
-    const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
-    const lang = useSelector(state => state.lang.lang);
-    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
-    const messages = useSelector(state => state.chat.messages.messages);
-    const cancelReasons = useSelector(state => state.cancelReasons.cancelReasons);
-    const button = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);
-    const order = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
-    const dispatch = useDispatch();
-    const [msg, setMsg] = useState('');
+    const socket                = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
+    const lang                  = useSelector(state => state.lang.lang);
+    const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
+    const messages              = useSelector(state => state.chat.messages.messages);
+    const cancelReasons         = useSelector(state => state.cancelReasons.cancelReasons);
+    const button                = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);
+    const order                 = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
+    const dispatch              = useDispatch();
+    const [msg, setMsg]         = useState('');
     const [rateMsg, setRateMsg] = useState('');
     const [spinner, setSpinner] = useState(false);
-    const isFocused = useIsFocused();
+    const isFocused             = useIsFocused();
 
     console.log(order);
     const [showBillModal, setShowBillModal] = useState(false);
@@ -66,10 +66,7 @@ function OrderChatting({ navigation, route }) {
     const [selectedRadion, setSelectedRadio]    = useState(0)
     const [isSubmitted, setIsSubmitted]         = useState(false);
     const [billImage, setBillImage]             = useState('');
-    const [data, setData]                       = useState([
-        { id: 1, title: 'هذا النص هو مثال لنص يمكن ان يستبدل', },
-        { id: 2, title: 'هذا النص هو مثال لنص يمكن ان يستبدل', },
-        { id: 5, title: 'هذا النص هو مثال لنص يمكن ان يستبدل', }])
+    const [billSpinner, setBillSpinner]         = useState(false);
 
     function fetchData() {
         setMsg('')
@@ -78,34 +75,24 @@ function OrderChatting({ navigation, route }) {
     }
 
 
-
-
     const _pickImage = async (i) => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
+            aspect: [4, 3],
+            quality: .5,
+        });
 
-                base64: true,
-                aspect: [4, 3],
-                quality: .5,
-            });
-
-            if (!result.cancelled) {
-                setPhoto(result.uri);
-                setBase64(result.base64);
-
-            }
-            setTimeout(() => {
-                setShowBillModal(true)
-
-            }, 200);
-        }
-        else {
-            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
+        if (!result.cancelled) {
+            setPhoto(result.uri);
+            setBase64(result.base64);
 
         }
+        setTimeout(() => {
+            setShowBillModal(true)
+
+        }, 200);
     };
 
     const _pickImageFrpmCamera = async () => {
@@ -136,13 +123,17 @@ function OrderChatting({ navigation, route }) {
     }
 
     const setBill = () => {
-        setShowBillModal(false)
+        setBillSpinner(true)
 
         dispatch(sendBill(lang, token, orderDetails.order_id, total, base64)).then(() => {
             setBase64('')
             setCost(0)
+            setBillSpinner(false)
             setShowBillModal(false)
             fetchData()
+        }).catch(() => {
+            setBillSpinner(false)
+            setShowBillModal(false)
         })
     }
 
@@ -151,29 +142,29 @@ function OrderChatting({ navigation, route }) {
     }
 
 
-
-
     useEffect(() => {
 
-        if (isFocused) {
+        // if (isFocused) {
             setEditMaodVisible(false)
             setShowBillModal(false)
             fetchData()
             joinRoom()
             socket.on('get_message', () => fetchData());
 
-        }
+            setPhoto('');
+            setBase64('');
+            setCost(0)
+
+        // }
 
 
-    }, [isFocused,]);
+    }, [route.params]);
 
     function onSendMsg() {
-
         dispatch(sendNewMessage(lang, token, msg, orderDetails.order_id)).then(() => {
-            fetchData()
+         //   fetchData()
             emitMsg();
             Keyboard.dismiss()
-
         })
     }
 
@@ -250,22 +241,27 @@ function OrderChatting({ navigation, route }) {
                                                 {/*</View>*/}
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
-                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} </Text>
+                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).sum}</Text>
                                                 </View>
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
-                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                                    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                                </View>
-
-                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
-                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
+                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
                                                 </View>
 
-                                                <View style={{ flexDirection: 'row', padding: 4, backgroundColor: '#eee'}}>
-                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text} : </Text>
+                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
+                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
+                                                    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
+                                                </View>
+
+                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
+                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
+                                                    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
+                                                </View>
+
+                                                <View style={{ flexDirection: 'row', padding: 4}}>
+                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text}  </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
                                                 </View>
                                             </View>
@@ -311,22 +307,27 @@ function OrderChatting({ navigation, route }) {
                                             {/*</View>*/}
 
                                             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} :</Text>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} </Text>
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).sum}</Text>
                                             </View>
 
                                             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3, backgroundColor: '#eee' }}>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                                <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                            </View>
-
-                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
                                             </View>
 
-                                            <View style={{ flexDirection: 'row', padding: 3, backgroundColor: '#eee' }}>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 100, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text} : </Text>
+                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
+                                                <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
+                                                <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', padding: 3 }}>
+                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text} : </Text>
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
                                             </View>
                                         </View>
@@ -383,14 +384,21 @@ function OrderChatting({ navigation, route }) {
                                     </TouchableOpacity> : null
                             }
 
-                            <TouchableOpacity onPress={() => Linking.openURL('tel:' + receiver.phone)} >
-                                <Image source={require('../../../assets/images/callchat.png')} style={styles.ResImgNm} />
-                            </TouchableOpacity>
                             {
-                                user && user.user_type === 2 ?
-                                    <TouchableOpacity onPress={() => navigation.navigate('Followrepresentative', { address: orderDetails.address, orderDetails })}>
-                                        <Image source={require('../../../assets/images/mapchat.png')} style={[styles.ResImgNm]} />
-                                    </TouchableOpacity>
+                                order && order.status !== 'DELIVERED' ?
+                                    <>
+                                        <TouchableOpacity onPress={() => Linking.openURL('tel:' + receiver.phone)} >
+                                            <Image source={require('../../../assets/images/callchat.png')} style={styles.ResImgNm} />
+                                        </TouchableOpacity>
+
+                                        {
+                                            user && user.user_type === 2 ?
+                                                <TouchableOpacity onPress={() => navigation.navigate('Followrepresentative', { address: orderDetails.address, orderDetails })}>
+                                                    <Image source={require('../../../assets/images/mapchat.png')} style={[styles.ResImgNm]} />
+                                                </TouchableOpacity>
+                                                : null
+                                        }
+                                    </>
                                     : null
                             }
                         </View>
@@ -696,17 +704,24 @@ function OrderChatting({ navigation, route }) {
                                 }]}>{total} {i18n.t('RS')}</Text></Text>
 
 
-                                <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{
-                                    backgroundColor: Colors.sky,
-                                    width: '92%',
-                                    borderRadius: 20,
-                                    padding: 15,
-                                    marginTop: 20,
-                                    marginHorizontal: '2%',
-                                    marginBottom: 25
-                                }}>
-                                    <Text style={[styles.sText, {color: Colors.bg, fontSize: 14}]}>{i18n.t('send')}</Text>
-                                </TouchableOpacity>
+                                {
+                                    billSpinner ?
+                                        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: 30, marginBottom: 30 }]}>
+                                            <ActivityIndicator size="large" color={Colors.sky} style={{ alignSelf: 'center' }} />
+                                        </View> :
+                                        <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{
+                                            backgroundColor: Colors.sky,
+                                            width: '92%',
+                                            borderRadius: 20,
+                                            padding: 15,
+                                            marginTop: 20,
+                                            marginHorizontal: '2%',
+                                            marginBottom: 25
+                                        }}>
+                                            <Text style={[styles.sText, {color: Colors.bg, fontSize: 14}]}>{i18n.t('send')}</Text>
+                                        </TouchableOpacity>
+
+                                }
 
                             </View>
 
