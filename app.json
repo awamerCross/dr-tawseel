@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "4.0.8",
+    "version": "4.8.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -36,7 +36,7 @@
       "package": "shabaka.drtawsel.com",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 2,
+      "versionCode": 98,
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",

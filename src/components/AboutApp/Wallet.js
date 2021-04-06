@@ -49,6 +49,22 @@ function Wallet({ navigation }) {
                         }
 
 
+
+
+
+                    </View>
+
+                    <View  style={{marginTop : 20}}>
+                        {
+                            !WalletTotal ? null :
+                                WalletTotal.amount < 0 ?
+                                <Text style={[styles.TPrice, { color:   'red'     , fontSize : 18} ]}> {i18n.t('haveDebit')}</Text>
+                                    :null
+
+                        }
+
+
+
                     </View>
                 </View>
 

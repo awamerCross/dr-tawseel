@@ -16,6 +16,7 @@ const en = {
   code: "verification code",
   confirmPass: "confirm new password",
   register: "Register",
+  haveDebit: "You have dues to pay off",
   pickImg: 'Pick Image from Camera',
   pickCamera: 'Pick Image from Photo Gallery',
   Products: 'Products',

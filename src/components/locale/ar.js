@@ -17,6 +17,7 @@ const ar = {
   code: "كود التحقق",
   confirmPass: "تأكيد كلمه المرور الجديده",
   register: "تسجيل",
+  haveDebit: "لديك مستحقات يجب سدادها",
   EnsureSite: 'تاكيد الموقع',
   Lessone: 'لايوجد منتج اقل من 1',
   currentbalance: 'رصيدك الحالي',
