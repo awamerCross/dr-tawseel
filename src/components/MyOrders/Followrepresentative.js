@@ -33,8 +33,8 @@ function Followrepresentative({ navigation, route }) {
     const [region, setRegion] = useState({
         latitude: address.latitude_provider,
         longitude: address.longitude_provider,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.00922,
+        longitudeDelta: 0.00421
     });
 
     const [markers, setMarkers] = useState([{
@@ -42,8 +42,8 @@ function Followrepresentative({ navigation, route }) {
         coordinates: {
             latitude: address.latitude_to,
             longitude: address.longitude_to,
-            latitudeDelta: 0,
-            longitudeDelta: 0
+            latitudeDelta: 0.00922,
+            longitudeDelta: 0.00421
         },
     }]);
 
@@ -96,29 +96,24 @@ function Followrepresentative({ navigation, route }) {
 
             {
                 address.latitude_to && region.latitude != null ?
-                    <View style={{ flex: 1, height: height * .9, width: width, marginTop: 20 }}>
+                    <View style={{ flex: 1, height: height * .9, width: width }}>
                         <MapView
                             ref={mapRef}
                             style={{ flex: 1, }}
-                            // region={region}
-                            // initialRegion={region}
                             initialRegion={{
-                                latitude: address.latitude_to,
-                                longitude: address.longitude_to,
-                                latitudeDelta: 0.1,
-                                longitudeDelta: 0.5
+                                latitude: region.latitude,
+                                longitude: region.longitude,
+                                latitudeDelta: 0.001,
+                                longitudeDelta: 0.005
                             }}
                             onMapReady={() => { mapRef.current.fitToSuppliedMarkers(['mk1', 'mk2'], { edgePadding: { top: 50, right: 50, bottom: 50, left: 50 } }) }}
                             // onRegionChangeComplete={region => setRegion(region)}
-                            customMapStyle={mapStyle}
                             onLayout={onMapLayout}
-                            provider={PROVIDER_GOOGLE}
                             showUserLocation
                             followUserLocation
                             minZoomLevel={1}
                             loadingEnabled>
                             <Polyline coordinates={routeCoordinates} strokeWidth={15} />
-
 
                             {/*end point -- me -- */}
 
@@ -127,11 +122,11 @@ function Followrepresentative({ navigation, route }) {
                                 coordinate={{
                                     latitude: address.latitude_to,
                                     longitude: address.longitude_to,
-                                    latitudeDelta: 0.1,
-                                    longitudeDelta: 0.5
+                                    latitudeDelta: 0.001,
+                                    longitudeDelta: 0.005
                                 }}
                             >
-                                <Image source={require('../../../assets/images/pinblue.png')} style={{ height: 25, width: 25 }} resizeMode={'contain'} />
+                                <Image source={require('../../../assets/images/home_location.png')} style={{ height: 45, width: 45 }} resizeMode={'contain'} />
                             </MapView.Marker>
 
                             {/*start point -- provider -- */}
@@ -140,11 +135,11 @@ function Followrepresentative({ navigation, route }) {
                                 coordinate={{
                                     latitude: region.latitude,
                                     longitude: region.longitude,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421
+                                    latitudeDelta: 0.001,
+                                    longitudeDelta: 0.005
                                 }}
                             >
-                                <Image source={require('../../../assets/images/circleblue.png')} style={{ height: 25, width: 25 }} resizeMode={'contain'} />
+                                <Image source={require('../../../assets/images/car_pin.png')} style={{ height: 50, width: 50 }} resizeMode={'contain'} />
                             </MapView.Marker>
 
 

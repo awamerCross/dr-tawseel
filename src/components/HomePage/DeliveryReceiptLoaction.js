@@ -220,8 +220,8 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                     value={Cuboun}
                     onChangeText={(e) => HandleChangeCuboen(e)}
                     styleCont={{ paddingHorizontal: 8, marginTop: 20 }}
-
                 />
+
                 <View style={[{ marginBottom: 10 }, styles.container]}>
                     <Text style={[styles.sText, { marginVertical: 20, color: '#000', alignSelf: 'flex-start' }]}>{i18n.t('selectPayment')}</Text>
 

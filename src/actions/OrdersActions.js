@@ -9,11 +9,28 @@ export const specialOrder = (lang, token, latitude, longitude, address, latitude
             url: CONST.url + 'send-special-order',
             method: 'POST',
             params: { lang },
-            data: { latitude, longitude, address, latitude_to, longitude_to, address_to, time, details, images, payment_type, icon, phone, rating, name, Cuboun },
+            data: { latitude, longitude, address, latitude_to, longitude_to, address_to, time, details, payment_type, images: null, icon, phone, rating, name, coupon: Cuboun },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
-            if (response.data.success)
+            if (response.data.success){
                 navigation.navigate('AllOffers', { id: response.data.data.id });
+
+                for (let i=0; i < images.length; i++){
+                    let formData    = new FormData();
+                    let localUri    = images[i].image;
+                    let filename    = localUri.split('/').pop();
+                    let match       = /\.(\w+)$/.exec(filename);
+                    let type        = `image/${match[1]}`;
+
+                    formData.append('images', { uri: localUri, name: filename, type });
+                    formData.append('id', JSON.stringify(response.data.data.id));
+
+                    axios.post(CONST.url + 'upload-image', formData).then(res => {
+                        console.log(res)
+                    });
+                }
+
+            }
 
             Toast.show({
                 text: response.data.message,

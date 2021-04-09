@@ -626,7 +626,7 @@ function SpecialOrder({ navigation , route }) {
     });
 
     const [selectedRadion, setSelectedRadio] = useState(0);
-    const [paymentType, setPaymentType] = useState(i18n.t('recievePay'));
+    const [paymentType, setPaymentType] = useState('cash');
     const [data, setData] = useState([
         { id: 1, title: i18n.t('recievePay'), key: 'cash' },
         { id: 2, title: i18n.t('byWallet'), key: 'wallet' },
@@ -692,6 +692,12 @@ function SpecialOrder({ navigation , route }) {
         }
     }
 
+    const HandleChangeCuboun = (e) => {
+        setCuboun(e)
+        dispatch(ValdiateCoupon(token, e))
+    }
+
+
     function renderUploadImgs() {
         let imgBlock = [];
         for (let i = 0; i < photos.length; i++) {
@@ -751,7 +757,7 @@ function SpecialOrder({ navigation , route }) {
         setIsSpin(true)
         const icon = 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png'
 
-        dispatch(specialOrder(lang, token, mapRegion.latitude, mapRegion.longitude, cityName, deliverMapRegion.latitude, deliverMapRegion. longitude, deliverCityName, orderTime, desc, base64, paymentType,icon , null , null , null , Cuboun,  navigation)).then(
+        dispatch(specialOrder(lang, token, mapRegion.latitude, mapRegion.longitude, cityName, deliverMapRegion.latitude, deliverMapRegion. longitude, deliverCityName, orderTime, desc, photos, paymentType,icon , null , null , null , Cuboun,  navigation)).then(
             () => {
                 setIsSpin(false);
                 setPhotos([]);
@@ -760,7 +766,7 @@ function SpecialOrder({ navigation , route }) {
                 setDesc('');
                 setOrderTime('_2h')
             }
-        )
+        ).catch(() => setIsSpin(false))
     }
 
     function renderBtn(){
@@ -786,8 +792,10 @@ function SpecialOrder({ navigation , route }) {
     }
 
 
+    console.log('damn map regisn', mapRegion)
+
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: Colors.bg }}>
             <Header navigation={navigation} label={i18n.t('specialOrder')} />
 
             <ScrollView style={{ flex: 1 }}>

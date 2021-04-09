@@ -419,7 +419,7 @@ const ar = {
   Arabic: 'العربيه',
   English: 'English',
   broblem: 'تواصل معنا اذا واجهتك مكشلة',
-  selectLoca: 'حدد موقع التسليم',
+  selectLoca: 'حدد موقع ',
   selectLang: 'تعيين لغه التطبيق',
   correctPhone: 'يرجى ادخال رقم هاتف صحيح',
   passLength: 'كلمه المرور لا تقل عن 6 حروف',
@@ -450,10 +450,14 @@ const ar = {
   resendCode: 'اعاده الارسال',
   noData: 'لا يوجد بيانات',
   iban: 'الايبان',
+  you: 'انت',
   showBill: 'عرض الفاتوره',
   locationName: 'اسم الموقع مطلوب',
   usertype: 'لا تمتلك صلاحيات للدخول',
   extraCount: 'لقد تخطيت الكميه المتاحة',
   addressRequired: 'الرجاء اختيار عنوان التوصيل',
+  seeClosestOrders: 'شاهد اقرب الطلبات الجديدة',
+  receiveLocation: 'موقع الاستلام',
+  farFrom: 'يبعد عنك',
 };
 export default ar;

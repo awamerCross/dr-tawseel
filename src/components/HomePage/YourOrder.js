@@ -95,7 +95,7 @@ function YourOrder({ navigation, route }) {
 
 
         return (
-            <BTN title={i18n.t('done')} onPress={() => navigation.navigate('DeliveryReceiptLoaction', { place, desc, base64 })} ContainerStyle={{ marginTop: 35, borderRadius: 20, marginBottom: 30, paddingVertical: 10, }} TextStyle={{ fontSize: 16 }} />
+            <BTN title={i18n.t('done')} onPress={() => navigation.navigate('DeliveryReceiptLoaction', { place, desc, base64: photos })} ContainerStyle={{ marginTop: 35, borderRadius: 20, marginBottom: 30, paddingVertical: 10, }} TextStyle={{ fontSize: 16 }} />
         )
     }
 

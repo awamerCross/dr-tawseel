@@ -57,7 +57,9 @@ function Login({ navigation }) {
     }, [isFocused])
 
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        setTimeout(() => registerForPushNotificationsAsync().then(token => setExpoPushToken(token)), 300)
+
 
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -83,11 +85,17 @@ function Login({ navigation }) {
                 const { status } = await Notifications.requestPermissionsAsync();
                 finalStatus = status;
             }
-            if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
-                return;
-            }
+
+            console.log('finalStatus...', finalStatus)
+
+            //
+            // if (finalStatus !== 'granted') {
+            //     alert('Failed to get push token for push notification!');
+            //     return;
+            // }
+
             token = (await Notifications.getExpoPushTokenAsync()).data;
+
             await AsyncStorage.setItem('deviceID', token)
             console.log(token);
         } else {

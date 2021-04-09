@@ -51,8 +51,8 @@ function OrderChatting({ navigation, route }) {
     console.log(order);
     const [showBillModal, setShowBillModal] = useState(false);
     const [zoomBillModal, setZoomBillModal] = useState(false);
-    const [cost, setCost] = useState(0);
-    const ScrollViewRef = useRef();
+    const [cost, setCost]   = useState(0);
+    const ScrollViewRef     = useRef();
     let total = Number(orderDetails.shipping) + Number(cost);
 
     const [selected, setisSelected]             = useState(false);
@@ -130,6 +130,7 @@ function OrderChatting({ navigation, route }) {
             setCost(0)
             setBillSpinner(false)
             setShowBillModal(false)
+            emitMsg()
             fetchData()
         }).catch(() => {
             setBillSpinner(false)
@@ -143,7 +144,6 @@ function OrderChatting({ navigation, route }) {
 
 
     useEffect(() => {
-
         // if (isFocused) {
             setEditMaodVisible(false)
             setShowBillModal(false)
@@ -161,10 +161,12 @@ function OrderChatting({ navigation, route }) {
     }, [route.params]);
 
     function onSendMsg() {
+        setMsg('')
         dispatch(sendNewMessage(lang, token, msg, orderDetails.order_id)).then(() => {
          //   fetchData()
             emitMsg();
             Keyboard.dismiss()
+            setTimeout(() => ScrollViewRef.current.scrollToEnd({ animated: true }), 50)
         })
     }
 

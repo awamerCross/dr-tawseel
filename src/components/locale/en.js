@@ -31,6 +31,7 @@ const en = {
   EnsureSite: 'Cofirm Site',
   online: 'Online',
   bankname: 'Bank',
+  you: 'You',
   clientsComments: 'Clients Comments',
   RebName: 'Rebrasentative Name',
   cnagePass: 'Change Password',
@@ -268,6 +269,7 @@ const en = {
   IWillDeliver: 'I Will Deliver Order',
   call: 'Call',
   deliverLocation: 'Deliver Location',
+  receiveLocation: 'Receive Location',
   seeLocation: 'See Location',
   sendOffer: 'Send Offer',
   priceRange: 'Offer Range :',
@@ -452,6 +454,8 @@ const en = {
   _6h: '6 Hours',
   _7h: '7 Hours',
   _9h: '9 Hours',
+  seeClosestOrders: 'See Colsest New Order',
+  farFrom: 'Far from',
 
 };
 export default en;

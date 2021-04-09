@@ -32,6 +32,7 @@ function OrderDetailes({ navigation, route }) {
     const [Isopen, setIsOpen] = useState(false)
     const [click, setClick] = useState(false)
     const [clickImg, setClickImg] = useState(false)
+    const [openedImg, setOpenedImg] = useState('')
     const [ModelProduct, setModelProduct] = useState([])
 
     const [counterID, setCounterID] = useState(1);
@@ -163,7 +164,7 @@ function OrderDetailes({ navigation, route }) {
                                                 <Text style={[styles.sText, { alignSelf: 'flex-start', fontSize: 14, color: Colors.fontBold }]}>{(orderDetails.provider.name).substr(0, 20)}</Text>
                                                 <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12, }]}>{orderDetails.date}</Text>
                                                 <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12, }]}>{orderDetails.provider.phone}</Text>
-                                                <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12, }]}>{(orderDetails.provider.address).substr(0, 28)}</Text>
+                                                <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12, }]}>{(orderDetails.provider.address).substr(0, 30)}</Text>
                                             </View>
                                         </View> : null
                                 }
@@ -199,7 +200,6 @@ function OrderDetailes({ navigation, route }) {
                                     orderDetails.status == 'WAITING' ?
                                         <Text style={{ marginHorizontal: 30, fontFamily: 'flatMedium', alignSelf: 'flex-start', marginVertical: 20, }}>{i18n.t('WaiOrders')}</Text>
                                         : null
-
                             }
                             {
 
@@ -283,6 +283,21 @@ function OrderDetailes({ navigation, route }) {
                                             </TouchableOpacity>
                                         </View> : null
                                 }
+
+                                <View style={styles.accordion}>
+                                    <Text style={[styles.DText, { color: Colors.sky, fontSize: 16 }]}>{i18n.t('receiveLocation')}</Text>
+                                </View>
+                                {
+                                    orderDetails.address ?
+                                        <View style={[{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', height: 50, }]}>
+                                            <Image source={require('../../../assets/images/pinblue.png')} style={{ width: 20, height: 20 }} resizeMode={'contain'} />
+                                            <Text style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_provider).substr(0, 25)}...</Text>
+
+                                            <TouchableOpacity onPress={() => navigateToMap(orderDetails.address.latitude_provider, orderDetails.address.longitude_provider)} >
+                                                <Text style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
+                                            </TouchableOpacity>
+                                        </View> : null
+                                }
                             </View>
 
                             <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
@@ -330,20 +345,20 @@ function OrderDetailes({ navigation, route }) {
                                                     ))
                                                     :
                                                     <View style={{ width: '100%' }}>
-                                                        <TouchableOpacity onPress={() => { setClickImg(true) }} style={{ flexDirection: 'row', padding: 5 }}>
+                                                        <View style={{ flexDirection: 'row' }}>
                                                             {
                                                                 orderDetails.images.map((img, i) => (
-                                                                    <Image source={{ uri: img }} key={i} style={{ width: 100, height: 100, borderRadius: 5, marginHorizontal: 5 }} resizeMode={'contain'} />
+                                                                    <TouchableOpacity onPress={() => { setClickImg(true); setOpenedImg(img) }} style={{ flexDirection: 'row', padding: 5 }}>
+                                                                        <Image source={{ uri: img }} key={i} style={{ width: 100, height: 100, borderRadius: 5, marginHorizontal: 5 }} resizeMode={'contain'} />
+                                                                    </TouchableOpacity>
                                                                 ))
                                                             }
-                                                        </TouchableOpacity>
+                                                        </View>
                                                         <Text style={[styles.sText, { alignSelf: 'flex-start' }]}> {orderDetails.details} </Text>
                                                     </View>
                                             }
                                         </>
                                         : null
-
-
 
                                 }
 
@@ -411,26 +426,14 @@ function OrderDetailes({ navigation, route }) {
                                             style={{ flex: 1, alignSelf: 'center', }}
                                         >
 
-                                            <View style={styles.modalView}>
-
-
-                                                <View style={{ flexDirection: 'column', marginTop: 10, marginLeft: 10, }}>
-                                                    <View style={{ flexDirection: 'row', padding: 5, justifyContent: 'center', alignItems: 'center' }}>
-                                                        {
-
-                                                            orderDetails.images.map((img, i) => (
-                                                                <Image source={{ uri: img }} key={i} style={{
-                                                                    width: 300,
-                                                                    height: 400,
-                                                                    borderRadius: 5,
-                                                                    marginHorizontal: 5
-                                                                }} resizeMode={'contain'} />
-                                                            ))
-                                                        }
-
-                                                    </View>
+                                            <View style={[styles.modalView, {paddingBottom: 5,}]}>
+                                                <View style={{ flexDirection: 'row', padding: 5, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Image source={{ uri: openedImg }} style={{
+                                                        width: '100%',
+                                                        height: 400,
+                                                        borderRadius: 5,
+                                                    }} resizeMode={'contain'} />
                                                 </View>
-
                                             </View>
 
                                         </Modal>
@@ -493,10 +496,12 @@ function OrderDetailes({ navigation, route }) {
                                 {
 
                                     user && user.user_type === 3 && orderDetails.type === 'special' && orderDetails.status === 'READY' ?
-                                        <BTN title={i18n.t('sendOfferPrice')}
-                                            onPress={() => navigation.navigate('SetOffer', { orderDetails })}
-                                            ContainerStyle={{ marginBottom: 40, borderRadius: 20, }}
-                                            TextStyle={{ fontSize: 13 }} />
+                                        <View style={{ marginTop: 20 }}>
+                                            <BTN title={i18n.t('sendOfferPrice')}
+                                                 onPress={() => navigation.navigate('SetOffer', { orderDetails })}
+                                                 ContainerStyle={{ marginBottom: 40, borderRadius: 20, }}
+                                                 TextStyle={{ fontSize: 13 }} />
+                                        </View>
                                         : null
                                 }
 
@@ -516,10 +521,12 @@ function OrderDetailes({ navigation, route }) {
 
                                 {
                                     checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ?
-                                        <BTN title={i18n.t('startChat')}
-                                            onPress={() => navigation.navigate('OrderChatting', { receiver: user && user.user_type == 2 ? orderDetails.delegate : orderDetails.user, sender: user.user_type == 2 ? orderDetails.user : orderDetails.delegate, orderDetails })}
-                                            ContainerStyle={{ marginBottom: 40, borderRadius: 20, }}
-                                            TextStyle={{ fontSize: 13 }} />
+                                        <View style={{ marginTop: 20 }}>
+                                            <BTN title={i18n.t('startChat')}
+                                                 onPress={() => navigation.navigate('OrderChatting', { receiver: user && user.user_type == 2 ? orderDetails.delegate : orderDetails.user, sender: user.user_type == 2 ? orderDetails.user : orderDetails.delegate, orderDetails })}
+                                                 ContainerStyle={{ marginHorizontal: 20, borderRadius: 20,  }}
+                                                 TextStyle={{ fontSize: 13 }} />
+                                        </View>
                                         : null
                                 }
                             </View>

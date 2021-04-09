@@ -28,6 +28,7 @@ function HomeScreen({ navigation }) {
     const categories    = useSelector(state => state.categories.categories);
     const providers     = useSelector(state => state.providers.providers);
     const banners       = useSelector(state => state.banners.banners);
+    const user          = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
 
     const dispatch = useDispatch();
     let loadingAnimated = [];
@@ -56,7 +57,7 @@ function HomeScreen({ navigation }) {
 
 
     const fetchData = async () => {
-        let { status } = await Location.requestPermissionsAsync();;
+        let { status } = await Location.requestPermissionsAsync();
 
         if (status === 'granted') {
             let gpsServiceStatus = await Location.hasServicesEnabledAsync();
@@ -124,9 +125,10 @@ function HomeScreen({ navigation }) {
 
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id
+            let room = notification.request.content.data.room
 
-            console.log('k' + type);
-            console.log(notification.request.content.data);
+            console.log('k' + type, room);
+            console.log('damn notify data', notification.request.content.data);
 
             console.log('notification', notification)
 
@@ -137,8 +139,12 @@ function HomeScreen({ navigation }) {
                 navigation.navigate('NotificationsList')
             else if (type === 'wallet')
                 navigation.navigate('Wallet')
+            else if (type === 'order_offer')
+                navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
                 navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
+            }else if (type === 'chat' && room) {
+                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
         });

@@ -14,8 +14,8 @@ import { GetDliveryCost } from "../../actions/BsketDetailesAction";
 import {InputIcon} from "../../common/InputText";
 import {I18nManager} from "react-native-web";
 
-const latitudeDelta = 0.0922;
-const longitudeDelta = 0.0421;
+const latitudeDelta = 0.00422;
+const longitudeDelta = 0.00221;
 
 const isIOS      = Platform.OS === 'ios';
 const { width }  = Dimensions.get('window')
@@ -277,6 +277,7 @@ function GetLocation({ navigation, route }) {
                         mapRegion.latitude != null ? (
                             <>
                                 <MapView
+                                    userInterfaceStyle={'dark'}
                                     ref={mapRef}
                                     onRegionChangeComplete={(e) =>  _handleMapRegionChange(e)}
                                     style={{ width: '100%', height: '100%', flex: 1, }}

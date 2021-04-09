@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, 
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import { getDelegateOrders, GetDeligate } from "../../actions";
+import {getDelegateOrders, GetDeligate, logout} from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
@@ -31,8 +31,8 @@ function HomePage({ navigation }) {
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
-        latitude: null,
-        longitude: null,
+        latitude: 24.7135517,
+        longitude: 46.6752957,
         latitudeDelta,
         longitudeDelta
     });
@@ -73,15 +73,49 @@ function HomePage({ navigation }) {
             console.log(notification);
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
+
             if (type === 'special_order' && OrderId) {
                 dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
 
             }
         });
 
-
-
         return () => { subscription.remove() }
+    }, []);
+
+    useEffect(() => {
+        const subscription = Notifications.addNotificationResponseReceivedListener(res => {
+
+            let notification = res.notification;
+
+            let type = notification.request.content.data.type;
+            let OrderId = notification.request.content.data.order_id
+            let room = notification.request.content.data.room
+
+            console.log('k' + type, room);
+            console.log('damn notify data', notification.request.content.data);
+
+            console.log('notification', notification)
+
+            if (type === 'block') {
+                dispatch(logout(token))
+            }
+            else if (type === 'admin')
+                navigation.navigate('NotificationsList')
+            else if (type === 'wallet')
+                navigation.navigate('Wallet')
+            else if (type === 'order_offer')
+                navigation.navigate('AllOffers', { id: OrderId })
+            else if (type === 'order' && OrderId) {
+                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
+            }else if (type === 'chat' && room) {
+                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
+            }
+
+        });
+
+        return () => subscription.remove();
+
     }, []);
 
     return (
@@ -119,6 +153,11 @@ function HomePage({ navigation }) {
                     />
                 </TouchableOpacity>
             </View>
+
+            <View style={{ width: '90%', height: 40, borderRadius: 10, borderWidth: 1, borderColor: Colors.sky, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
+                <Text style={{ color: Colors.fontBold, fontFamily: 'flatMedium', textAlign: 'center' }}>{ i18n.t('seeClosestOrders') }</Text>
+            </View>
+
             <ScrollView style={[styles.container,]}
 
                         contentContainerStyle={styles.scrollView}
@@ -140,6 +179,9 @@ function HomePage({ navigation }) {
                                         <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
                                         <View style={{ flexDirection: 'row', paddingStart: 5 }}>
                                             <Text style={styles.yText}> {order.date}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: 'row', paddingStart: 5 }}>
+                                            <Text style={styles.yText}> { i18n.t('farFrom') } : {order.distance}</Text>
                                         </View>
                                     </View>
                                     <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
