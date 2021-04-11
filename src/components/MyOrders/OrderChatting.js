@@ -24,6 +24,7 @@ import SocketIOClient from 'socket.io-client';
 import { _renderRows } from '../../common/LoaderImage';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import ImageZoom from 'react-native-image-pan-zoom';
+import * as Location from "expo-location";
 
 
 
@@ -142,6 +143,16 @@ function OrderChatting({ navigation, route }) {
         socket.emit('subscribe-chat', { room: orderDetails.order_id });
     }
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchData()
+
+            if (user && user.user_type === 3) {
+                getLocation();
+            }
+        })
+        return unsubscribe
+    }, [navigation, socket]);
 
     useEffect(() => {
         // if (isFocused) {
@@ -208,6 +219,26 @@ function OrderChatting({ navigation, route }) {
         }
 
     }
+
+    function getLocation() {
+        Location.watchPositionAsync({
+            enableHighAccuracy: true,
+            distanceInterval: 50,
+            timeInterval: 5000
+        }, (position) => {
+            subscribeRoom({
+                lat: position.coords.latitude,
+                long: position.coords.longitude,
+                room: orderDetails.order_id
+            })
+        });
+    }
+
+    function subscribeRoom(data) {
+        socket.emit('subscribe', { room: data.room });
+        socket.emit('delegate_Updated', data);
+    }
+
 
     function sendRateMsg() {
         setIsSubmitted(true)

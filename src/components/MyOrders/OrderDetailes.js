@@ -288,7 +288,7 @@ function OrderDetailes({ navigation, route }) {
                                     <Text style={[styles.DText, { color: Colors.sky, fontSize: 16 }]}>{i18n.t('receiveLocation')}</Text>
                                 </View>
                                 {
-                                    orderDetails.address ?
+                                    orderDetails.address && orderDetails.address.address_provider ?
                                         <View style={[{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', height: 50, }]}>
                                             <Image source={require('../../../assets/images/pinblue.png')} style={{ width: 20, height: 20 }} resizeMode={'contain'} />
                                             <Text style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_provider).substr(0, 25)}...</Text>

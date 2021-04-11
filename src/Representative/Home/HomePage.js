@@ -7,9 +7,7 @@ import {getDelegateOrders, GetDeligate, logout} from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
-import { ToasterNative } from '../../common/ToasterNatrive';
 import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
 import { _renderRows } from '../../common/LoaderImage';
 
 const { width, height } = Dimensions.get('window')
@@ -62,7 +60,6 @@ function HomePage({ navigation }) {
         }
     }
 
-    console.log(mapRegion);
 
     useEffect(() => {
 
@@ -107,6 +104,8 @@ function HomePage({ navigation }) {
             else if (type === 'order_offer')
                 navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
+                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
+            }else if (type === 'special_order' && OrderId) {
                 navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'chat' && room) {
                 navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })

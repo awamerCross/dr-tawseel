@@ -66,8 +66,8 @@ function GetLocation({ navigation, route }) {
             }
 
             setInitMap(false);
-            setMapRegion(userLocation);
             setCurrentLocation(userLocation)
+            setMapRegion(userLocation);
             mapRef.current.animateToRegion(userLocation, 100);
         }
 
@@ -193,35 +193,6 @@ function GetLocation({ navigation, route }) {
 
 
     return (
-        // <Container>
-        //     <Header navigation={navigation} label={pathName !==  'OrderDetailes' ? i18n.t('selectLoca') : i18n.t('seeLocation')}/>
-        //     <Content>
-        //         <View style={{ flex: 1, height: height * .9, width: width }}>
-        //             <TouchableOpacity onPress={() => newLocat()} style={{ height: 100, width: 100, backgroundColor: 'red' }}><Text>next location</Text></TouchableOpacity>
-        //             <MapView
-        //                 provider={MapView.PROVIDER_GOOGLE}
-        //                 ref={mapRef}
-        //                 showsUserLocation={true}
-        //                 showsMyLocationButton={true}
-        //                 showsCompass={true}
-        //                 onRegionChangeComplete={(e) =>  _handleMapRegionChange(e)}
-        //                 style={{ width: '100%', height: '100%', flex: 1, }}
-        //                 initialRegion={mapRegion}
-        //             >
-        //                 <MapView.Marker
-        //                     title={i18n.t('currentLocation')}
-        //                     coordinate={{ latitude: mapRegion.latitude, longitude: mapRegion.longitude }}
-        //                 >
-        //                     <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 45, height: 44 }}/>
-        //
-        //                 </MapView.Marker>
-        //             </MapView>
-        //         </View>
-        //     </Content>
-        // </Container>
-
-
-
         <ScrollView style={{ flex: 1, }}>
             <Header navigation={navigation} label={pathName !==  'OrderDetailes' ? i18n.t('selectLoca') : i18n.t('seeLocation')}/>
 

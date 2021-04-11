@@ -16,12 +16,13 @@ import * as Location from 'expo-location';
 window.navigator.userAgent = 'react-native';
 import SocketIOClient from 'socket.io-client';
 import { getAppInfo } from "../../actions";
-
-
+import axios from "axios";
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 
+const latitudeDelta = 0.00922;
+const longitudeDelta = 0.00421;
 
 function Followrepresentative({ navigation, route }) {
 
@@ -46,6 +47,13 @@ function Followrepresentative({ navigation, route }) {
             longitudeDelta: 0.00421
         },
     }]);
+
+    const [currentLocation, setCurrentLocation]   = useState({
+        latitude: 24.7135517,
+        longitude: 46.6752957,
+        latitudeDelta,
+        longitudeDelta
+    });
 
     const [isMapReady, SetIsmapReady] = useState(false)
     const [routeCoordinates, SetRouteCoordinates] = useState([])
@@ -88,6 +96,29 @@ function Followrepresentative({ navigation, route }) {
         });
     }
 
+    const fetchData = async () => {
+        let { status } = await Location.requestPermissionsAsync();
+        let userLocation = {};
+        if (status !== 'granted') {
+            alert('صلاحيات تحديد موقعك الحالي ملغاه');
+        } else {
+            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+
+            if (route.params && route.params.latitude){
+                userLocation = { latitude: route.params.latitude, longitude:route.params.longitude , latitudeDelta , longitudeDelta};
+            } else {
+                userLocation = { latitude, longitude , latitudeDelta , longitudeDelta};
+            }
+
+            setCurrentLocation(userLocation)
+        }
+
+    };
+
+
+    useEffect(() => {
+        fetchData();
+    }, [route.params]);
 
 
     return (
@@ -142,17 +173,25 @@ function Followrepresentative({ navigation, route }) {
                                 <Image source={require('../../../assets/images/car_pin.png')} style={{ height: 50, width: 50 }} resizeMode={'contain'} />
                             </MapView.Marker>
 
+                            <MapView.Marker
+                                title={i18n.t('currentLocation')}
+                                coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}
+                            >
+                                <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 45, height: 44 }}/>
 
-                            {
-                                (markers.length > 0) ?
-                                    markers.map((marker, i) => (
-                                        <MapView.Marker key={i}
-                                            coordinate={marker.coordinates}
-                                            title={marker.title}
-                                        />
-                                    ))
-                                    : null
-                            }
+                            </MapView.Marker>
+
+
+                            {/*{*/}
+                            {/*    (markers.length > 0) ?*/}
+                            {/*        markers.map((marker, i) => (*/}
+                            {/*            <MapView.Marker key={i}*/}
+                            {/*                coordinate={marker.coordinates}*/}
+                            {/*                title={marker.title}*/}
+                            {/*            />*/}
+                            {/*        ))*/}
+                            {/*        : null*/}
+                            {/*}*/}
                         </MapView>
 
 

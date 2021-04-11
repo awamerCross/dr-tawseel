@@ -67,7 +67,7 @@ function SetOffer({ navigation, route }) {
             userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
 
             setInitMap(false);
-            // setMapRegion(userLocation);
+            setMapRegion(userLocation);
 
             mapRef.current.animateToRegion(userLocation, 150)
         }
@@ -76,7 +76,7 @@ function SetOffer({ navigation, route }) {
     useEffect(() => {
         setCost('')
         fetchData();
-    }, [city, mapRegion, route.params]);
+    }, [city, route.params]);
 
     //
     // useEffect(() => {

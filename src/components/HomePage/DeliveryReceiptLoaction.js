@@ -182,7 +182,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                 <View style={{ marginVertical: 40, flexDirection: 'row' }}>
                     <View style={{ flexDirection: 'row', width: '100%' }}>
                         <InputIcon
-                            label={i18n.t('delPoint')}
+                            label={i18n.t('deliveryLocation')}
                             inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
                             styleCont={{ height: 45, width: '75%' }}
                             LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
