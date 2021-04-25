@@ -17,7 +17,7 @@ export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude
                 headers: token ? { Authorization: 'Bearer ' + token, } : null,
                 params: { lang }
             }).then(response => {
-                console.log("response" + response.data.data.products);
+
                 if ((response.data.data.products).length <= 0) {
                     navigation.navigate('Basket')
                 }

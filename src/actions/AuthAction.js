@@ -17,7 +17,6 @@ export const logout = 'logout'
 
 export const SignIn = (phone, password, device_id, lang, navigation) => {
 
-    console.log('device_id', device_id);
     return async (dispatch) => {
 
         await axios({
@@ -120,7 +119,6 @@ export const UserRegister = (name, phone, password, email, user_type, lang, navi
                 data: { name, phone, password, email, user_type, device_id: deviceId },
                 params: { lang, }
             }).then(res => {
-                console.log(res.data);
                 dispatch({ type: Sign_up, payload: res.data })
                 if (res.data.success) {
                     navigation.navigate('AccountActivation', { token: res.data.data.token })

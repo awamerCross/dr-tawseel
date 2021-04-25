@@ -1,43 +1,39 @@
 import React, { useState, useEffect } from 'react'
 import {
-    ScrollView,
-    View,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    Text,
-    Modal,
-    ActivityIndicator
-} from 'react-native'
+    ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ActivityIndicator, FlatList } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
-import {getAllOffers, acceptOffer, logout} from '../../actions';
+import {getAllOffers, acceptOffer, logout, cancelOrder, getCancelReasons} from '../../actions';
 import StarRating from "react-native-star-rating";
 import * as Notifications from "expo-notifications";
+import Modal from "react-native-modal";
+import { Button } from 'native-base'
 
 
+const { width, height } = Dimensions.get('window')
 
-const { width } = Dimensions.get('window')
-const { height } = Dimensions.get('window')
 function AllOffers({ navigation, route }) {
 
-    const id                            = route.params.id;
-    const lang                          = useSelector(state => state.lang.lang);
-    const token                         = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const allOffers                     = useSelector(state => state.allOffers.allOffers);
-    const dispatch                      = useDispatch();
-    const [spinner, setSpinner]         = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const id                                    = route.params.id;
+    const lang                                  = useSelector(state => state.lang.lang);
+    const token                                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const allOffers                             = useSelector(state => state.allOffers.allOffers);
+    const cancelReasons                         = useSelector(state => state.cancelReasons.cancelReasons);
+    const dispatch                              = useDispatch();
+    const [spinner, setSpinner]                 = useState(false);
+    const [isSubmitted, setIsSubmitted]         = useState(false);
+    const [showModal, setShowModal]             = useState(false);
+    const [selectedRadion, setSelectedRadio]    = useState(0)
 
 
     function fetchData() {
         setSpinner(true)
         dispatch(getAllOffers(lang, token, id)).then(() => setSpinner(false))
+        dispatch(getCancelReasons(lang))
     }
 
     useEffect(() => {
@@ -80,12 +76,10 @@ function AllOffers({ navigation, route }) {
         );
     }
 
-
     function acceptOfferAction(offerID) {
         setIsSubmitted(true)
         dispatch(acceptOffer(lang, token, offerID, id, navigation)).then(() => setIsSubmitted(false))
     }
-
 
     return (
         <View style={{ flex: 1 }}>
@@ -95,17 +89,16 @@ function AllOffers({ navigation, route }) {
                 <View style={styles.warp}>
                     <Text style={styles.sText}>{i18n.t('orderNumber')}</Text>
                     <Text style={{ fontFamily: 'flatMedium', opacity: .5, fontSize: 15, marginLeft: 5 }}>{id}</Text>
-
                 </View>
 
 
                 {
-                    allOffers ?
+                    allOffers && allOffers.length > 0 ?
                         allOffers.map((offer, i) => (
                             <View key={i} style={styles.CardView}>
                                 <View style={styles.WarpAll}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                                        <Image source={require('../../../assets/images/yass.jpg')} style={styles.ImgModal} />
+                                        <Image source={{ uri: offer.user.avatar }} style={styles.ImgModal} />
                                         <View style={{ flexDirection: 'column', marginHorizontal: width * .07 }}>
                                             <Text style={[styles.textClock, { alignSelf: 'flex-start' }]}>{offer.user.name}</Text>
                                             <StarRating
@@ -142,8 +135,70 @@ function AllOffers({ navigation, route }) {
                             </View>
                         ))
                         :
-                        null
+                        <View style={{ alignItems: 'center', height: height*0.8 }}>
+                            <Image source={require('../../../assets/images/wait_offer.gif')} style={{ width: 120, height: 120, alignSelf: 'center', marginVertical: 50 }} />
+                            <Text style={styles.textClock}>{i18n.t('waitOffers')}</Text>
+
+                            <TouchableOpacity onPress={() => { setShowModal(true) }} style={{ alignSelf: 'center', position: 'absolute', bottom: 0, borderRadius: 20, backgroundColor: '#ff7177', width: 100, alignItems: 'center', justifyContent: 'center', height: 40 }}>
+                                <Text style={[styles.textClock, { color: '#fff', textAlign: 'center' }]}>{i18n.t('cancelOrder')}</Text>
+                            </TouchableOpacity>
+                        </View>
                 }
+
+                <Modal
+                    onBackdropPress={() => setShowModal(!showModal)}
+                    onBackButtonPress={() => setShowModal(!showModal)}
+                    isVisible={showModal}
+                    style={styles.bgModel}
+                    avoidKeyboard={true}
+
+                >
+                    <View style={[{ backgroundColor: '#eee', width: '100%', overflow: 'hidden', bottom: -20 }]}>
+                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 15, marginBottom: 15 }}>
+                            <Text style={[{ fontFamily: 'flatMedium', color: Colors.IconBlack, fontSize: 14 }]}>{i18n.t('chooseReason')}</Text>
+                        </View>
+                        <FlatList data={cancelReasons}
+                                  keyExtractor={(item) => item.id}
+                                  renderItem={({ item, index }) => {
+                                      return (
+                                          <View>
+                                              <TouchableOpacity key={index} onPress={() => setSelectedRadio(item.id)} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 15 }}>
+                                                  <View >
+                                                      <View style={{
+                                                          height: 15,
+                                                          width: 15,
+                                                          borderRadius: 12,
+                                                          borderWidth: 2,
+                                                          borderColor: selectedRadion === item.id ? Colors.sky : Colors.fontNormal,
+                                                          alignItems: 'center',
+                                                          justifyContent: 'center',
+                                                      }}>
+                                                          {
+                                                              selectedRadion === item.id ?
+                                                                  <View style={{
+                                                                      height: 7,
+                                                                      width: 7,
+                                                                      borderRadius: 6,
+                                                                      backgroundColor: Colors.sky,
+                                                                  }} />
+                                                                  : null
+                                                          }
+                                                      </View>
+                                                  </View>
+                                                  <Text style={[styles.sText, { color: selectedRadion === item.id ? Colors.sky : Colors.fontNormal, fontSize: 13, marginHorizontal: 5 }]}>{item.reason}</Text>
+                                              </TouchableOpacity>
+                                              <View style={{ height: 1, width: '100%', backgroundColor: '#ddd', marginTop: 15, }} />
+                                          </View>
+                                      )
+                                  }} />
+
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10 }}>
+                            <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, order.order_id)).then(() => setShowModal(false)) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
+                            <View style={{ backgroundColor: '#ddd', width: 2, height: '100%', marginHorizontal: 30 }} />
+                            <BTN title={i18n.t('cancelOrder')} onPress={() => { setShowModal(false) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, backgroundColor: '#ddd', height: 40 }} TextStyle={{ fontSize: 13, color: Colors.IconBlack }} />
+                        </View>
+                    </View>
+                </Modal>
 
             </ScrollView>
         </View>
@@ -165,7 +220,7 @@ const styles = StyleSheet.create({
         height: height * .09,
         width,
         backgroundColor: '#d5d5d599',
-        marginTop: 20,
+        // marginTop: 20,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 20,

@@ -459,5 +459,6 @@ const ar = {
   seeClosestOrders: 'شاهد اقرب الطلبات الجديدة',
   receiveLocation: 'موقع الاستلام',
   farFrom: 'يبعد عنك',
+  waitOffers: 'تم ارسال طلبك و في انتظار استقبال العروض ...',
 };
 export default ar;

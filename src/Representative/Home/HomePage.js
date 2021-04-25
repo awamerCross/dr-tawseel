@@ -67,7 +67,7 @@ function HomePage({ navigation }) {
         FetchLocations().then(() => setSpinner(false))
 
         const subscription = Notifications.addNotificationReceivedListener(notification => {
-            console.log(notification);
+
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
 
@@ -89,10 +89,6 @@ function HomePage({ navigation }) {
             let OrderId = notification.request.content.data.order_id
             let room = notification.request.content.data.room
 
-            console.log('k' + type, room);
-            console.log('damn notify data', notification.request.content.data);
-
-            console.log('notification', notification)
 
             if (type === 'block') {
                 dispatch(logout(token))

@@ -86,8 +86,6 @@ function Login({ navigation }) {
                 finalStatus = status;
             }
 
-            console.log('finalStatus...', finalStatus)
-
             //
             // if (finalStatus !== 'granted') {
             //     alert('Failed to get push token for push notification!');
@@ -97,7 +95,6 @@ function Login({ navigation }) {
             token = (await Notifications.getExpoPushTokenAsync()).data;
 
             await AsyncStorage.setItem('deviceID', token)
-            console.log(token);
         } else {
             alert('Must use physical device for Push Notifications');
         }

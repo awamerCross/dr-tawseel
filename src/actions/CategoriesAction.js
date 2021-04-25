@@ -130,7 +130,7 @@ export const ProductDetailesRest = (id, lang) => {
 export const AddTOCart = (product_id, size_id, quantity, extras, kilos, price, lang, token,) => {
 	return async (dispatch) => {
 		await AsyncStorage.getItem('deviceID').then(async deviceId => {
-			console.log(deviceId);
+
 			await axios({
 				url: `${CONST.url}add-cart`,
 				method: 'POST',

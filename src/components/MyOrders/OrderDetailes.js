@@ -475,11 +475,13 @@ function OrderDetailes({ navigation, route }) {
                                             <View style={[{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', height: 50, }]}>
                                                 <Image source={{ uri: orderDetails.user.avatar }} style={{ width: 45, height: 45, borderRadius: 5 }} resizeMode={'contain'} />
                                                 <Text style={[styles.nText]}>{orderDetails.user.name}</Text>
-
-                                                <TouchableOpacity onPress={() => { Linking.openURL(`tel://${orderDetails.user.phone}`) }}
-                                                    style={{ position: 'absolute', right: 10 }}>
-                                                    <Image source={require('../../../assets/images/callchat.png')} style={{ width: 40, height: 40 }} resizeMode={'contain'} />
-                                                </TouchableOpacity>
+                                                {
+                                                    orderDetails.status !== 'READY' ?
+                                                        <TouchableOpacity onPress={() => { Linking.openURL(`tel://${orderDetails.user.phone}`) }}
+                                                                          style={{ position: 'absolute', right: 10 }}>
+                                                            <Image source={require('../../../assets/images/callchat.png')} style={{ width: 40, height: 40 }} resizeMode={'contain'} />
+                                                        </TouchableOpacity> : null
+                                                }
                                             </View>
                                         </View> : null
                                 }

@@ -35,7 +35,6 @@ function ComplaintsList({ navigation }) {
     }, [navigation]);
 
 
-    console.log(questions);
     return (
         <Container loading={spinner}>
             <Header navigation={navigation} label={I18n.t('ComplaintsList')} />

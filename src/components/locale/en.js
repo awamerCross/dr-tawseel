@@ -456,6 +456,7 @@ const en = {
   _9h: '9 Hours',
   seeClosestOrders: 'See Colsest New Order',
   farFrom: 'Far from',
+  waitOffers: 'Your Request Has Been Sent And Is Waiting For Offers ...',
 
 };
 export default en;

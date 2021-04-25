@@ -30,7 +30,7 @@ function Followrepresentative({ navigation, route }) {
     const { orderDetails, address } = route.params;
     let mapRef = useRef(null);
     let markerRef = useRef(null);
-    console.log(address);
+
     const [region, setRegion] = useState({
         latitude: address.latitude_provider,
         longitude: address.longitude_provider,

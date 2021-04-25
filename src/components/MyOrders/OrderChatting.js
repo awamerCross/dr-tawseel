@@ -49,7 +49,6 @@ function OrderChatting({ navigation, route }) {
     const [spinner, setSpinner] = useState(false);
     const isFocused             = useIsFocused();
 
-    console.log(order);
     const [showBillModal, setShowBillModal] = useState(false);
     const [zoomBillModal, setZoomBillModal] = useState(false);
     const [cost, setCost]   = useState(0);
@@ -191,6 +190,12 @@ function OrderChatting({ navigation, route }) {
         dispatch(delegateUpdateOrder(lang, token, orderDetails.order_id)).then(() => {
             fetchData()
             emitMsg();
+
+            console.log('order.status', order.status);
+
+            if (order.status === 'DELIVER'){
+                setShowRateModal(true)
+            }
         })
     }
 
@@ -205,15 +210,13 @@ function OrderChatting({ navigation, route }) {
         }
 
         if (rateMsg && starCount) {
-
             return (
-                <BTN title={i18n.t('send')} onPress={() => sendRateMsg()} ContainerStyle={{ marginTop: 30, borderRadius: 20, marginBottom: 30 }} TextStyle={{ fontSize: 13 }} />
+                <BTN title={i18n.t('send')} onPress={() => sendRateMsg()} ContainerStyle={{ marginTop: 30, borderRadius: 20, marginBottom: 30, height: 45 }} TextStyle={{ fontSize: 13 }} />
             );
-
         } else {
 
             return (
-                <BTN title={i18n.t('send')} ContainerStyle={[styles.Btn, { marginTop: 30, borderRadius: 20, marginBottom: 30, backgroundColor: '#ccc' }]} TextStyle={{ fontSize: 13 }} />
+                <BTN title={i18n.t('send')} ContainerStyle={[{ marginTop: 30, borderRadius: 20, marginBottom: 30, backgroundColor: '#ccc', height: 45 }]} TextStyle={{ fontSize: 13 }} />
             );
 
         }
@@ -249,7 +252,6 @@ function OrderChatting({ navigation, route }) {
     let loadingAnimated = []
 
     function renderMessage(message, i) {
-        console.log(message);
         if (message.sender) {
             return (
                 <View key={i} style={{ flexDirection: 'row', marginTop: 10 }}>
@@ -382,7 +384,7 @@ function OrderChatting({ navigation, route }) {
             </View>
         )
     }
-    // console.log(order);
+
     return (
         <View style={{ flex: 1, }}>
             <Header navigation={navigation} label={i18n.t('orderDetails')} />
@@ -504,7 +506,7 @@ function OrderChatting({ navigation, route }) {
                                         styleCont={{ height: width * .3, marginHorizontal: 10, width: '90%', alignSelf: 'center' }}
                                         LabelStyle={{ bottom: width * .42, backgroundColor: 0, left: 10, color: Colors.IconBlack }}
                                     />
-                                    <BTN title={i18n.t('sendRate')} onPress={() => { setIsDeliverMoadl(false); navigation.navigate('SuccessEvaluation') }} ContainerStyle={{ marginTop: 10, borderRadius: 20, }} TextStyle={{ fontSize: 13 }} />
+                                    <BTN title={i18n.t('sendRate')} onPress={() => { setIsDeliverMoadl(false); navigation.navigate('SuccessEvaluation') }} ContainerStyle={{ marginTop: 10, borderRadius: 20 }} TextStyle={{ fontSize: 13 }} />
                                 </View>
                             </View>
                         </Modal>
@@ -603,6 +605,7 @@ function OrderChatting({ navigation, route }) {
                                 placeholder={i18n.t('writeComment')}
                                 placeholderTextColor={Colors.fontNormal}
                             />
+
                             {renderConfirm()}
 
                         </View>

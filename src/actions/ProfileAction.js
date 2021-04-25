@@ -30,7 +30,7 @@ export const UpdateProfileAction = (token, name, phone, email, avatar, lang, nav
             params: { lang }
         }).then(response => {
             if (response.data.success) {
-                console.log(response.data);
+
                 dispatch({ type: UpdateـProfile, data: response.data });
                 // navigation.navigate('GoHome')
 

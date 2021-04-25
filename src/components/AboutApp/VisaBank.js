@@ -30,9 +30,6 @@ function VisaBank({ navigation }) {
     const [userImage, setUserImage] = useState(null);
 
 
-
-    console.log(BankAccount);
-
     const _validate = () => {
         let BanknameErr = validateUserName(Bankname)
         let AccountnameErr = validateUserName(Bankname)

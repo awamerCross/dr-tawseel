@@ -19,8 +19,6 @@ function Profile({ navigation }) {
     const dispatch = useDispatch();
     const [spinner, setSpinner] = useState(false);
 
-    console.log(comments)
-
     function fetchData() {
         setSpinner(true)
         dispatch(getDelegateComments(lang, token)).then(() => setSpinner(false))
