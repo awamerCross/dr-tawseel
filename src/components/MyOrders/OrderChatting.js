@@ -3,7 +3,16 @@ import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 
-import { getInbox, sendNewMessage, delegateUpdateOrder, getCancelReasons, cancelOrder, sendRate, sendBill } from '../../actions';
+import {
+    getInbox,
+    sendNewMessage,
+    delegateUpdateOrder,
+    getCancelReasons,
+    cancelOrder,
+    sendRate,
+    sendBill,
+    logout
+} from '../../actions';
 
 import BTN from '../../common/BTN';
 import Header from '../../common/Header';
@@ -18,14 +27,17 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 
 import Modal from "react-native-modal";
-import { Textarea } from "native-base";
+import {Textarea, Toast} from "native-base";
 import { useIsFocused } from '@react-navigation/native';
 import SocketIOClient from 'socket.io-client';
 import { _renderRows } from '../../common/LoaderImage';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import ImageZoom from 'react-native-image-pan-zoom';
 import * as Location from "expo-location";
-
+import {clear} from "react-native/Libraries/LogBox/Data/LogBoxData";
+import axios from "axios";
+import CONST from "../../consts";
+import * as Notifications from "expo-notifications";
 
 
 window.navigator.userAgent = 'react-native';
@@ -39,10 +51,11 @@ function OrderChatting({ navigation, route }) {
     const lang                  = useSelector(state => state.lang.lang);
     const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
-    const messages              = useSelector(state => state.chat.messages.messages);
+    const  messages               = useSelector(state => state.chat.messages.messages);
+
     const cancelReasons         = useSelector(state => state.cancelReasons.cancelReasons);
     const button                = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);
-    const order                 = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
+    let  order                  = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
     const dispatch              = useDispatch();
     const [msg, setMsg]         = useState('');
     const [rateMsg, setRateMsg] = useState('');
@@ -68,12 +81,23 @@ function OrderChatting({ navigation, route }) {
     const [billImage, setBillImage]             = useState('');
     const [billSpinner, setBillSpinner]         = useState(false);
 
-    function fetchData() {
-        setMsg('')
-        dispatch(getInbox(lang, token, orderDetails.room)).then(() => ScrollViewRef.current.scrollToEnd({ animated: true }))
-        dispatch(getCancelReasons(lang))
+
+   function clear(){
+        dispatch({ type: "CLEAR_BLOGPOST" });
     }
 
+    function fetchData() {
+        setMsg('')
+        setTimeout(()=>{
+            dispatch(getInbox(lang, token, orderDetails.room)).then(() =>  {
+                ScrollViewRef.current.scrollToEnd({ animated: true })
+            }, 500)
+        })
+
+
+        dispatch(getCancelReasons(lang))
+        ScrollViewRef.current.scrollToEnd({ animated: true })
+    }
 
     const _pickImage = async (i) => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -142,30 +166,59 @@ function OrderChatting({ navigation, route }) {
         socket.emit('subscribe-chat', { room: orderDetails.order_id });
     }
 
+
+
     useEffect(() => {
+
         const unsubscribe = navigation.addListener('focus', () => {
             fetchData()
-
+            // if (order.status === 'DELIVER' || order.status === 'DELIVERED'){
+            //     setShowRateModal(true)
+            // }
             if (user && user.user_type === 3) {
                 getLocation();
             }
         })
-        return unsubscribe
+
+        return unsubscribe;
     }, [navigation, socket]);
 
+
+
+
     useEffect(() => {
-        // if (isFocused) {
+
+
             setEditMaodVisible(false)
             setShowBillModal(false)
             fetchData()
             joinRoom()
             socket.on('get_message', () => fetchData());
-
             setPhoto('');
             setBase64('');
             setCost(0)
 
-        // }
+
+        const  subscription =   Notifications.addNotificationReceivedListener(res => {
+
+
+            if(res.request.content.data.type === 'chat')
+            {
+                setTimeout(()=> {
+                    ScrollViewRef.current.scrollToEnd({ animated: true })
+                }, 1000)
+
+                console.log('******')
+                if(res.request.content.data.room.order.status == 'DELIVERED')
+                {
+                    setShowRateModal(true)
+
+                }
+                console.log('******')
+            }
+
+        });
+        return () => subscription.remove();
 
 
     }, [route.params]);
@@ -177,28 +230,60 @@ function OrderChatting({ navigation, route }) {
             emitMsg();
             Keyboard.dismiss()
             setTimeout(() => ScrollViewRef.current.scrollToEnd({ animated: true }), 50)
+            setTimeout(() => ScrollViewRef.current.scrollToEnd({ animated: true }), 50)
         })
     }
 
     function emitMsg() {
-        socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
+       socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
+       ScrollViewRef.current.scrollToEnd({ animated: true })
+       ScrollViewRef.current.scrollToEnd({ animated: true })
+
     }
     const showActionSheet = () => {
         ActionSheet.show()
     }
-    function updateOrder() {
-        dispatch(delegateUpdateOrder(lang, token, orderDetails.order_id)).then(() => {
+  async  function updateOrder() {
+        let id = orderDetails.order_id;
+        let customer_paid = null;
+        await axios({
+            url: CONST.url + 'delegates/update-orders',
+            method: 'POST',
+            params: { lang },
+            data: { id, customer_paid },
+            headers: { Authorization: 'Bearer ' + token, },
+        }).then(response => {
+
+
+            if(response.data.data.status === 'DELIVERED')
+            {
+                setShowRateModal(true)
+            }
+            socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
+            socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
             fetchData()
             emitMsg();
 
-            console.log('order.status', order.status);
 
-            if (order.status === 'DELIVER'){
-                setShowRateModal(true)
+            if (!response.data.success) {
+                Toast.show({
+                    text: response.data.message,
+                    type: response.data.success ? "success" : "danger",
+                    duration: 3000,
+                    textStyle: {
+                        color: "white",
+                        fontFamily: 'flatMedium',
+                        textAlign: 'center'
+                    }
+                });
             }
-        })
+        });
+        // dispatch(delegateUpdateOrder(lang, token, orderDetails.order_id)).then(() => {
+        //
+        //
+        //
+        // })
     }
-
     function renderConfirm() {
 
         if (isSubmitted) {
@@ -211,12 +296,22 @@ function OrderChatting({ navigation, route }) {
 
         if (rateMsg && starCount) {
             return (
-                <BTN title={i18n.t('send')} onPress={() => sendRateMsg()} ContainerStyle={{ marginTop: 30, borderRadius: 20, marginBottom: 30, height: 45 }} TextStyle={{ fontSize: 13 }} />
+
+            <TouchableOpacity onPress={() => sendRateMsg()} style={[styles.container,{backgroundColor:Colors.sky, margin : 20}]} >
+                <Text style={[styles.sText , {padding : 20 , color : '#fff' , fontSize : 16}]}>
+                    {i18n.t('send')}
+                </Text>
+            </TouchableOpacity>
+
             );
         } else {
 
             return (
-                <BTN title={i18n.t('send')} ContainerStyle={[{ marginTop: 30, borderRadius: 20, marginBottom: 30, backgroundColor: '#ccc', height: 45 }]} TextStyle={{ fontSize: 13 }} />
+                <TouchableOpacity disabled={true} style={[styles.container,{backgroundColor:Colors.sky, margin : 20}]} >
+                    <Text style={[styles.sText , {padding : 20 , color : '#fff' , fontSize : 16}]}>
+                        {i18n.t('send')}
+                    </Text>
+                </TouchableOpacity>
             );
 
         }
@@ -285,17 +380,17 @@ function OrderChatting({ navigation, route }) {
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
                                                 </View>
 
-                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
-                                                    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                                    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                                </View>
+                                                {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>*/}
+                                                {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>*/}
+                                                {/*    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>*/}
+                                                {/*</View>*/}
 
-                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
+                                                <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
                                                 </View>
 
-                                                <View style={{ flexDirection: 'row', padding: 4}}>
+                                                <View style={{ flexDirection: 'row', padding: 4, backgroundColor: '#eee'}}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text}  </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
                                                 </View>
@@ -351,17 +446,17 @@ function OrderChatting({ navigation, route }) {
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
                                             </View>
 
-                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>
-                                                <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>
-                                                <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>
-                                            </View>
+                                            {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>*/}
+                                            {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>*/}
+                                            {/*    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>*/}
+                                            {/*</View>*/}
 
-                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
+                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4  }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
                                             </View>
 
-                                            <View style={{ flexDirection: 'row', padding: 3 }}>
+                                            <View style={{ flexDirection: 'row', padding: 3, backgroundColor: '#eee' }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text} : </Text>
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
                                             </View>

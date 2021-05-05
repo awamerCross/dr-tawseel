@@ -6,7 +6,12 @@ export default (state = initialState, action) => {
             return { ...state, messages: action.payload.data }
         case 'getRooms':
             return { ...state, rooms: action.payload.data }
+
+        case 'CLEAR_BLOGPOST':
+            return { ...state, messages: [] }
         default:
             return state;
     }
 }
+
+

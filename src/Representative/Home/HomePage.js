@@ -104,6 +104,7 @@ function HomePage({ navigation }) {
             }else if (type === 'special_order' && OrderId) {
                 navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'chat' && room) {
+                 console.warn(type)
                 navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 

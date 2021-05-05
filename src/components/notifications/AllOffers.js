@@ -135,7 +135,7 @@ function AllOffers({ navigation, route }) {
                             </View>
                         ))
                         :
-                        <View style={{ alignItems: 'center', height: height*0.8 }}>
+                        <View style={{ alignItems: 'center', height: height*0.7 }}>
                             <Image source={require('../../../assets/images/wait_offer.gif')} style={{ width: 120, height: 120, alignSelf: 'center', marginVertical: 50 }} />
                             <Text style={styles.textClock}>{i18n.t('waitOffers')}</Text>
 
@@ -192,8 +192,8 @@ function AllOffers({ navigation, route }) {
                                       )
                                   }} />
 
-                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10 }}>
-                            <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, order.order_id)).then(() => setShowModal(false)) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10 , marginVertical : 25 }}>
+                            <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, route.params.id)).then(() => setShowModal(false)) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
                             <View style={{ backgroundColor: '#ddd', width: 2, height: '100%', marginHorizontal: 30 }} />
                             <BTN title={i18n.t('cancelOrder')} onPress={() => { setShowModal(false) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, backgroundColor: '#ddd', height: 40 }} TextStyle={{ fontSize: 13, color: Colors.IconBlack }} />
                         </View>

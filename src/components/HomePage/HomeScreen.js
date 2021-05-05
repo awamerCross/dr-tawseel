@@ -119,18 +119,14 @@ function HomeScreen({ navigation }) {
 
 
     useEffect(() => {
-        const subscription = Notifications.addNotificationResponseReceivedListener(res => {
 
-            let notification = res.notification;
+
+        const subscription = Notifications.addNotificationResponseReceivedListener(res => {
+             let notification = res.notification;
 
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id
-            let room = notification.request.content.data.room
-
-            console.log('k' + type, room);
-            console.log('damn notify data', notification.request.content.data);
-
-            console.log('notification', notification)
+             let room = notification.request.content.data.room
 
             if (type === 'block') {
                 dispatch(logout(token))
@@ -140,11 +136,12 @@ function HomeScreen({ navigation }) {
             else if (type === 'wallet')
                 navigation.navigate('Wallet')
             else if (type === 'order_offer')
-                navigation.navigate('AllOffers', { id: OrderId })
+                console.log('oferrrrrrrrrrrrrrrrrrrrr' , OrderId)
+               // navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
                 navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'chat' && room) {
-                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
+               navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
         });

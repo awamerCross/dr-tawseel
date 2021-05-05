@@ -137,11 +137,11 @@ function SetOffer({ navigation, route }) {
                                 <Image source={require('../../../assets/images/map_pin.png')} resizeMode={'contain'} style={{ width: 40, height: 40 }} />
                             </MapView.Marker>
 
-                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} title={i18n.t('receiptPoint')}>
+                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} title={i18n.t('deliveryPoint')}>
                                 <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 40, height: 40 }} />
                             </MapView.Marker>
 
-                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to }} title={i18n.t('deliveryPoint')}>
+                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to }} title={i18n.t('receiptPoint')}>
                                 <Image source={require('../../../assets/images/driver_location.png')} resizeMode={'contain'} style={{ width: 40, height: 40 }} />
                             </MapView.Marker>
                         </MapView>
@@ -149,24 +149,26 @@ function SetOffer({ navigation, route }) {
 
                     <View style={{ width: '100%', marginBottom: 40, height: '50%' }}>
 
+
                         <View style={{ flexDirection: 'row', width: '100%', borderBottomColor: '#ddd', borderBottomWidth: 1, paddingVertical: 5, height: '30%' }}>
+                            <TouchableOpacity onPress={() => mapRef.current.animateToRegion({ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', borderLeftColor: '#ddd', borderLeftWidth: 1, padding: 5 }}>
+                                <Image source={require('../../../assets/images/driver_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
+                                <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
+                                    <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('receiptPoint')}</Text>
+                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', marginVertical: 5, lineHeight: 20 }]}>{(orderDetails.address.address_to).substr(0, 50) + '...' }</Text>
+                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> يبعد عنك : {orderDetails.address.distance_to} </Text>
+                                </View>
+                            </TouchableOpacity>
                             <TouchableOpacity onPress={() => mapRef.current.animateToRegion({ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', justifyContent: 'flex-start', padding: 5 }}>
                                 <Image source={require('../../../assets/images/home_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
                                 <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
-                                    <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('receiptPoint')}</Text>
+                                    <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('deliveryPoint')}</Text>
                                     <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', marginVertical: 5, lineHeight: 20 }]}> {(orderDetails.address.address_provider).substr(0, 50) + '...'} </Text>
                                     <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> يبعد عنك : {orderDetails.address.distance_from} </Text>
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => mapRef.current.animateToRegion({ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', borderLeftColor: '#ddd', borderLeftWidth: 1, padding: 5 }}>
-                                <Image source={require('../../../assets/images/driver_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
-                                <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
-                                    <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('deliveryPoint')}</Text>
-                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', marginVertical: 5, lineHeight: 20 }]}>{(orderDetails.address.address_to).substr(0, 50) + '...' }</Text>
-                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> يبعد عنك : {orderDetails.address.distance_to} </Text>
-                                </View>
-                            </TouchableOpacity>
+
                         </View>
 
                         <Text style={[styles.sText, { color: Colors.IconBlack, fontSize: 16, textAlign: 'center', marginTop: 10 }]}>{i18n.t('deliveryCost')}</Text>

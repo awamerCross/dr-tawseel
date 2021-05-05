@@ -3,11 +3,24 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="e84a594d-dfc8-4107-89be-3d619d724907" name="corsatii" url="http://shams.arabsdesign.com">
-        <fileTransfer host="shams.arabsdesign.com" port="21" rootFolder="/public_html/Coursati">
+        <fileTransfer rootFolder="/public_html/Coursati" host="shams.arabsdesign.com" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="385a874e-60d8-48c0-ba43-59aad87d49a3" name="دكتور توصيل" url="http://drtawsel.aait-sa.com">
+        <fileTransfer rootFolder="/public_html" host="drtawsel.aait-sa.com" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="10e16202-f381-4250-afc6-c4141456861d" name="حدايق" url="http://hadaek.aait-sa.com">
+        <fileTransfer rootFolder="/public_html" host="hadaek.aait-sa.com" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
         </fileTransfer>
       </webServer>
     </option>

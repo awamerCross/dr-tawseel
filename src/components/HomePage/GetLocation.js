@@ -25,12 +25,13 @@ function GetLocation({ navigation, route }) {
     const token         = useSelector(state => state.Auth.user ?state.Auth.user.data.token : null)
     const lang          = useSelector(state => state.lang.lang);
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
+    const [spinner, setSpinner] = useState(false);
 
     const [search, setSearch]   			= useState('');
     const [searchResult, setSearchResult]   = useState([]);
     const [currentLocation, setCurrentLocation]   = useState({
-        latitude: 24.7135517,
-        longitude: 46.6752957,
+        latitude: null,
+        longitude: null,
         latitudeDelta,
         longitudeDelta
     });
@@ -45,13 +46,14 @@ function GetLocation({ navigation, route }) {
     const [showAddress, setShowAddress]     = useState(false);
     const [city, setCity]                   = useState('');
     const [mapRegion, setMapRegion]         = useState({
-        latitude: 24.7135517,
-        longitude: 46.6752957,
+        latitude: null,
+        longitude: null,
         latitudeDelta,
         longitudeDelta
     });
 
     const fetchData = async () => {
+        setSpinner(true)
         let { status } = await Location.requestPermissionsAsync();
         let userLocation = {};
         if (status !== 'granted') {
@@ -64,7 +66,7 @@ function GetLocation({ navigation, route }) {
             } else {
                 userLocation = { latitude, longitude , latitudeDelta , longitudeDelta};
             }
-
+            setSpinner(false)
             setInitMap(false);
             setCurrentLocation(userLocation)
             setMapRegion(userLocation);
@@ -174,7 +176,7 @@ function GetLocation({ navigation, route }) {
         }
 
         setSearchResult([]);
-        setSearchHeight(60);
+        setSearchHeight(70);
         setLocation(formattedItem);
         setMapRegion(newLocation)
 
@@ -193,9 +195,8 @@ function GetLocation({ navigation, route }) {
 
 
     return (
-        <ScrollView style={{ flex: 1, }}>
+        <ScrollView style={{ flex: 1, }}  loading={spinner}>
             <Header navigation={navigation} label={pathName !==  'OrderDetailes' ? i18n.t('selectLoca') : i18n.t('seeLocation')}/>
-
             <View style={{ flex: 1, height: height * .94, width: width }}>
 
                 <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute' }}>
@@ -253,6 +254,7 @@ function GetLocation({ navigation, route }) {
                                     onRegionChangeComplete={(e) =>  _handleMapRegionChange(e)}
                                     style={{ width: '100%', height: '100%', flex: 1, }}
                                     initialRegion={mapRegion}
+                                    minZoomLevel={16}
                                 >
                                         <MapView.Marker
                                             title={i18n.t('currentLocation')}
