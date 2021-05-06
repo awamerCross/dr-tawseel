@@ -102,7 +102,7 @@ function YourOrder({ navigation, route }) {
 
     return (
         <View style={{ flex: 1 }}>
-            <Header navigation={navigation} label={i18n.t('orderStore')} />
+            <Header navigation={navigation} label={''} />
             <ScrollView style={{ flex: 1 }}>
                 <View style={styles.container}>
                     <View style={styles.ImgText}>

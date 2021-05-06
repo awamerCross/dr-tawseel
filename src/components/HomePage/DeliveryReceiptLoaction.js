@@ -292,7 +292,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                         />
                     </View>
 
-                    <BTN title={i18n.t('save')} onPress={() => onSetPlace()} ContainerStyle={[styles.Btn, { marginTop: 0, }]} TextStyle={{ fontSize: 13 }} />
+                    <BTN title={i18n.t('save')} onPress={() => onSetPlace()} ContainerStyle={[styles.Btn, { marginTop: 0, height: 40 }]} TextStyle={{ fontSize: 13 }} />
                     <BTN title={i18n.t('cancel')} onPress={() => { setSaveLocmMdalVisible(false) }} ContainerStyle={{ marginTop: 10, marginBottom: 10, borderRadius: 20, backgroundColor: '#B4B4B4' }} TextStyle={{ fontSize: 13, color: '#000' }} />
 
                 </View>
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 5,
         width: width * .9,
-        height: 330,
+        height: 300,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

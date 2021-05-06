@@ -20,9 +20,10 @@ import Header from '../../common/Header';
 import BTN from "../../common/BTN";
 import Colors from '../../consts/Colors';
 import { useDispatch, useSelector } from "react-redux";
-import { sendOffer, removeOffer } from '../../actions';
+import {sendOffer, removeOffer, getAllOffers} from '../../actions';
 import Modal from "react-native-modal";
 import { Toast } from "native-base";
+import * as Notifications from "expo-notifications";
 
 
 const latitudeDelta  = 0.00922;
@@ -33,6 +34,7 @@ const { width, height } = Dimensions.get('window')
 function SetOffer({ navigation, route }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
+    const user          = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
 
     const lang                      = useSelector(state => state.lang.lang);
     let pathName                    = route.params ? route.params.pathName : null;
@@ -74,15 +76,26 @@ function SetOffer({ navigation, route }) {
     };
 
     useEffect(() => {
+        Notifications.addNotificationReceivedListener(handleNotification);
+    }, []);
+
+    function handleNotification(notification) {
+        if (notification && notification.origin !== 'received') {
+            let { type, room }            = notification.request.content.data;
+
+            if (type === 'chat' && room) {
+                setShowModal(false)
+                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
+            }
+        }
+
+    }
+
+    useEffect(() => {
         setCost('')
         fetchData();
     }, [city, route.params]);
 
-    //
-    // useEffect(() => {
-    //     dispatch(GetDliveryCost(providerID, mapRegion.latitude, mapRegion.longitude, token))
-    //
-    // }, [city, mapRegion]);
 
     console.log(orderDetails);
     console.log(cost);

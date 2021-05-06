@@ -51,7 +51,7 @@ function OrderChatting({ navigation, route }) {
     const lang                  = useSelector(state => state.lang.lang);
     const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
-    const  messages               = useSelector(state => state.chat.messages.messages);
+    const  messages             = useSelector(state => state.chat.messages.messages);
 
     const cancelReasons         = useSelector(state => state.cancelReasons.cancelReasons);
     const button                = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);

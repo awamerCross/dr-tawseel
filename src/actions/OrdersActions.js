@@ -15,6 +15,8 @@ export const specialOrder = (lang, token, latitude, longitude, address, latitude
             if (response.data.success){
                 navigation.navigate('AllOffers', { id: response.data.data.id });
 
+                console.log('response.data.data.id', response.data.data.id)
+
                 for (let i=0; i < images.length; i++){
                     let formData    = new FormData();
                     let localUri    = images[i].image;

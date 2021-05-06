@@ -139,7 +139,7 @@ function HomeScreen({ navigation }) {
                 console.log('oferrrrrrrrrrrrrrrrrrrrr' , OrderId)
                // navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
-                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
+                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'chat' && room) {
                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }

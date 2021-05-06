@@ -21,6 +21,7 @@ function AllOffers({ navigation, route }) {
     const id                                    = route.params.id;
     const lang                                  = useSelector(state => state.lang.lang);
     const token                                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const user                                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
     const allOffers                             = useSelector(state => state.allOffers.allOffers);
     const cancelReasons                         = useSelector(state => state.cancelReasons.cancelReasons);
     const dispatch                              = useDispatch();
@@ -37,11 +38,8 @@ function AllOffers({ navigation, route }) {
     }
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            fetchData()
-        })
-        return unsubscribe
-    }, [navigation, route.params?.id]);
+        fetchData()
+    }, [navigation, id]);
 
     useEffect(() => {
         Notifications.addNotificationReceivedListener(handleNotification);
@@ -49,17 +47,14 @@ function AllOffers({ navigation, route }) {
 
     function handleNotification(notification) {
         if (notification && notification.origin !== 'received') {
-            let type            = notification.request.content.data.type;
-
-            console.log('damn type___', type)
+            let { type, order_id }            = notification.request.content.data;
 
             if (type === 'order_offer') {
-                fetchData()
+                dispatch(getAllOffers(lang, token, order_id)).then(() => setSpinner(false))
             }
         }
 
     }
-
 
     function renderConfirm(offerID) {
         if (isSubmitted) {
@@ -78,7 +73,7 @@ function AllOffers({ navigation, route }) {
 
     function acceptOfferAction(offerID) {
         setIsSubmitted(true)
-        dispatch(acceptOffer(lang, token, offerID, id, navigation)).then(() => setIsSubmitted(false))
+        dispatch(acceptOffer(lang, token, offerID, id, navigation, user)).then(() => setIsSubmitted(false))
     }
 
     return (
@@ -193,7 +188,7 @@ function AllOffers({ navigation, route }) {
                                   }} />
 
                         <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10 , marginVertical : 25 }}>
-                            <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, route.params.id)).then(() => setShowModal(false)) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
+                            <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, route.params.id)).then(() => { setShowModal(false); navigation.navigate('GoHome') }) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
                             <View style={{ backgroundColor: '#ddd', width: 2, height: '100%', marginHorizontal: 30 }} />
                             <BTN title={i18n.t('cancelOrder')} onPress={() => { setShowModal(false) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, backgroundColor: '#ddd', height: 40 }} TextStyle={{ fontSize: 13, color: Colors.IconBlack }} />
                         </View>

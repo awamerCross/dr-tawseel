@@ -4,7 +4,7 @@ import { Toast } from 'native-base'
 import { ToasterNative } from "../common/ToasterNatrive";
 
 
-export const acceptOffer = (lang, token, id, orderID, navigation) => {
+export const acceptOffer = (lang, token, id, orderID, navigation, user) => {
     return async (dispatch) => {
         await axios({
             url: CONST.url + 'accept/offer',
@@ -15,9 +15,8 @@ export const acceptOffer = (lang, token, id, orderID, navigation) => {
         }).then(response => {
 
             if (response.data.success) {
-
-                navigation.navigate('OrderDetailes', { orderId: orderID })
-
+                const room = response.data.data;
+                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
             Toast.show({

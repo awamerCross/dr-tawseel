@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, 
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import {getDelegateOrders, GetDeligate, logout} from "../../actions";
+import {getDelegateOrders, GetDeligate, getMyOrders, logout} from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
@@ -62,32 +62,35 @@ function HomePage({ navigation }) {
 
 
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setSpinner(true)
+            FetchLocations().then(() => setSpinner(false))
+        })
+        return unsubscribe
+    }, [navigation]);
 
-        setSpinner(true)
-        FetchLocations().then(() => setSpinner(false))
-
+    useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
 
-            let type = notification.request.content.data.type;
+            let type    = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
 
             if (type === 'special_order' && OrderId) {
                 dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
-
             }
         });
 
         return () => { subscription.remove() }
-    }, []);
+    }, [navigation]);
 
     useEffect(() => {
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
 
             let notification = res.notification;
 
-            let type = notification.request.content.data.type;
+            let type    = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id
-            let room = notification.request.content.data.room
+            let room    = notification.request.content.data.room
 
 
             if (type === 'block') {
@@ -100,11 +103,10 @@ function HomePage({ navigation }) {
             else if (type === 'order_offer')
                 navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
-                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
+                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'special_order' && OrderId) {
                 navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
             }else if (type === 'chat' && room) {
-                 console.warn(type)
                 navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
