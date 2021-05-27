@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .045,
+        fontSize: 16,
         textAlign: 'center',
         top: width * .14,
 
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     stext: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .035,
+        fontSize: 14,
 
     },
 })

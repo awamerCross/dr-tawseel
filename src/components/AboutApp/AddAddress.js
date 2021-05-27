@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .045,
+        fontSize: 14,
         textAlign: 'center',
         top: width * .19,
 

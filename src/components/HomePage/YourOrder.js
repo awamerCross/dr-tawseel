@@ -107,7 +107,7 @@ function YourOrder({ navigation, route }) {
                 <View style={styles.container}>
                     <View style={styles.ImgText}>
                         <Image source={{ uri: place.icon }} style={styles.ResImgNm} />
-                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', lineHeight: 22 }]}>{place.name}</Text>
+                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'  }]}>{place.name}</Text>
                     </View>
 
                     <View style={{ marginTop: 20 }}>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .036,
+        fontSize: 16,
         marginHorizontal: 10
     },
     BText: {
@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     ResImgNm: {
-        width: width * .14,
-        height: width * .14,
+        width: 35,
+        height: 35,
         borderRadius: 50
     },
     fileupload: {

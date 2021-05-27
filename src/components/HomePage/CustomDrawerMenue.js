@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LogoutUser } from '../../actions/AuthAction'
 import { getAppInfo } from '../../actions'
 import i18n from "../locale/i18n";
+import axios from "axios";
+import CONST from "../../consts";
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -27,27 +29,42 @@ function CustomDrawerMenue({ navigation }) {
         dispatch(getAppInfo(lang));
     }, []);
 
+    function navigateTo(name){
+        navigation.navigate(name)
+        axios({
+            url: CONST.url + 'update-availability',
+            method: 'POST',
+            params: { lang },
+            data: { available : 1},
+            headers: { Authorization: 'Bearer ' + token, },
+        }).then(response => {
 
+        });
+    }
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.ImgsContainer}>
                 <ImageBackground source={require('../../../assets/images/bgmenue.png')} style={styles.BgImg} />
-                <Image source={user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={user ? 'cover' : 'contain'} />
-                <Text style={styles.text}>{user ? user.name : i18n.t('guest')}</Text>
+                     <Image source={user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={user ? 'cover' : 'contain'} />
+                <View style={{position:'absolute' , bottom : '30%'}}>
+                    <Text style={styles.text}>{user ? user.name : i18n.t('guest')}</Text>
+                </View>
+
             </View>
+
             <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-                <TextImg label={i18n.t('home')} image={require('../../../assets/images/home.png')} onPress={() => navigation.navigate('GoHome')} />
-                {token ? <TextImg label={i18n.t('profile')} image={require('../../../assets/images/profile.png')} onPress={() => navigation.navigate('Profile')} /> : null}
-                {token ? <TextImg label={i18n.t('orders')} image={require('../../../assets/images/order.png')} onPress={() => navigation.navigate('MyOrders')} /> : null}
-                <TextImg label={i18n.t('cart')} image={require('../../../assets/images/basket.png')} onPress={() => navigation.navigate('Basket')} />
-                {token ? <TextImg label={i18n.t('wallet')} image={require('../../../assets/images/bill.png')} onPress={() => navigation.navigate('Wallet')} /> : null}
+                <TextImg label={i18n.t('home')} image={require('../../../assets/images/home.png')} onPress={() => navigateTo('GoHome')} />
+                {token ? <TextImg label={i18n.t('profile')} image={require('../../../assets/images/profile.png')} onPress={() => navigateTo('Profile')} /> : null}
+                {token ? <TextImg label={i18n.t('orders')} image={require('../../../assets/images/order.png')} onPress={() => navigateTo('MyOrders')} /> : null}
+                <TextImg label={i18n.t('cart')} image={require('../../../assets/images/basket.png')} onPress={() => navigateTo('Basket')} />
+                {token ? <TextImg label={i18n.t('wallet')} image={require('../../../assets/images/bill.png')} onPress={() => navigateTo('Wallet')} /> : null}
                 {/* <TextImg label={i18n.t('aboutApp')} image={require('../../../assets/images/about.png')} onPress={() => navigation.navigate('About')} /> */}
                 {/* <TextImg label={i18n.t('appPolicy')} image={require('../../../assets/images/security.png')} onPress={() => navigation.navigate('politics')} /> */}
-                <TextImg label={i18n.t('contactUs')} image={require('../../../assets/images/comolain.png')} onPress={() => navigation.navigate('Contact')} />
+                <TextImg label={i18n.t('contactUs')} image={require('../../../assets/images/comolain.png')} onPress={() => navigateTo('Contact')} />
                 {/* <TextImg label={i18n.t('compAndSug')} image={require('../../../assets/images/Complaint.png')} onPress={() => navigation.navigate('CompSuggest')} /> */}
                 {/* <TextImg label={i18n.t('shareApp')} image={require('../../../assets/images/shareapp.png')} onPress={() => onShare()} /> */}
                 {/* <TextImg label={i18n.t('ComplaintsList')} image={require('../../../assets/images/flag.png')} onPress={() => navigation.navigate('complaintsList')} /> */}
-                <TextImg label={i18n.t('settings')} image={require('../../../assets/images/global.png')} onPress={() => navigation.navigate('Settings')} />
+                <TextImg label={i18n.t('settings')} image={require('../../../assets/images/global.png')} onPress={() => navigateTo('Settings')} />
                 {/* {token ? <TextImg label={i18n.t('myAddresses')} image={require('../../../assets/images/notbook.png')} onPress={() => navigation.navigate('Address')} /> : null} */}
                 {token ? <TextImg label={i18n.t('chats')} image={require('../../../assets/images/messag.png')} onPress={() => navigation.navigate('Chatting')} /> : null}
                 {/* {token ? <TextImg label={i18n.t('logout')} image={require('../../../assets/images/logoute.png')} onPress={Logout} /> : <TextImg label={i18n.t('login')} image={require('../../../assets/images/logoute.png')} onPress={() => navigation.navigate('Login')} />} */}
@@ -80,16 +97,13 @@ const styles = StyleSheet.create({
 
     },
     images: {
-        width: '25%',
-        height: '25%',
+        width: 90,
+        height: 90,
         position: 'absolute',
-        borderRadius: 200,
-        top: width * 0.2,
+        borderRadius: 80,
 
     },
     text: {
-        position: 'absolute',
-        top: width * 0.4,
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.bg,
@@ -99,7 +113,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.bg,
-        fontSize: width * .04,
+        fontSize: 14,
         padding: 10
     }
 })

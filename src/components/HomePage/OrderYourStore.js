@@ -42,10 +42,9 @@ function OrderYourStore({ navigation, route }) {
                             <View style={styles.container}>
                                 <View style={styles.ImgText}>
                                     <Image source={{ uri: place.icon }} style={styles.ResImgNm} />
-                                    <Text style={[styles.sText, { alignSelf: 'flex-start', lineHeight: 22, }]}>{place.name}</Text>
                                 </View>
                                 <View style={[styles.rowDirect, { paddingRight: 15 }]}>
-                                    <Text style={styles.BText}>{i18n.t('userRates')}</Text>
+                                    <Text style={[styles.sText, {   textAlign: 'right'  }]}>{place.name}</Text>
                                 </View>
 
                                 <View style={[styles.rowDirect, { marginTop: 10 }]}>
@@ -58,7 +57,7 @@ function OrderYourStore({ navigation, route }) {
                                             starSize={13}
                                             starStyle={{ marginHorizontal: 1 }}
                                         />
-                                        <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 14, }}>({place.reviews})</Text>
+                                        <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 12, textAlign: 'right' }}>({place.reviews})</Text>
                                     </View>
                                 </View>
                                 <View style={styles.dotted} />
@@ -118,8 +117,8 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .036,
-        marginStart: 20
+        fontSize : 16
+
     },
     BText: {
         fontFamily: 'flatMedium',

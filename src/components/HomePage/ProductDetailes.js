@@ -270,7 +270,7 @@ function ProductDetailes({ navigation, route }) {
                                                         </View>
 
                                                         <View >
-                                                            <Text style={[styles.Text, { color: Colors.sky, fontSize: width * .03, }]}>{item.price} {i18n.t('RS')}</Text>
+                                                            <Text style={[styles.Text, { color: Colors.sky, fontSize: 14, }]}>{item.price} {i18n.t('RS')}</Text>
                                                         </View>
 
                                                     </TouchableOpacity>
@@ -289,7 +289,7 @@ function ProductDetailes({ navigation, route }) {
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 12 }}>
                                             <Text style={styles.Text}>{i18n.t('extras')}</Text>
-                                            <Text style={[styles.yText, { marginTop: 0, fontFamily: 'flatMedium', fontSize: width * .03, marginLeft: 5 }]}> ({i18n.t('optional')})</Text>
+                                            <Text style={[styles.yText, { marginTop: 0, fontFamily: 'flatMedium', fontSize: 14, marginLeft: 5 }]}> ({i18n.t('optional')})</Text>
                                         </View>
 
                                         <FlatList
@@ -303,9 +303,9 @@ function ProductDetailes({ navigation, route }) {
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                                             <CheckBox checked={ExtraArr.indexOf(item) !== -1} color={ExtraArr.indexOf(item) !== -1 ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: ExtraArr.indexOf(item) !== -1 ? Colors.sky : Colors.bg, width: 20, height: 20, alignItems: 'center' }} onPress={() => toggleChecked(item,)} />
 
-                                                            <Text style={[styles.Text, { fontSize: width * .033, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
+                                                            <Text style={[styles.Text, { fontSize:14, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
                                                         </View>
-                                                        <Text style={[styles.Text, { color: Colors.sky, fontSize: width * .03 }]}>{item.price} {i18n.t('RS')}</Text>
+                                                        <Text style={[styles.Text, { color: Colors.sky, fontSize: 14 }]}>{item.price} {i18n.t('RS')}</Text>
                                                     </TouchableOpacity>
                                                 )}
                                         />
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize: 14,
     },
     iconImg: {
         width: 12,
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
-        fontSize: width * .036,
+        fontSize: 14,
         left: 20
     },
     wrap: {

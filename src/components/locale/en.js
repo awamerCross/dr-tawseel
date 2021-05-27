@@ -24,6 +24,7 @@ const en = {
   Banktransfer: 'Bank Transfer',
   RecoverWallet: 'The amount will be recovered from the wallet',
   myProfile: 'My Profile',
+  inbox: 'Inbox',
   Bankpicture: 'Bank transfer picture',
   AccName: 'Account Name',
   agreeTo: "By registering you will be agree to all terms and conditions",

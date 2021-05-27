@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 13,
+        fontSize: 14,
 
     },
     iconImg: {
@@ -207,19 +207,19 @@ const styles = StyleSheet.create({
     yText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: 11,
+        fontSize: 14,
         opacity: .6
     },
     card: {
    //     shadowColor: Colors.bg,
         backgroundColor: Colors.bg,
         flexDirection: 'row',
-        marginHorizontal: 20,
+        marginHorizontal: 0,
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 3,
         marginVertical: 8,
-        width: width * .89,
+        width:'100%',
         padding: 10,
         borderRadius: 5,
         shadowColor: "#000",

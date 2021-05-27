@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Linking, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Linking, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard,AppState } from 'react-native'
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 
@@ -11,7 +11,6 @@ import {
     cancelOrder,
     sendRate,
     sendBill,
-    logout
 } from '../../actions';
 
 import BTN from '../../common/BTN';
@@ -22,7 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import ActionSheet from 'react-native-actionsheet'
 
 import RNModal from "react-native-modal";
-import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 
@@ -34,7 +32,6 @@ import { _renderRows } from '../../common/LoaderImage';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import ImageZoom from 'react-native-image-pan-zoom';
 import * as Location from "expo-location";
-import {clear} from "react-native/Libraries/LogBox/Data/LogBoxData";
 import axios from "axios";
 import CONST from "../../consts";
 import * as Notifications from "expo-notifications";
@@ -43,6 +40,8 @@ import * as Notifications from "expo-notifications";
 window.navigator.userAgent = 'react-native';
 
 const { width, height } = Dimensions.get('window')
+
+
 function OrderChatting({ navigation, route }) {
 
     const { receiver, sender, orderDetails } = route.params;
@@ -82,21 +81,40 @@ function OrderChatting({ navigation, route }) {
     const [billSpinner, setBillSpinner]         = useState(false);
 
 
-   function clear(){
-        dispatch({ type: "CLEAR_BLOGPOST" });
-    }
+
 
     function fetchData() {
+
+
+        axios({
+            url: CONST.url + 'update-availability',
+            method: 'POST',
+            params: { lang },
+            data: { available : 0},
+            headers: { Authorization: 'Bearer ' + token, },
+        }).then(response => {
+
+        });
+
         setMsg('')
         setTimeout(()=>{
-            dispatch(getInbox(lang, token, orderDetails.room)).then(() =>  {
-                ScrollViewRef.current.scrollToEnd({ animated: true })
-            }, 500)
+             dispatch(getInbox(lang, token, orderDetails.room)).then(() =>  {
+                 ScrollViewRef.current.scrollToEnd()
+             })
         })
+
+        // setTimeout(()=>{
+        //
+        // },500)
+
+        // Keyboard.addListener('keyboardDidShow', ()=>{
+        //     ScrollViewRef.current.scrollToEnd({ animated: true })
+        //  });
+
 
 
         dispatch(getCancelReasons(lang))
-        ScrollViewRef.current.scrollToEnd({ animated: true })
+        // ScrollViewRef.current.scrollToEnd({ animated: true })
     }
 
     const _pickImage = async (i) => {
@@ -204,9 +222,9 @@ function OrderChatting({ navigation, route }) {
 
             if(res.request.content.data.type === 'chat')
             {
-                setTimeout(()=> {
-                    ScrollViewRef.current.scrollToEnd({ animated: true })
-                }, 1000)
+                // setTimeout(()=> {
+                //     ScrollViewRef.current.scrollToEnd({ animated: true })
+                // }, 1000)
 
                 console.log('******')
                 if(res.request.content.data.room.order.status == 'DELIVERED')
@@ -218,10 +236,36 @@ function OrderChatting({ navigation, route }) {
             }
 
         });
-        return () => subscription.remove();
+
+        return () => {
+            subscription.remove();
+        };
 
 
     }, [route.params]);
+
+
+
+    useEffect(() => {
+
+
+
+         return () => {
+
+             axios({
+                 url: CONST.url + 'update-availability',
+                 method: 'POST',
+                 params: { lang },
+                 data: { available : 1},
+                 headers: { Authorization: 'Bearer ' + token, },
+             }).then(response => {
+
+             });
+         };
+    }, [navigation, route, route?.params])
+
+
+
 
     function onSendMsg() {
         setMsg('')
@@ -229,15 +273,15 @@ function OrderChatting({ navigation, route }) {
          //   fetchData()
             emitMsg();
             Keyboard.dismiss()
-            setTimeout(() => ScrollViewRef.current.scrollToEnd({ animated: true }), 50)
-            setTimeout(() => ScrollViewRef.current.scrollToEnd({ animated: true }), 50)
+             // ScrollViewRef.current.scrollToEnd({ animated: true })
+             // ScrollViewRef.current.scrollToEnd({ animated: true })
         })
     }
 
     function emitMsg() {
        socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
-       ScrollViewRef.current.scrollToEnd({ animated: true })
-       ScrollViewRef.current.scrollToEnd({ animated: true })
+       // ScrollViewRef.current.scrollToEnd({ animated: true })
+       // ScrollViewRef.current.scrollToEnd({ animated: true })
 
     }
     const showActionSheet = () => {
@@ -263,7 +307,6 @@ function OrderChatting({ navigation, route }) {
             socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
             fetchData()
             emitMsg();
-
 
             if (!response.data.success) {
                 Toast.show({
@@ -482,7 +525,7 @@ function OrderChatting({ navigation, route }) {
 
     return (
         <View style={{ flex: 1, }}>
-            <Header navigation={navigation} label={i18n.t('orderDetails')} />
+            <Header navigation={navigation} label={i18n.t('inbox')} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
@@ -961,8 +1004,8 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     ResImgNm: {
-        width: width * .1,
-        height: width * .1,
+        width: 50,
+        height: 50,
         borderRadius: 50,
         marginTop: height * .026,
         marginHorizontal: 5,

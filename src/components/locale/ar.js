@@ -24,6 +24,7 @@ const ar = {
   Lessone: 'لايوجد منتج اقل من 1',
   currentbalance: 'رصيدك الحالي',
   cotinue: 'استمرار',
+  inbox: 'المحادثة',
   noOrder: 'لا يوجد طلبات',
   Soon: 'قريبا',
   enterMsg: 'اكتب الرسالة',

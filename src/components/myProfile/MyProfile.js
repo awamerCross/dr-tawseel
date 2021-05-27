@@ -163,44 +163,45 @@ function MyProfile({ navigation }) {
                                 <Text style={styles.stext}>{name}</Text>
                             </View>
 
-                            <InputIcon
-                                label={i18n.t('username')}
-                                value={name}
-                                onChangeText={(e) => setName(e)}
-                                image={require('../../../assets/images/edit.png')}
-                                styleCont={{ marginTop: 30, }}
+                          <View style={{width : '100%'}}>
+                              <InputIcon
+                                  value={name}
+                                  onChangeText={(e) => setName(e)}
+                                  image={require('../../../assets/images/edit.png')}
+                                  styleCont={{ marginTop: 30, }}
 
 
-                                inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky, paddingTop: Platform.OS == 'ios' ? 25 : 0 }}
+                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
 
-                            />
+                              />
 
-                            <InputIcon
-                                label={i18n.t('phone')}
-                                value={phone}
-                                onChangeText={(e) => setPhone(e)}
-                                inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky, paddingTop: Platform.OS == 'ios' ? 25 : 0 }}
-                                styleCont={{ marginTop: 20, }}
-                                image={require('../../../assets/images/edit.png')}
-                            />
+                              <InputIcon
+                                  value={phone}
+                                  onChangeText={(e) => setPhone(e)}
+                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
+                                  styleCont={{ marginTop: 20, }}
+                                  image={require('../../../assets/images/edit.png')}
+                              />
 
-                            <InputIcon
-                                label={i18n.t('email')}
-                                placeholder={i18n.t('enterEmail')}
-                                value={email}
-                                onChangeText={(e) => setemail(e)}
-                                inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky, paddingTop: Platform.OS == 'ios' ? 25 : 0 }}
-                                styleCont={{ marginTop: 20, }}
+                              <InputIcon
+                                  placeholder={i18n.t('enterEmail')}
+                                  value={email}
+                                  onChangeText={(e) => setemail(e)}
+                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
+                                  styleCont={{ marginTop: 20, }}
 
-                                image={require('../../../assets/images/edit.png')}
+                                  image={require('../../../assets/images/edit.png')}
 
-                            />
+                              />
 
-                            <BTN title={i18n.t('changePass')} onPress={() => { setShowModal(true); }} ContainerStyle={[styles.Btn, { borderRadius: 20 }]} TextStyle={{ fontSize: 13 }} />
-                            <LoadingBtn loading={loading}>
-                                <BTN title={i18n.t('confirm')} onPress={UpdateProfile} ContainerStyle={[styles.Btn, { marginTop: 10, borderRadius: 20, marginBottom: 10 }]} TextStyle={{ fontSize: 13 }} />
+                          </View>
+                          <View style={{marginVertical: 10}}>
+                              <BTN title={i18n.t('changePass')} onPress={() => { setShowModal(true); }} ContainerStyle={[styles.Btn, { borderRadius: 20 }]} TextStyle={{ fontSize: 13 }} />
+                              <LoadingBtn loading={loading}>
+                                  <BTN title={i18n.t('confirm')} onPress={UpdateProfile} ContainerStyle={[styles.Btn, { marginTop: 10, borderRadius: 20, marginBottom: 10 }]} TextStyle={{ fontSize: 13 }} />
 
-                            </LoadingBtn>
+                              </LoadingBtn>
+                          </View>
                         </>
 
                         :
@@ -335,7 +336,6 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .045,
         textAlign: 'center',
         top: width * .19,
 

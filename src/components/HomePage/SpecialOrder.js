@@ -799,8 +799,8 @@ function SpecialOrder({ navigation , route }) {
             <Header navigation={navigation} label={i18n.t('specialOrder')} />
 
             <ScrollView style={{ flex: 1 }}>
-                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row' , alignItems: 'center' }} onPress={() =>  navigation.navigate('getLocation' , { pathName:'SpecialOrder' , type:'deliveryLocation'})}>
-                    <View style={{ flexDirection: 'row',width:'100%' }}>
+                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row' , alignItems: 'center',width:'100%' }} onPress={() =>  navigation.navigate('getLocation' , { pathName:'SpecialOrder' , type:'deliveryLocation'})}>
+                    <View style={{ flexDirection: 'row', justifyContent:'center' , alignItems:'center' }}>
                         <InputIcon
                             label={i18n.t('delPoint')}
                             inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
@@ -812,14 +812,14 @@ function SpecialOrder({ navigation , route }) {
                             value={cityName ? cityName : ''}
                         />
                         <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true); setPointType('deliveryLocation')}}>
-                            <View style={{ marginTop: 15, backgroundColor: '#eaeaea', width: width * .1, paddingVertical: width * .05, height: 0, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{   backgroundColor: '#eaeaea', width: 45, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                                 <Image source={ activeAddress == '' ?  require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
                             </View>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row' }} onPress={() =>  navigation.navigate('getLocation' , { pathName:'SpecialOrder' , type:'delPoint'})}>
-                    <View style={{ flexDirection: 'row' ,width:'100%'}}>
+                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row' ,width:'100%'}} onPress={() =>  navigation.navigate('getLocation' , { pathName:'SpecialOrder' , type:'delPoint'})}>
+                    <View style={{ flexDirection: 'row', justifyContent:'center' , alignItems:'center' }}>
                         <InputIcon
                             label={i18n.t('deliveryLocation')}
                             inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
@@ -831,7 +831,7 @@ function SpecialOrder({ navigation , route }) {
                             value={deliverCityName ? deliverCityName : ''}
                         />
                         <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true); setPointType('delPoint') }}>
-                            <View style={{ marginTop: 15, backgroundColor: '#eaeaea', width: width * .1, paddingVertical: width * .05, height: 0, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ backgroundColor: '#eaeaea', width: 45 , height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                                 <Image source={activeDeliverAddress == '' ?  require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
                             </View>
                         </TouchableOpacity>
@@ -851,7 +851,7 @@ function SpecialOrder({ navigation , route }) {
                         value={orderTime}
                     />
 
-                    <TouchableOpacity  onPress={() => { setModalVisible(true); }} style={{ marginTop: width * .055, position: 'absolute', marginLeft: width * .85 }} >
+                    <TouchableOpacity  onPress={() => { setModalVisible(true); }} style={{   position: 'absolute', right: '15%', top : 20 }} >
                         <Image source={require('../../../assets/images/clock_gray.png')} style={[styles.iconImg,]} resizeMode='contain' />
                     </TouchableOpacity>
                 </TouchableOpacity>
@@ -1042,7 +1042,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .036,
+        fontSize:14,
         marginHorizontal: 10
     },
     iconImg: {
@@ -1112,7 +1112,7 @@ const styles = StyleSheet.create({
     labelText: {
         left: 25,
         alignSelf: "flex-start",
-        fontSize: width * .03,
+        fontSize: 14,
         zIndex: 10,
         position: "absolute",
         fontFamily: 'flatMedium',

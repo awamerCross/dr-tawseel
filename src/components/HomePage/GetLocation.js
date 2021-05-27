@@ -278,14 +278,12 @@ function GetLocation({ navigation, route }) {
 
                     {
                         showAddress && MinPriceCoast.delivery && pathName === 'PaymentDetailes' ?
-                            <View style={{ backgroundColor: '#fff', padding: 10, width: '85%', borderRadius: 5, alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#fff', padding: 10, width: '85%', borderRadius: 5, alignItems: 'center' , marginVertical : 30 }}>
                                 <Text style={[{
                                     fontFamily: 'flatMedium',
                                     color: Colors.IconBlack, textAlign: 'center',
                                     fontSize: 13, lineHeight: 20
                                 }]}>{i18n.t('delevierAddress')} : {city}</Text>
-                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 10 }]}>{i18n.t('delevierPrice')}</Text>
-                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 14, marginTop: 5 }]}>{MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
                             </View>
                             :
                             null

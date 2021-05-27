@@ -52,18 +52,18 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
 
     return (
         <View style={{ flex: 1, }}>
-            <View style={{ width, height: 1, backgroundColor: '#DBDBDB', width }} />
+            <View style={{  height: 1, backgroundColor: '#DBDBDB' }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 10, justifyContent: 'space-between' }}>
                 {/* // */}
                 <View style={{ maxWidth: '33%', alignItems: 'flex-start' }} >
                     <Text style={[styles.oText, { width: '100%', textAlign: 'left' }]} numberOfLines={1} >{pro.name}</Text>
                     <TouchableOpacity onPress={() => { setClick(true); setModelProduct(pro.details) }}>
-                        <Text style={[styles.oText, { color: Colors.sky, fontSize: 10, }]}>({i18n.t('details')})</Text>
+                        <Text style={[styles.oText, { color: Colors.sky, fontSize: 14, }]}>({i18n.t('details')})</Text>
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB', marginHorizontal: 5 }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center' ,marginHorizontal : 20}}>
+                    <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB' }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: 5 }}>
                         <TouchableOpacity onPress={increment}>
                             <Image source={require('../../../assets/images/plus.png')} style={{ width: 20, height: 20, borderRadius: 5, padding: 8 }} />
@@ -74,14 +74,14 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
                         <TouchableOpacity onPress={decrement} >
                             <Image source={require('../../../assets/images/munic.png')} style={{ width: 20, height: 20, borderRadius: 5, padding: 8 }} />
                         </TouchableOpacity>
+                        <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB', marginHorizontal: 5 }} />
+                        <Text style={{ color: Colors.sky, marginHorizontal: 5, fontFamily: 'flatMedium', fontSize: 14, paddingHorizontal: 5 }}>{pro.price} {i18n.t('RS')} </Text>
 
+                        <TouchableOpacity onPress={DeleteCartItem} style={{ alignSelf: 'flex-end', backgroundColor: 'red' }}>
+                            <Image source={require('../../../assets/images/delet.png')} style={{ width: 25, height: 25, padding: 15 }} resizeMode='contain' />
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB', marginHorizontal: 5 }} />
-                    <Text style={{ color: Colors.sky, marginHorizontal: 5, fontFamily: 'flatMedium', fontSize: 14, paddingHorizontal: 5 }}>{pro.price} {i18n.t('RS')} </Text>
 
-                    <TouchableOpacity onPress={DeleteCartItem} style={{ alignSelf: 'flex-end', backgroundColor: 'red' }}>
-                        <Image source={require('../../../assets/images/delet.png')} style={{ width: 25, height: 25, padding: 15 }} resizeMode='contain' />
-                    </TouchableOpacity>
                 </View>
 
             </View>

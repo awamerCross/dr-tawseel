@@ -131,7 +131,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                         <View style={{ backgroundColor: '#fff', borderRadius: 30, padding: 3, }}>
                             <Image source={{ uri: place.icon }} style={styles.ResImgNm} />
                         </View>
-                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', lineHeight: 22 }]}>{place.name}</Text>
+                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}>{place.name}</Text>
                     </View>
                 </View>
 
@@ -175,24 +175,24 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                     <Text style={[styles.sText, { marginHorizontal: 5, fontSize: 13, alignSelf: 'flex-start' }]}>{i18n.t('delPoint')}</Text>
                     <View style={{ flexDirection: 'row', marginVertical: 10, paddingHorizontal: 10 }}>
                         <Image source={require('../../../assets/images/pingray.png')} style={styles.iconImg} resizeMode='contain' />
-                        <Text style={[styles.yText, { fontSize: 13, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', lineHeight: 22 }]}>{place.formatted_address}</Text>
+                        <Text style={[styles.yText, { fontSize: 13, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'   }]}>{place.formatted_address}</Text>
                     </View>
                 </View>
 
-                <View style={{ marginVertical: 40, flexDirection: 'row' }}>
-                    <View style={{ flexDirection: 'row', width: '100%' }}>
+                <View style={{ marginVertical: 40, flexDirection: 'row', width: '100%'  , marginHorizontal:5}}>
+                    <View style={{ flexDirection: 'row'  ,justifyContent:'center' , alignItems:'center'}}>
                         <InputIcon
                             label={i18n.t('deliveryLocation')}
-                            inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                            styleCont={{ height: 45, width: '75%' }}
-                            LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                            inputStyle={{ borderRadius: 30, height: 40, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
+                            styleCont={{ height: 45, width: '80%' }}
+                            LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack , marginVertical: 5 }}
                             image={require('../../../assets/images/locationgray.png')}
                             onPress={() => navigation.navigate('getLocation', { latitude: deliverMapRegion.latitude, longitude: deliverMapRegion.longitude, pathName: 'DeliveryReceiptLoaction' })}
                             editable={false}
                             value={deliverCityName ? deliverCityName : ''}
                         />
                         <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true) }}>
-                            <View style={{ marginTop: 15, backgroundColor: '#eaeaea', width: width * .1, paddingVertical: width * .05, height: 0, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{  backgroundColor: '#eaeaea', width: 45, paddingVertical:10, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                                 <Image source={activeDeliverAddress == '' ? require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
                             </View>
                         </TouchableOpacity>
@@ -210,7 +210,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                         value={orderTime}
                     />
 
-                    <TouchableOpacity onPress={() => { setModalVisible(true); }} style={{ marginTop: width * .055, position: 'absolute', marginLeft: width * .85 }} >
+                    <TouchableOpacity onPress={() => { setModalVisible(true); }} style={{  position: 'absolute', top : 20 , right : '10%' }} >
                         <Image source={require('../../../assets/images/clock_gray.png')} style={[styles.iconImg,]} resizeMode='contain' />
                     </TouchableOpacity>
                 </TouchableOpacity>
@@ -230,7 +230,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                         renderItem={({ item, index }) => {
                             return (
                                 <View>
-                                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: width * .04, }}>
+                                    <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: width * .04, }}>
                                         <TouchableOpacity onPress={() => handleChange(item.key, index)} style={{ flexDirection: 'row', alignItems: 'center', height: 20 }}>
                                             <View style={{
                                                 height: 16,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 12,
+        fontSize: 14,
         marginHorizontal: 10
     },
 
@@ -419,8 +419,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     ResImgNm: {
-        width: width * .14,
-        height: width * .14,
+        width: 35,
+        height: 35,
         borderRadius: 50
     },
     iconImg: {
@@ -433,13 +433,13 @@ const styles = StyleSheet.create({
     yText: {
         fontFamily: 'flatLight',
         color: Colors.IconBlack,
-        fontSize: width * .034,
+        fontSize: 14,
         marginTop: width * .01
     },
 
     orderImg: {
-        width: width * .22,
-        height: width * .22,
+        width: 35,
+        height: 35,
         borderRadius: 5
     },
     imgWrap: {

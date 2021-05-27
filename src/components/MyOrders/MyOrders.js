@@ -138,7 +138,7 @@ function MyOrders({ navigation }) {
             activeColor={Colors.sky}
             inactiveColor={Colors.IconBlack}
             labelStyle={{
-                fontSize: width * 0.035,
+                fontSize: 14,
                 fontFamily: 'flatMedium',
                 textAlign: 'center'
             }}
@@ -163,7 +163,7 @@ function MyOrders({ navigation }) {
                     </View>
                 </View>
 
-                <View style={{ marginTop: 40 }}>
+                <View style={{ marginTop: 50 }}>
                     <Text style={styles.Text}> {i18n.t('myOrders')}</Text>
 
                 </View>
@@ -185,8 +185,6 @@ function MyOrders({ navigation }) {
                 initialLayout={width}
                 renderTabBar={renderTabBar}
             />
-
-
 
         </View >
 
@@ -228,7 +226,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize: 18,
         textAlign: 'center',
     },
     sLine: { height: height * .08, width: 1, backgroundColor: '#e5e0e0', },
@@ -247,12 +245,11 @@ const styles = StyleSheet.create({
         shadowColor: Colors.bg,
         backgroundColor: Colors.bg,
         flexDirection: 'row',
-        marginHorizontal: 20,
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 1,
         marginVertical: 5,
-        width: width * .89,
+        width: '100%',
         height: 80,
         paddingStart: 10,
         overflow: 'hidden',
@@ -269,7 +266,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .03,
+        fontSize: 14,
         marginHorizontal: 5,
         flexWrap: 'wrap',
     },
@@ -283,7 +280,7 @@ const styles = StyleSheet.create({
     yText: {
         fontFamily: 'flatLight',
         color: Colors.IconBlack,
-        fontSize: width * .026,
+        fontSize: 14,
         marginTop: width * .02,
         marginHorizontal: 10
     },

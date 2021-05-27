@@ -79,7 +79,7 @@ function Department({ navigation, route }) {
                                 return (
                                     <TouchableOpacity onPress={() => navigation.navigate('RestaurantDepartment', { Resid: item.id })} key={i}>
                                         <View style={styles.card}>
-                                            <Image source={{ uri: item.avatar }} style={styles.ImgCard} resizeMode='cover' />
+                                            <Image source={{ uri: item.avatar }} style={styles.ImgCard} resizeMode='contain' />
                                             <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingHorizontal: 10, flex: 1 }}>
                                                 <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1 }]}>{item.name}</Text>
                                                 <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{item.available}</Text>
@@ -154,9 +154,8 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: Colors.bg,
         flexDirection: 'row',
-        marginHorizontal: 20,
         marginVertical: 8,
-        width: width * .89,
+        width: '100%',
         padding: 15,
         borderRadius: 5,
         flex: 1,

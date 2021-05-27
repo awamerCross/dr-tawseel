@@ -1,5 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, RefreshControl, Dimensions, TouchableOpacity, I18nManager, Switch, Platform } from 'react-native'
+import React, {useEffect, useRef, useState} from 'react'
+import {
+    View,
+    Text,
+    Image,
+    StyleSheet,
+    ScrollView,
+    RefreshControl,
+    Dimensions,
+    TouchableOpacity,
+    I18nManager,
+    Switch,
+    Platform,
+    AppState
+} from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,6 +22,8 @@ import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
 import * as Location from 'expo-location';
 import { _renderRows } from '../../common/LoaderImage';
+import axios from "axios";
+import CONST from "../../consts";
 
 const { width, height } = Dimensions.get('window')
 
@@ -35,6 +50,52 @@ function HomePage({ navigation }) {
         longitudeDelta
     });
 
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+    useEffect(() => {
+        AppState.addEventListener('change', _handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', _handleAppStateChange);
+        };
+    }, []);
+
+    const _handleAppStateChange = (nextAppState) => {
+        if (
+            appState.current.match(/inactive|background/) &&
+            nextAppState === 'active'
+        ) {
+            console.log('App has come to the foreground!');
+        }
+
+        appState.current = nextAppState;
+
+        setAppStateVisible(appState.current);
+        if(appState.current === 'active'){
+            axios({
+                url: CONST.url + 'update-availability',
+                method: 'POST',
+                params: { lang },
+                data: { available : 1},
+                headers: { Authorization: 'Bearer ' + token, },
+            }).then(response => {
+
+            });
+        }else{
+            axios({
+                url: CONST.url + 'update-availability',
+                method: 'POST',
+                params: { lang },
+                data: { available : 1},
+                headers: { Authorization: 'Bearer ' + token, },
+            }).then(response => {
+
+            });
+        }
+
+        console.log('AppState', appState.current);
+    };
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setSpinner(true)
