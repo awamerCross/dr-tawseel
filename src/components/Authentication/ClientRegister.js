@@ -74,7 +74,7 @@ function ClientRegister({ navigation, route }) {
 
         <View style={styles.container}>
             <LogoLogin navigation={navigation} />
-            <ScrollView style={{ flex: 1 }}  >
+            <ScrollView style={{ flex: 1 , marginVertical:50 }}  >
                 <Text style={[styles.sText, { marginBottom: 50 }]}>{i18n.t("createAcc")}</Text>
                 <View style={{ marginTop: width * .01, }}>
                     <InputIcon
@@ -136,7 +136,7 @@ function ClientRegister({ navigation, route }) {
 
                     <CheckBox checked={isSelected} color={isSelected ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: isSelected ? Colors.sky : '#DBDBDB', width: 17, height: 17, paddingBottom: 15 , marginHorizontal : 10}} onPress={() => setSelection(!isSelected)} />
 
-                    <SText title={i18n.t("policy")} style={{ paddingTop: 5, color: Colors.sky, marginLeft: 5 , marginHorizontal : 10 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
+                    <SText title={i18n.t("policy")} style={{ paddingVertical: 10, color: Colors.sky, marginLeft: 5 , marginHorizontal : 10 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
                 </View>
                 <LoadingBtn loading={spinner}>
 
@@ -149,7 +149,6 @@ function ClientRegister({ navigation, route }) {
                     <Text style={styles.Text}>{i18n.t("haveAcc")}</Text>
                     <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Login')} />
                 </View>
-                <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
             </ScrollView>
         </View>
     )

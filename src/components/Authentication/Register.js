@@ -33,8 +33,10 @@ function Register({ navigation }) {
                 <LogoLogin navigation={navigation} />
                 <View  >
                     <Text style={styles.sText}>{i18n.t("createAcc")}</Text>
-                    <BTN title={i18n.t("delegateReg")} onPress={() => navigation.navigate('registerDelegate')} ContainerStyle={[styles.Btn,]} />
-                    <BTN title={i18n.t("clientReg")} onPress={() => navigation.navigate('ClientReg', { userType: 2 })} ContainerStyle={[styles.Btn, { marginTop: 20 }]} />
+
+                    <BTN title={i18n.t("clientReg")} onPress={() => navigation.navigate('ClientReg', { userType: 2 })} ContainerStyle={[styles.Btn, { marginVertical: 20 }]} />
+
+                    <BTN title={i18n.t("delegateReg")} onPress={() => navigation.navigate('registerDelegate')} ContainerStyle={[styles.Btn, { marginVertical: 20 }]} />
 
                     <View style={[styles.WrapText, { marginTop: 30 }]}>
                         <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
@@ -50,7 +52,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bg,
-        width,
         paddingTop: 0,
     },
     sText: {
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
         fontFamily: 'flatMedium',
         color: Colors.sky,
         fontSize: 20,
-        marginTop: 20,
+        marginVertical: 20,
     },
     building: {
         width,

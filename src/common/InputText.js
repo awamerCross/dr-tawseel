@@ -50,7 +50,7 @@ const InputIcon = ({
 
             />
             <TouchableOpacity onPress={onPress} style={{ position: 'absolute', alignSelf: 'flex-end', marginTop: 15, alignItems: 'center', right: 5 }}>
-                <Image source={image} style={[styles.image, imgStyle]} resizeMode='contain' />
+                <Image source={image} style={[styles.image, imgStyle , {width : 20 , height : 20}]} resizeMode='contain' />
             </TouchableOpacity>
         </View>
 
@@ -62,7 +62,7 @@ export { InputIcon };
 const styles = StyleSheet.create({
 
     containerTableTextOverInput: {
-        height: width * .15,
+        height: 45,
         position: "relative",
         marginHorizontal: "5%",
         marginVertical: 10,

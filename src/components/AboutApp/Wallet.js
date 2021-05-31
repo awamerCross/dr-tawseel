@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .045,
+        fontSize: 16,
         textAlign: 'center',
         top: width * .14,
 
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     stext: {
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: 18,
+        fontSize: 16,
         marginTop: height * .09
     },
     lText: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: width * .07
+        fontSize: 14
 
     }
 

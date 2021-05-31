@@ -141,7 +141,7 @@ function Basket({ navigation }) {
                                         return (
                                             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('BasketDetailes', { BasketId: item.id, mapRegion: mapRegion })} key={index}>
                                                 <View style={{ flexDirection: 'row', padding: 10 }}>
-                                                    <Image source={{ uri: item.avatar }} style={styles.ImgCard} />
+                                                    <Image source={{ uri: item.avatar }} style={styles.ImgCard} resizeMode={'contain'} />
                                                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10, flex: 1 }}>
                                                         <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1 }]}>{item.name}</Text>
                                                         <Text style={[styles.sText, { alignSelf: 'flex-start', }]}>{item.available}</Text>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize: 14,
         textAlign: 'center',
         top: width * .15
     },
@@ -229,12 +229,11 @@ const styles = StyleSheet.create({
     card: {
         shadowColor: Colors.bg,
         backgroundColor: Colors.bg,
-        marginHorizontal: 20,
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 3,
         marginVertical: 8,
-        width: width * .89,
+        width: '100%',
         padding: 10,
         borderRadius: 5,
         shadowColor: "#000",

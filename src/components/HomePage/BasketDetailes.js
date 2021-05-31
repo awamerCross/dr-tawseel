@@ -112,8 +112,8 @@ function BasketDetailes({ navigation, route }) {
                                 <Image source={{ uri: BasketDtailes.provider.avatar }} style={styles.ImgCard} />
                                 <View style={{ flexDirection: 'column', justifyContent: 'space-between', }}>
 
-                                    <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, marginStart: 5 }]}>{BasketDtailes.provider.name}</Text>
-                                    <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 5, fontSize: 12, }]}>{BasketDtailes.provider.available}</Text>
+                                    <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, marginStart: 1 }]}>{BasketDtailes.provider.name}</Text>
+                                    <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 1, fontSize: 12, }]}>{BasketDtailes.provider.address}</Text>
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '85%' }}>
                                         <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
@@ -154,7 +154,7 @@ function BasketDetailes({ navigation, route }) {
                         <KeyboardAvoidingView>
                             <View style={styles.product}>
                                 <Image source={require('../../../assets/images/cpon.png')} style={[styles.iconImg, { alignSelf: 'center', width: 18, height: 18, }]} resizeMode='contain' />
-                                <Text style={[styles.yText, { color: '#fff', fontSize: width * .04, marginTop: 0, opacity: 1, }]}> {i18n.t('addCoupon')}</Text>
+                                <Text style={[styles.yText, { color: '#fff', fontSize: 14, marginTop: 0, opacity: 1, }]}> {i18n.t('addCoupon')}</Text>
                             </View>
 
                             <InputIcon
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize: 14,
         textAlign: 'center',
         top: width * .19
     },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     product: {
         marginVertical: 15,
         backgroundColor: Colors.IconBlack,
-        height: width * .13,
+        height: 50,
         width: '92%',
         flexDirection: 'row',
         alignItems: 'center',
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     modetext: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .035,
+        fontSize: 12,
         marginHorizontal: 10
     },
 })

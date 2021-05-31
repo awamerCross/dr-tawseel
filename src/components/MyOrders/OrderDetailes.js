@@ -793,14 +793,14 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize:14,
         textAlign: 'center',
         top: width * .19
     },
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .036,
+        fontSize:14,
         marginHorizontal: 10
     },
     card: {
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     yText: {
         fontFamily: 'flatLight',
         color: Colors.IconBlack,
-        fontSize: width * .03,
+        fontSize:14,
         marginHorizontal: 10
     },
     warb: {
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .036,
+        fontSize:14,
     },
     accordion: {
         backgroundColor: '#f8f8f8',

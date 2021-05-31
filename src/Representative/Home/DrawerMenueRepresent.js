@@ -16,6 +16,8 @@ import { getAppInfo, LogoutUser } from '../../actions';
 import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../components/locale/i18n";
 import UserContext from "../../routes/UserContext";
+import axios from "axios";
+import CONST from "../../consts";
 
 const { width, height } = Dimensions.get('window')
 
@@ -33,9 +35,24 @@ function DrawerMenueRepresent({ navigation }) {
     }
 
     useEffect(() => {
+
         dispatch(getAppInfo(lang));
     }, []);
 
+
+
+    function navigateTo(name){
+        navigation.navigate(name)
+        axios({
+            url: CONST.url + 'update-availability',
+            method: 'POST',
+            params: { lang },
+            data: { available : 1},
+            headers: { Authorization: 'Bearer ' + token, },
+        }).then(response => {
+
+        });
+    }
     const onShare = async () => {
         try {
             const result = await Share.share({
@@ -65,17 +82,17 @@ function DrawerMenueRepresent({ navigation }) {
 
             <ScrollView style={styles.container}>
 
-                <TextImg label={i18n.t('home')} image={require('../../../assets/images/home.png')} onPress={() => navigation.navigate('RebHome')} />
-                <TextImg label={i18n.t('profile')} image={require('../../../assets/images/profile.png')} onPress={() => navigation.navigate('RebProfile')} />
-                <TextImg label={i18n.t('orders')} image={require('../../../assets/images/order.png')} onPress={() => navigation.navigate('MyOrders')} />
+                <TextImg label={i18n.t('home')} image={require('../../../assets/images/home.png')} onPress={() => navigateTo('RebHome')} />
+                <TextImg label={i18n.t('profile')} image={require('../../../assets/images/profile.png')} onPress={() => navigateTo('RebProfile')} />
+                <TextImg label={i18n.t('orders')} image={require('../../../assets/images/order.png')} onPress={() => navigateTo('MyOrders')} />
                 {/* <TextImg label={i18n.t('aboutApp')} image={require('../../../assets/images/about.png')} onPress={() => navigation.navigate('About')} /> */}
                 {/* <TextImg label={i18n.t('appPolicy')} image={require('../../../assets/images/security.png')} onPress={() => navigation.navigate('politics')} /> */}
-                <TextImg label={i18n.t('contactUs')} image={require('../../../assets/images/comolain.png')} onPress={() => navigation.navigate('Contact')} />
+                <TextImg label={i18n.t('contactUs')} image={require('../../../assets/images/comolain.png')} onPress={() => navigateTo('Contact')} />
                 {/* <TextImg label={i18n.t('compAndSug')} image={require('../../../assets/images/Complaint.png')} onPress={() => navigation.navigate('CompSuggest')} /> */}
                 {/* <TextImg label={i18n.t('shareApp')} image={require('../../../assets/images/shareapp.png')} onPress={() => onShare()} /> */}
-                <TextImg label={i18n.t('chats')} image={require('../../../assets/images/messag.png')} onPress={() => navigation.navigate('Chatting')} />
-                <TextImg label={i18n.t('wallet')} image={require('../../../assets/images/bill.png')} onPress={() => navigation.navigate('Wallet')} />
-                <TextImg label={i18n.t('settings')} image={require('../../../assets/images/global.png')} onPress={() => navigation.navigate('Settings')} />
+                <TextImg label={i18n.t('chats')} image={require('../../../assets/images/messag.png')} onPress={() => navigateTo('Chatting')} />
+                <TextImg label={i18n.t('wallet')} image={require('../../../assets/images/bill.png')} onPress={() => navigateTo('Wallet')} />
+                <TextImg label={i18n.t('settings')} image={require('../../../assets/images/global.png')} onPress={() => navigateTo('Settings')} />
                 {/* <TextImg label={i18n.t('logout')} image={require('../../../assets/images/logoute.png')} onPress={Logout} /> */}
 
             </ScrollView>

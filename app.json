@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "5.0.0",
+    "version": "5.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "aait.drtawsel.com",
+      "bundleIdentifier": "drtawsel",
       "infoPlist": {
         "NSCameraUsageDescription": "App need this permission to update profile photo.",
         "NSPhotoLibraryAddUsageDescription": "App need this permission to update profile photo.",
@@ -36,7 +36,7 @@
       "package": "shabaka.drtawsel.com",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 99,
+      "versionCode": 103,
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",

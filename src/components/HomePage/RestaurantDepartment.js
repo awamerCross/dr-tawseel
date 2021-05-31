@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize: width * .03,
+        fontSize: 14,
         marginHorizontal: 10
     }, mainScroll: {
         borderBottomWidth: 2,

@@ -20,7 +20,7 @@ function LogoLogin({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         width: '104%',
-        height: height * .35,
+        height:280,
         alignItems: 'center',
         alignSelf: 'center'
     },

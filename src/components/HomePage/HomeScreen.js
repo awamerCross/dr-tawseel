@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, } from 'react-native'
+import {View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, AppState,} from 'react-native'
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import StarRating from "react-native-star-rating";
@@ -10,11 +10,13 @@ import i18n from "../locale/i18n";
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import axios from "axios";
+import { Platform } from 'react-native'
 
 import HeaderHome from '../../common/HeaderHome';
 import { _renderRows } from '../../common/LoaderImage';
 import { useIsFocused } from '@react-navigation/native';
 import { ToasterNative } from '../../common/ToasterNatrive';
+import CONST from "../../consts";
 
 
 const { width } = Dimensions.get('window');
@@ -54,7 +56,52 @@ function HomeScreen({ navigation }) {
             setloadingImage(true)
         }
     }
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
+    useEffect(() => {
+        AppState.addEventListener('change', _handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', _handleAppStateChange);
+        };
+    }, []);
+
+    const _handleAppStateChange = (nextAppState) => {
+        if (
+            appState.current.match(/inactive|background/) &&
+            nextAppState === 'active'
+        ) {
+            console.log('App has come to the foreground!');
+        }
+
+        appState.current = nextAppState;
+
+        setAppStateVisible(appState.current);
+        if(appState.current === 'active'){
+            axios({
+                url: CONST.url + 'update-availability',
+                method: 'POST',
+                params: { lang },
+                data: { available : 1},
+                headers: { Authorization: 'Bearer ' + token, },
+            }).then(response => {
+
+            });
+        }else{
+            axios({
+                url: CONST.url + 'update-availability',
+                method: 'POST',
+                params: { lang },
+                data: { available : 1},
+                headers: { Authorization: 'Bearer ' + token, },
+            }).then(response => {
+
+            });
+        }
+
+        console.log('AppState', appState.current);
+    };
 
     const fetchData = async () => {
         let { status } = await Location.requestPermissionsAsync();
@@ -172,7 +219,7 @@ function HomeScreen({ navigation }) {
                         banners.map((img, i) => {
                             return (
                                 <TouchableOpacity style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} onPress={img.id == 1 ? () => { } : () => navigation.navigate('RestaurantDepartment', { Resid: img.id })}>
-                                    <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={'contain'} />
+                                    <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={ Platform.isPad ? 'strech' : 'contain'} />
                                 </TouchableOpacity>
                             )
                         })

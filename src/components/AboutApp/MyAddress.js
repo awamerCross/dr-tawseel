@@ -95,12 +95,11 @@ const styles = StyleSheet.create({
         shadowColor: Colors.bg,
         backgroundColor: Colors.bg,
         flexDirection: 'row',
-        marginHorizontal: 20,
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 1,
         marginVertical: 5,
-        width: width * .89,
+        width: '100%',
         padding: 20
     },
 

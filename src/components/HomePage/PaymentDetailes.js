@@ -118,14 +118,14 @@ function PaymentDetailes({ navigation, route }) {
             <ScrollView style={{ flex: 1, backgroundColor: Colors.bg }} showsVerticalScrollIndicator={false}>
 
                 <View style={{ marginTop: width * .16 }}>
-                    <View style={{ alignItems: 'center', justifyContent: 'center', width }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center'  }}>
 
-                        <TouchableOpacity onPress={() => { navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' }) }}>
+                        <TouchableOpacity style={{width : '100%', marginHorizontal: 10}}  onPress={() => { navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' }) }}>
                             <InputIcon
                                 label={i18n.t('deliveryLocation')}
                                 placeholder={i18n.t('selectLocation')}
                                 inputStyle={{ borderRadius: 0, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                                styleCont={{ height: 40, marginTop: width * .05, width: 300, marginHorizontal: 0 }}
+                                styleCont={{ height: 40, marginTop: width * .05 }}
                                 LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 0 }}
                                 image={require('../../../assets/images/pingray.png')}
                                 onPress={() => navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' })}
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
-        fontSize: width * .036,
+        fontSize: 14,
     },
 })
 export default PaymentDetailes
