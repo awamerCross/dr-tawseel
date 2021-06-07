@@ -4,7 +4,7 @@ import { Toast } from 'native-base'
 import { ToasterNative } from "../common/ToasterNatrive";
 
 
-export const sendComp = (lang, token, username, email, subject, description) => {
+export const sendComp = (lang, token, username, email, subject, description, navigation) => {
     return async (dispatch) => {
         await axios({
             url: CONST.url + 'send-complaint',
@@ -13,6 +13,11 @@ export const sendComp = (lang, token, username, email, subject, description) => 
             data: { username, email, subject, description },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
+
+            if (response.data.success) {
+                navigation.navigate('GoHome')
+
+            }
             Toast.show({
                 text: response.data.message,
                 type: response.data.success ? "success" : "danger",

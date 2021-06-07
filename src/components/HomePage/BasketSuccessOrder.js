@@ -14,13 +14,11 @@ function BasketSuccessOrder({ navigation, route }) {
     const { orderId } = route.params;
 
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flex: 1 }}>
-                <Image source={require('../../../assets/images/vector.png')} style={styles.orderImg} resizeMode='contain' />
-                <Text style={styles.tText}>{i18n.t('orderSentSucc')}</Text>
-                <BTN title={i18n.t('followOrder')} onPress={() => navigation.navigate('OrderDetailes', { orderId })} ContainerStyle={{ marginTop: 50, borderRadius: 15, flex: .1 }} TextStyle={{ fontSize: 16 }} />
-                <BTN title={i18n.t('backHome')} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, borderRadius: 15, flex: .1 }} TextStyle={{ fontSize: 16 }} />
-            </View>
+        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 150 }}>
+            <Image source={require('../../../assets/images/vector.png')} style={styles.orderImg} resizeMode='contain' />
+            <Text style={styles.tText}>{i18n.t('orderSentSucc')}</Text>
+            <BTN title={i18n.t('followOrder')} onPress={() => navigation.navigate('OrderDetailes', { orderId })} ContainerStyle={{ marginTop: 50, borderRadius: 15, padding: 30 }} TextStyle={{ fontSize: 13, padding: 35, }} />
+            <BTN title={i18n.t('backHome')} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, borderRadius: 15, padding: 25, }} TextStyle={{ fontSize: 13 }} />
         </View>
 
 

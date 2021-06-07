@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Linking, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard,AppState } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Linking, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard, AppState } from 'react-native'
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 
@@ -25,7 +25,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 
 import Modal from "react-native-modal";
-import {Textarea, Toast} from "native-base";
+import { Textarea, Toast } from "native-base";
 import { useIsFocused } from '@react-navigation/native';
 import SocketIOClient from 'socket.io-client';
 import { _renderRows } from '../../common/LoaderImage';
@@ -46,39 +46,39 @@ function OrderChatting({ navigation, route }) {
 
     const { receiver, sender, orderDetails } = route.params;
 
-    const socket                = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
-    const lang                  = useSelector(state => state.lang.lang);
-    const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
-    const  messages             = useSelector(state => state.chat.messages.messages);
+    const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
+    const lang = useSelector(state => state.lang.lang);
+    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
+    const messages = useSelector(state => state.chat.messages.messages);
 
-    const cancelReasons         = useSelector(state => state.cancelReasons.cancelReasons);
-    const button                = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);
-    let  order                  = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
-    const dispatch              = useDispatch();
-    const [msg, setMsg]         = useState('');
+    const cancelReasons = useSelector(state => state.cancelReasons.cancelReasons);
+    const button = useSelector(state => state.chat.messages.order ? state.chat.messages.order.button : null);
+    let order = useSelector(state => state.chat.messages.order ? state.chat.messages.order : null);
+    const dispatch = useDispatch();
+    const [msg, setMsg] = useState('');
     const [rateMsg, setRateMsg] = useState('');
     const [spinner, setSpinner] = useState(false);
-    const isFocused             = useIsFocused();
+    const isFocused = useIsFocused();
 
     const [showBillModal, setShowBillModal] = useState(false);
     const [zoomBillModal, setZoomBillModal] = useState(false);
-    const [cost, setCost]   = useState(0);
-    const ScrollViewRef     = useRef();
+    const [cost, setCost] = useState(0);
+    const ScrollViewRef = useRef();
     let total = Number(orderDetails.shipping) + Number(cost);
 
-    const [selected, setisSelected]             = useState(false);
+    const [selected, setisSelected] = useState(false);
     const [EditMaodVisible, setEditMaodVisible] = useState(false)
-    const [photo, setPhoto]                     = useState('');
-    const [base64, setBase64]                   = useState('');
-    const [starCount, setStarCount]             = useState(0);
-    const [IsDeliverMoadl, setIsDeliverMoadl]   = useState(false)
-    const [showModal, setShowModal]             = useState(false);
-    const [showRateModal, setShowRateModal]     = useState(false);
-    const [selectedRadion, setSelectedRadio]    = useState(0)
-    const [isSubmitted, setIsSubmitted]         = useState(false);
-    const [billImage, setBillImage]             = useState('');
-    const [billSpinner, setBillSpinner]         = useState(false);
+    const [photo, setPhoto] = useState('');
+    const [base64, setBase64] = useState('');
+    const [starCount, setStarCount] = useState(0);
+    const [IsDeliverMoadl, setIsDeliverMoadl] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+    const [showRateModal, setShowRateModal] = useState(false);
+    const [selectedRadion, setSelectedRadio] = useState(0)
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [billImage, setBillImage] = useState('');
+    const [billSpinner, setBillSpinner] = useState(false);
 
 
 
@@ -90,17 +90,17 @@ function OrderChatting({ navigation, route }) {
             url: CONST.url + 'update-availability',
             method: 'POST',
             params: { lang },
-            data: { available : 0},
+            data: { available: 0 },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
 
         });
 
         setMsg('')
-        setTimeout(()=>{
-             dispatch(getInbox(lang, token, orderDetails.room)).then(() =>  {
-                 ScrollViewRef.current.scrollToEnd()
-             })
+        setTimeout(() => {
+            dispatch(getInbox(lang, token, orderDetails.room)).then(() => {
+                ScrollViewRef.current.scrollToEnd()
+            })
         })
 
         // setTimeout(()=>{
@@ -207,28 +207,26 @@ function OrderChatting({ navigation, route }) {
     useEffect(() => {
 
 
-            setEditMaodVisible(false)
-            setShowBillModal(false)
-            fetchData()
-            joinRoom()
-            socket.on('get_message', () => fetchData());
-            setPhoto('');
-            setBase64('');
-            setCost(0)
+        setEditMaodVisible(false)
+        setShowBillModal(false)
+        fetchData()
+        joinRoom()
+        socket.on('get_message', () => fetchData());
+        setPhoto('');
+        setBase64('');
+        setCost(0)
 
 
-        const  subscription =   Notifications.addNotificationReceivedListener(res => {
+        const subscription = Notifications.addNotificationReceivedListener(res => {
 
 
-            if(res.request.content.data.type === 'chat')
-            {
+            if (res.request.content.data.type === 'chat') {
                 // setTimeout(()=> {
                 //     ScrollViewRef.current.scrollToEnd({ animated: true })
                 // }, 1000)
 
                 console.log('******')
-                if(res.request.content.data.room.order.status == 'DELIVERED')
-                {
+                if (res.request.content.data.room.order.status == 'DELIVERED') {
                     setShowRateModal(true)
 
                 }
@@ -250,18 +248,18 @@ function OrderChatting({ navigation, route }) {
 
 
 
-         return () => {
+        return () => {
 
-             axios({
-                 url: CONST.url + 'update-availability',
-                 method: 'POST',
-                 params: { lang },
-                 data: { available : 1},
-                 headers: { Authorization: 'Bearer ' + token, },
-             }).then(response => {
+            axios({
+                url: CONST.url + 'update-availability',
+                method: 'POST',
+                params: { lang },
+                data: { available: 1 },
+                headers: { Authorization: 'Bearer ' + token, },
+            }).then(response => {
 
-             });
-         };
+            });
+        };
     }, [navigation, route, route?.params])
 
 
@@ -270,24 +268,24 @@ function OrderChatting({ navigation, route }) {
     function onSendMsg() {
         setMsg('')
         dispatch(sendNewMessage(lang, token, msg, orderDetails.order_id)).then(() => {
-         //   fetchData()
+            //   fetchData()
             emitMsg();
             Keyboard.dismiss()
-             // ScrollViewRef.current.scrollToEnd({ animated: true })
-             // ScrollViewRef.current.scrollToEnd({ animated: true })
+            // ScrollViewRef.current.scrollToEnd({ animated: true })
+            // ScrollViewRef.current.scrollToEnd({ animated: true })
         })
     }
 
     function emitMsg() {
-       socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
-       // ScrollViewRef.current.scrollToEnd({ animated: true })
-       // ScrollViewRef.current.scrollToEnd({ animated: true })
+        socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
+        // ScrollViewRef.current.scrollToEnd({ animated: true })
+        // ScrollViewRef.current.scrollToEnd({ animated: true })
 
     }
     const showActionSheet = () => {
         ActionSheet.show()
     }
-  async  function updateOrder() {
+    async function updateOrder() {
         let id = orderDetails.order_id;
         let customer_paid = null;
         await axios({
@@ -299,8 +297,7 @@ function OrderChatting({ navigation, route }) {
         }).then(response => {
 
 
-            if(response.data.data.status === 'DELIVERED')
-            {
+            if (response.data.data.status === 'DELIVERED') {
                 setShowRateModal(true)
             }
             socket.emit('send_message', { room: orderDetails.order_id, msg: 'msg' });
@@ -340,18 +337,18 @@ function OrderChatting({ navigation, route }) {
         if (rateMsg && starCount) {
             return (
 
-            <TouchableOpacity onPress={() => sendRateMsg()} style={[styles.container,{backgroundColor:Colors.sky, margin : 20}]} >
-                <Text style={[styles.sText , {padding : 20 , color : '#fff' , fontSize : 16}]}>
-                    {i18n.t('send')}
-                </Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => sendRateMsg()} style={[styles.container, { backgroundColor: Colors.sky, margin: 20 }]} >
+                    <Text style={[styles.sText, { padding: 20, color: '#fff', fontSize: 16 }]}>
+                        {i18n.t('send')}
+                    </Text>
+                </TouchableOpacity>
 
             );
         } else {
 
             return (
-                <TouchableOpacity disabled={true} style={[styles.container,{backgroundColor:Colors.sky, margin : 20}]} >
-                    <Text style={[styles.sText , {padding : 20 , color : '#fff' , fontSize : 16}]}>
+                <TouchableOpacity disabled={true} style={[styles.container, { backgroundColor: Colors.sky, margin: 20 }]} >
+                    <Text style={[styles.sText, { padding: 20, color: '#fff', fontSize: 16 }]}>
                         {i18n.t('send')}
                     </Text>
                 </TouchableOpacity>
@@ -400,7 +397,7 @@ function OrderChatting({ navigation, route }) {
                         <View style={{ backgroundColor: message.type === 'image' ? 'transparent' : Colors.sky, borderRadius: 15, overflow: 'hidden', flexDirection: "row", alignSelf: 'flex-start', alignItems: "center", justifyContent: 'center', flexWrap: 'wrap' }}>
                             {
                                 message.type === 'image' ?
-                                    <TouchableOpacity onPress={() => {setBillImage(message.message);  setZoomBillModal(!zoomBillModal)}} style={{ width:'100%', height: 220 }}>
+                                    <TouchableOpacity onPress={() => { setBillImage(message.message); setZoomBillModal(!zoomBillModal) }} style={{ width: '100%', height: 220 }}>
                                         <Image source={{ uri: message.message }} style={{ width: '100%', height: 220, borderRadius: 15, alignSelf: 'center', }} resizeMode={'cover'} />
                                     </TouchableOpacity>
 
@@ -420,7 +417,7 @@ function OrderChatting({ navigation, route }) {
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4, backgroundColor: '#eee' }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
-                                                    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
+                                                    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
                                                 </View>
 
                                                 {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>*/}
@@ -430,10 +427,10 @@ function OrderChatting({ navigation, route }) {
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
-                                                    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
+                                                    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).discount}</Text>
                                                 </View>
 
-                                                <View style={{ flexDirection: 'row', padding: 4, backgroundColor: '#eee'}}>
+                                                <View style={{ flexDirection: 'row', padding: 4, backgroundColor: '#eee' }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).total_text}  </Text>
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).total}</Text>
                                                 </View>
@@ -467,7 +464,7 @@ function OrderChatting({ navigation, route }) {
                     <View style={{ backgroundColor: Colors.fontNormal, borderRadius: 15, flexDirection: "row", alignSelf: 'flex-end', alignItems: "center", justifyContent: 'center', flexWrap: 'wrap' }}>
                         {
                             message.type === 'image' ?
-                                <TouchableOpacity onPress={() => {setBillImage(message.message);  setZoomBillModal(!zoomBillModal)}} style={{ width:'100%', height: 220 }}>
+                                <TouchableOpacity onPress={() => { setBillImage(message.message); setZoomBillModal(!zoomBillModal) }} style={{ width: '100%', height: 220 }}>
                                     <Image source={{ uri: message.message }} style={{ width: '100%', height: 220, borderRadius: 15, alignSelf: 'center' }} resizeMode={'cover'} />
                                 </TouchableOpacity>
                                 :
@@ -486,7 +483,7 @@ function OrderChatting({ navigation, route }) {
 
                                             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3, backgroundColor: '#eee' }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).delivery_text}  </Text>
-                                                <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).delivery}</Text>
+                                                <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
                                             </View>
 
                                             {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>*/}
@@ -494,9 +491,9 @@ function OrderChatting({ navigation, route }) {
                                             {/*    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>*/}
                                             {/*</View>*/}
 
-                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4  }}>
+                                            <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
-                                                <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium',  }]}>{JSON.parse(message.message).discount}</Text>
+                                                <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).discount}</Text>
                                             </View>
 
                                             <View style={{ flexDirection: 'row', padding: 3, backgroundColor: '#eee' }}>
@@ -790,9 +787,9 @@ function OrderChatting({ navigation, route }) {
                 style={{ width: "95%", alignSelf: 'center', }}
                 avoidKeyboard={true}
             >
-                    <KeyboardAvoidingView behavior={'position'} >
-                <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', }]}>
-                        <View style={{alignItems: 'center',}}>
+                <KeyboardAvoidingView behavior={'position'} >
+                    <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', }]}>
+                        <View style={{ alignItems: 'center', }}>
                             <View style={{
                                 width: '100%',
                                 height: 50,
@@ -809,27 +806,27 @@ function OrderChatting({ navigation, route }) {
                                 }]}>{i18n.t('exportBill')}</Text>
                             </View>
 
-                            <View style={{width: '100%'}}>
+                            <View style={{ width: '100%' }}>
                                 <View>
                                     <TouchableOpacity onPress={() => {
                                         // setShowBillModal(!showBillModal);
                                         setEditMaodVisible(true)
                                     }}>
-                                        <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : {uri: photo}}
-                                               style={{width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15}}
-                                               resizeMode='contain'/>
+                                        <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : { uri: photo }}
+                                            style={{ width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15 }}
+                                            resizeMode='contain' />
                                     </TouchableOpacity>
                                 </View>
 
 
-                                <Text style={[styles.sText, {textAlign: 'center', marginTop: 5}]}>{i18n.t('uploadImg')}</Text>
+                                <Text style={[styles.sText, { textAlign: 'center', marginTop: 5 }]}>{i18n.t('uploadImg')}</Text>
 
-                                <View style={{marginTop: 40, flexDirection: 'row', alignItems: 'center'}}>
-                                    <View style={{flexDirection: 'row', width: '100%'}}>
+                                <View style={{ marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
+                                    <View style={{ flexDirection: 'row', width: '100%' }}>
                                         <InputIcon
                                             label={i18n.t('productsCost')}
-                                            inputStyle={{borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea'}}
-                                            styleCont={{height: 45, width: '90%'}}
+                                            inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
+                                            styleCont={{ height: 45, width: '90%' }}
                                             LabelStyle={{
                                                 bottom: 50,
                                                 backgroundColor: 0,
@@ -845,12 +842,12 @@ function OrderChatting({ navigation, route }) {
                                     </View>
                                 </View>
 
-                                <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-                                    <View style={{flexDirection: 'row', width: '100%'}}>
+                                <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
+                                    <View style={{ flexDirection: 'row', width: '100%' }}>
                                         <InputIcon
                                             label={i18n.t('productsCostWithShaping')}
-                                            inputStyle={{borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea'}}
-                                            styleCont={{height: 45, width: '90%'}}
+                                            inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
+                                            styleCont={{ height: 45, width: '90%' }}
                                             LabelStyle={{
                                                 bottom: 50,
                                                 backgroundColor: 0,
@@ -883,7 +880,7 @@ function OrderChatting({ navigation, route }) {
                                         <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: 30, marginBottom: 30 }]}>
                                             <ActivityIndicator size="large" color={Colors.sky} style={{ alignSelf: 'center' }} />
                                         </View> :
-                                        <TouchableOpacity disabled={cost == 0 ? true : false} onPress={setBill} style={{
+                                        <TouchableOpacity disabled={cost == 0 || base64 == '' ? true : false} onPress={setBill} style={{
                                             backgroundColor: Colors.sky,
                                             width: '92%',
                                             borderRadius: 20,
@@ -892,7 +889,7 @@ function OrderChatting({ navigation, route }) {
                                             marginHorizontal: '2%',
                                             marginBottom: 25
                                         }}>
-                                            <Text style={[styles.sText, {color: Colors.bg, fontSize: 14}]}>{i18n.t('send')}</Text>
+                                            <Text style={[styles.sText, { color: Colors.bg, fontSize: 14 }]}>{i18n.t('send')}</Text>
                                         </TouchableOpacity>
 
                                 }
@@ -903,8 +900,8 @@ function OrderChatting({ navigation, route }) {
                             {/* <BTN onPress={() => setBill()} title={i18n.t('send')} ContainerStyle={{ borderRadius: 35, marginBottom: 30, flex: .1, padding: 20, }} TextStyle={{ fontSize: 14, padding: 0, bottom: 10 }} /> */}
 
                         </View>
-                </View>
-                    </KeyboardAvoidingView>
+                    </View>
+                </KeyboardAvoidingView>
 
                 <Modal
                     animationType="slide"
@@ -944,14 +941,14 @@ function OrderChatting({ navigation, route }) {
                 style={{ width: "95%", alignSelf: 'center', }}
                 avoidKeyboard={true}
             >
-                <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', height: height*80/100 }]}>
+                <View style={[{ borderRadius: 5, backgroundColor: '#fff', width: '100%', overflow: 'hidden', height: height * 80 / 100 }]}>
 
                     <View style={{ alignItems: 'center', }}>
                         <View style={{ width: '100%', height: 50, backgroundColor: Colors.sky, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={[styles.sText, { color: '#fff', textAlign: 'center', marginTop: 10, fontSize: 16, lineHeight: 20 }]}>{i18n.t('showBill')}</Text>
                         </View>
 
-                        <ImageZoom cropWidth={width*95/100} cropHeight={height*80/100} imageWidth={width*95/100} imageHeight={height*75/100}>
+                        <ImageZoom cropWidth={width * 95 / 100} cropHeight={height * 80 / 100} imageWidth={width * 95 / 100} imageHeight={height * 75 / 100}>
                             <Image source={{ uri: billImage }} style={{ width: '100%', height: '100%', borderRadius: 15, alignSelf: 'center', }} resizeMode={'cover'} />
                         </ImageZoom>
 

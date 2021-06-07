@@ -86,17 +86,13 @@ function Basket({ navigation }) {
         <View style={{ flex: 1, backgroundColor: Colors.bg }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
                 <Image source={require('../../../assets/images/bluBack.png')} style={[styles.BigImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], }]} resizeMode='contain' />
-                <View style={styles.wrap}>
-                    <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
-                        <Image source={require('../../../assets/images/menue.png')} style={[styles.MenueImg, { marginBottom: width * .04, paddingHorizontal: 10 }]} />
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity style={styles.wrap} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
+                    <Image source={require('../../../assets/images/menue.png')} style={[styles.MenueImg,]} />
+                </TouchableOpacity>
                 <Text style={styles.Text}> {i18n.t('cart')}</Text>
-                <View style={{ flexDirection: 'row', }}>
-                    <TouchableOpacity onPress={() => navigation.navigate('GoHome')}>
-                        <Image source={require('../../../assets/images/arrBlack.png')} resizeMode='contain' style={[styles.MenueImg, { marginHorizontal: width * .05, top: width * .16, transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => navigation.navigate('GoHome')} style={{ top: 50, marginEnd: 25 }}>
+                    <Image source={require('../../../assets/images/arrBlack.png')} resizeMode='contain' style={[styles.MenueImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
+                </TouchableOpacity>
             </View>
 
             <ScrollView style={{ flex: 1, }}>
@@ -141,12 +137,10 @@ function Basket({ navigation }) {
                                         return (
                                             <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('BasketDetailes', { BasketId: item.id, mapRegion: mapRegion })} key={index}>
                                                 <View style={{ flexDirection: 'row', padding: 10 }}>
-                                                    <Image source={{ uri: item.avatar }} style={styles.ImgCard} resizeMode={'contain'} />
+                                                    <Image source={{ uri: item.avatar }} style={styles.ImgCard} />
                                                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10, flex: 1 }}>
-                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1 }]}>{item.name}</Text>
-                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', }]}>{item.available}</Text>
-
-                                                        <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center' }}>
+                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, }]}>{item.name}</Text>
+                                                        <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center', alignSelf: 'flex-end' }}>
                                                             <StarRating
                                                                 disabled={true}
                                                                 maxStars={5}
@@ -157,10 +151,14 @@ function Basket({ navigation }) {
                                                             />
                                                             <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 10, }}>{item.rate}/5</Text>
                                                         </View>
-                                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+
+
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', bottom: 5 }}>
                                                             <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
                                                             <Text style={[styles.yText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> {item.distance}</Text>
                                                         </View>
+                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', fontFamily: 'flatLight' }]}>{item.address}</Text>
 
                                                     </View>
                                                 </View>
@@ -186,32 +184,37 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 13,
+        fontSize: 12,
     },
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     BigImg: {
-        height: height * .15,
-        width: width * .22,
+        height: 80,
+        width: 80,
+        right: 10,
     },
     MenueImg: {
-        width: 22,
-        height: 22,
+        width: 15,
+        height: 15,
 
     },
     wrap: {
         position: 'absolute',
-        marginHorizontal: 30,
-        bottom: width * .04
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 15,
+        top: 30
+        // bottom: width * .04
     },
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
         fontSize: 14,
         textAlign: 'center',
-        top: width * .15
+        marginTop: 50
     },
     iconImg: {
         width: 12,
@@ -244,9 +247,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     ImgCard: {
-        width: width * .2,
+        width: 100,
         height: '100%',
-        borderRadius: 5
+        borderRadius: 10
     }
 })
 export default Basket

@@ -135,8 +135,9 @@ function Login({ navigation }) {
     return (
 
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <LogoLogin navigation={navigation} />
-            <View  >
+            <View style={{ flex: 1, backgroundColor: Colors.bg }}>
+
+                <LogoLogin navigation={navigation} />
                 <Text style={styles.sText}>{i18n.t("signIn")}</Text>
                 <View style={{ marginTop: width * .1, }}>
                     <InputIcon
@@ -168,21 +169,20 @@ function Login({ navigation }) {
                     <Text style={styles.Text}>{i18n.t("haveNoAcc")}</Text>
                     <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Register')} />
                 </View>
+
+                <View style={[styles.WrapText, { marginTop: 30 }]}>
+                    <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
+                    <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
+                </View>
             </View>
 
-            <View style={[styles.WrapText, { marginTop: 30 }]}>
-                <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
-                <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
-            </View>
-            <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </ScrollView>
     )
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.bg,
-        width,
 
     },
     Text: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     building: {
         width,
         height: 100,
-        marginTop: 20
+        alignSelf: 'flex-end'
     },
     WrapText: { flexDirection: 'row', justifyContent: 'center', marginTop: 10 }
 

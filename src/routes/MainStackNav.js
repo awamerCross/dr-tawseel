@@ -112,72 +112,64 @@ function MainStackNav() {
 export default MainStackNav
 
 const Drawer = createDrawerNavigator();
-const StackThree = createStackNavigator()
-
-function chatStack() {
 
 
-        return (
-            <Stack.Navigator initialRouteName="Chatting" headerMode='none'>
-
-
-            </Stack.Navigator>
-
-        )
-}
 export function DrawerNav() {
     return (
         // <NavigationContainer  >
         <Drawer.Navigator drawerContent={(props) => <CustomDrawerMenue {...props} initialRouteName='GoHome' />}>
             <Drawer.Screen name="GoHome" component={HomeScreen} />
-                <Drawer.Screen name="Profile" component={MyProfile} />
-                <Drawer.Screen name="Basket" component={Basket} />
-                <Drawer.Screen name="ProfilePassword" component={ChangePassword} />
-                <Drawer.Screen name="Wallet" component={Wallet} />
-                <Drawer.Screen name="About" component={AboutApp} />
-                <Drawer.Screen name="complaintsList" component={ComplaintsList} />
-                <Drawer.Screen name="politics" component={Politics} />
-                <Drawer.Screen name="chooseSavedPlaces" component={chooseSavedPlaces} />
+            <Drawer.Screen name="Profile" component={MyProfile} />
+            <Drawer.Screen name="Basket" component={Basket} />
+            <Drawer.Screen name="ProfilePassword" component={ChangePassword} />
+            <Drawer.Screen name="Wallet" component={Wallet} />
+            <Drawer.Screen name="About" component={AboutApp} />
+            <Drawer.Screen name="complaintsList" component={ComplaintsList} />
+            <Drawer.Screen name="politics" component={Politics} />
+            <Drawer.Screen name="chooseSavedPlaces" component={chooseSavedPlaces} />
+            <Drawer.Screen name="Department" component={Department} />
 
-                <Drawer.Screen name="Contact" component={ContactUs} />
-                <Drawer.Screen name="CompSuggest" component={CompSugget} />
-                <Drawer.Screen name="Settings" component={Settings} />
-                <Drawer.Screen name="Address" component={MyAddress} />
-                <Drawer.Screen name="AddAddress" component={AddAddress} />
-                <Drawer.Screen name="editAddress" component={EditAddress} />
-                <Drawer.Screen name="Chatting" component={Chatting} />
-                <Drawer.Screen name="OrderChatting" component={OrderChatting} />
-                <Drawer.Screen name="AllDepartments" component={AllDebartments} />
-                <Drawer.Screen name="DepartmentsDetailes" component={DepartmentsDetailes} />
-                <Drawer.Screen name="OrderFromYourStore" component={OrderYourStore} />
-                <Drawer.Screen name="YourOrder" component={YourOrder} />
-                <Drawer.Screen name="SendYourOrderSuccess" component={SendYourOrderSuccess} />
-                <Drawer.Screen name="MyOrders" component={MyOrders} />
-                <Drawer.Screen name="OrderDetailes" component={OrderDetailes} />
-                <Drawer.Screen name="DeliveryReceiptLoaction" component={DeliveryReceiptLoaction} />
-                <Drawer.Screen name="SpecialOrder" component={SpecialOrder} />
-                <Drawer.Screen name="SaveLocation" component={SaveLocation} />
-                <Drawer.Screen name="ShareApp" component={ShareApp} />
-                <Drawer.Screen name="Followrepresentative" component={Followrepresentative} />
-                <Drawer.Screen name="SuccessEvaluation" component={SuccessEvaluation} />
-                <Drawer.Screen name="SendComplaiment" component={SendComplaiment} />
-                <Drawer.Screen name="FollowOrder" component={FollowOrder} />
-                <Drawer.Screen name="ChattingBill" component={ChattingWithBill} />
-                <Drawer.Screen name="BasketDetailes" component={BasketDetailes} />
-                <Drawer.Screen name="RestaurantDepartment" component={RestaurantDepartment} />
-                <Drawer.Screen name="ProductDetailes" component={ProductDetailes} />
-                <Drawer.Screen name="PaymentDetailes" component={PaymentDetailes} />
-                <Drawer.Screen name="BasketSuccessOrder" component={BasketSuccessOrder} />
-                <Drawer.Screen name="Lang" component={Language} />
-                <Drawer.Screen name="MobileStatues" component={MobileStatues} />
-                <Drawer.Screen name="ReCallBalance" component={ReCallBalance} />
-                <Drawer.Screen name="NotificationsList" component={NotificationsList} />
-                <Drawer.Screen name="AllOffers" component={AllOffers} />
-                <Drawer.Screen name="getLocation" component={GetLocation} />
-                <Drawer.Screen name="BankDataTransfer" component={BankDataTransfer} />
-                <Drawer.Screen name="Rescharge" component={ReshargeWallet} />
-                <Drawer.Screen name="completeDelegate" component={CompleteDelegate} />
-                <Drawer.Screen name="VisaBank" component={VisaBank} />
+            <Drawer.Screen name="Contact" component={ContactUs} />
+            <Drawer.Screen name="CompSuggest" component={CompSugget} />
+            <Drawer.Screen name="Settings" component={Settings} />
+            <Drawer.Screen name="Address" component={MyAddress} />
+            <Drawer.Screen name="AddAddress" component={AddAddress} />
+            <Drawer.Screen name="editAddress" component={EditAddress} />
+            <Drawer.Screen name="Chatting" component={Chatting} />
+            <Drawer.Screen name="OrderChatting" component={OrderChatting} />
+            <Drawer.Screen name="AllDepartments" component={AllDebartments} />
+            <Drawer.Screen name="DepartmentsDetailes" component={DepartmentsDetailes} />
+            <Drawer.Screen name="OrderFromYourStore" component={OrderYourStore} />
+            <Drawer.Screen name="YourOrder" component={YourOrder} />
+            <Drawer.Screen name="SendYourOrderSuccess" component={SendYourOrderSuccess} />
+            <Drawer.Screen name="MyOrders" component={MyOrders} />
+            <Drawer.Screen name="OrderDetailes" component={OrderDetailes} />
+            <Drawer.Screen name="DeliveryReceiptLoaction" component={DeliveryReceiptLoaction} />
+            <Drawer.Screen name="SpecialOrder" component={SpecialOrder} />
+            <Drawer.Screen name="SaveLocation" component={SaveLocation} />
+            <Drawer.Screen name="ShareApp" component={ShareApp} />
+            <Drawer.Screen name="Followrepresentative" component={Followrepresentative} />
+            <Drawer.Screen name="SuccessEvaluation" component={SuccessEvaluation} />
+            <Drawer.Screen name="SendComplaiment" component={SendComplaiment} />
+            <Drawer.Screen name="FollowOrder" component={FollowOrder} />
+            <Drawer.Screen name="ChattingBill" component={ChattingWithBill} />
+            <Drawer.Screen name="BasketDetailes" component={BasketDetailes} />
+            <Drawer.Screen name="RestaurantDepartment" component={RestaurantDepartment} />
+            <Drawer.Screen name="ProductDetailes" component={ProductDetailes} />
+            <Drawer.Screen name="PaymentDetailes" component={PaymentDetailes} />
+            <Drawer.Screen name="BasketSuccessOrder" component={BasketSuccessOrder} />
+            <Drawer.Screen name="Lang" component={Language} />
+            <Drawer.Screen name="MobileStatues" component={MobileStatues} />
+            <Drawer.Screen name="ReCallBalance" component={ReCallBalance} />
+            <Drawer.Screen name="NotificationsList" component={NotificationsList} />
+            <Drawer.Screen name="AllOffers" component={AllOffers} />
+            <Drawer.Screen name="getLocation" component={GetLocation} />
+            <Drawer.Screen name="BankDataTransfer" component={BankDataTransfer} />
+            <Drawer.Screen name="Rescharge" component={ReshargeWallet} />
+            <Drawer.Screen name="completeDelegate" component={CompleteDelegate} />
+            <Drawer.Screen name="VisaBank" component={VisaBank} />
+            <Drawer.Screen name="AccountActivation" component={AccountActivation} />
+
         </Drawer.Navigator>
         // </NavigationContainer>
     );

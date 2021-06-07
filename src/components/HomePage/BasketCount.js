@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
     ScrollView,
     View,
@@ -23,9 +23,9 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
     const [count, setCount] = useState(pro.quantity)
     const [click, setClick] = useState(false)
     const [ModelProduct, setModelProduct] = useState([])
-    useEffect(() => {
-        // setCount()
-    }, [])
+    useMemo(() => {
+        setCount(pro.quantity)
+    }, [pro.quantity])
 
 
 
@@ -40,11 +40,12 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
 
     const decrement = () => {
 
-        if (count > 1) {
+        if (count >= 1) {
             setCount(count - 1);
             Decrease()
 
         }
+
 
     }
 
@@ -52,17 +53,17 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
 
     return (
         <View style={{ flex: 1, }}>
-            <View style={{  height: 1, backgroundColor: '#DBDBDB' }} />
+            <View style={{ height: 1, backgroundColor: '#DBDBDB' }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 10, justifyContent: 'space-between' }}>
                 {/* // */}
                 <View style={{ maxWidth: '33%', alignItems: 'flex-start' }} >
                     <Text style={[styles.oText, { width: '100%', textAlign: 'left' }]} numberOfLines={1} >{pro.name}</Text>
                     <TouchableOpacity onPress={() => { setClick(true); setModelProduct(pro.details) }}>
-                        <Text style={[styles.oText, { color: Colors.sky, fontSize: 14, }]}>({i18n.t('details')})</Text>
+                        <Text style={[styles.oText, { color: Colors.sky, fontSize: 12, }]}>({i18n.t('details')})</Text>
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' ,marginHorizontal : 20}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB' }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: 5 }}>
                         <TouchableOpacity onPress={increment}>
@@ -71,7 +72,7 @@ const BasketCount = ({ pro, i, DeleteCartItem, Decrease, Increase }) => {
 
                         <Text style={{ color: Colors.sky, marginHorizontal: 10, fontFamily: 'flatMedium', fontSize: 15 }}> {pro.quantity} </Text>
 
-                        <TouchableOpacity onPress={decrement} >
+                        <TouchableOpacity onPress={decrement} disabled={count == 1}>
                             <Image source={require('../../../assets/images/munic.png')} style={{ width: 20, height: 20, borderRadius: 5, padding: 8 }} />
                         </TouchableOpacity>
                         <View style={{ height: height * .04, width: 2, backgroundColor: '#DBDBDB', marginHorizontal: 5 }} />

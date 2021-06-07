@@ -42,6 +42,7 @@ function AccountActivation({ navigation, route }) {
 
     useEffect(() => {
         if (isFocused) {
+            setcode('')
             dispatch(getAppInfo(lang));
 
         }
@@ -53,7 +54,7 @@ function AccountActivation({ navigation, route }) {
 
         if (!isVal) {
             setSpinner(true)
-            dispatch(ActivationCode(code, token, lang)).then(() => setSpinner(false))
+            dispatch(ActivationCode(code, token, lang, navigation, route.params)).then(() => setSpinner(false))
         }
         else {
             setSpinner(false)
@@ -62,7 +63,9 @@ function AccountActivation({ navigation, route }) {
     }
 
     function sendNewCode() {
-        dispatch(resendCode(lang, token)).then(() => { setShowCounter(true); setCounterID(counterID + 1); })
+        setCounterID(counterID + 1);
+        setShowCounter(true);
+        dispatch(resendCode(lang, token))
     }
 
     return (
@@ -88,7 +91,6 @@ function AccountActivation({ navigation, route }) {
                                 timeLabels={{ m: null, s: null }}
 
                                 showSeparator={true}
-                                style={{ flexDirection: 'row-reverse', justifyContent: 'center' }}
                             />
                         </> :
                         <TouchableOpacity onPress={() => sendNewCode()}>
@@ -116,7 +118,7 @@ function AccountActivation({ navigation, route }) {
                 </View>
 
             </View>
-            <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </ScrollView>
 
     )

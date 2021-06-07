@@ -18,7 +18,7 @@ function Header({ label, navigation, image, onPress }) {
             <Image source={require('../../assets/images/bluBack.png')} style={[styles.BigImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], }]} resizeMode='contain' />
             <View style={styles.wrap}>
                 <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} style={{ alignSelf: 'center' }}>
-                    <Image source={require('../../assets/images/menue.png')} style={[styles.MenueImg, { padding: 10 , transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
+                    <Image source={require('../../assets/images/menue.png')} style={[styles.MenueImg, { padding: 10, marginBottom: 15, transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
                 </TouchableOpacity>
             </View>
 
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: Colors.bg,
-          marginTop: isIOS ? 25 : 10
+        marginTop: isIOS ? 25 : 10
     },
     BigImg: {
         left: -13,

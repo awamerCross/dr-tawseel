@@ -432,7 +432,7 @@ function RepresentativeRegister({ navigation, route }) {
                     <Text style={styles.Text}>{i18n.t("haveAcc")}</Text>
                     <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Login')} />
                 </View>
-                <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+                {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
             </ScrollView>
         </View>
     )

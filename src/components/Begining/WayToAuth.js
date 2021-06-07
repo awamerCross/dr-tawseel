@@ -50,7 +50,7 @@ function WayToAuth({ navigation }) {
 				{
 					intro.map((intr, i) => (
 						<View key={i} style={styles.child}>
-							<Image source={{ uri: intr.image }} style={styles.images} />
+							<Image source={{ uri: intr.image }} style={styles.images} resizeMode='contain' />
 							<View style={styles.wrapText}>
 								<Text style={styles.sText}>{intr.title}</Text>
 								<Text numberOfLines={3} style={styles.lText}> {intr.details} </Text>
@@ -74,7 +74,7 @@ function WayToAuth({ navigation }) {
 
 const styles = StyleSheet.create({
 	container: { flex: 1 },
-	wrapText: { flexDirection: 'column', top: width * 1.2, position: 'absolute', width: '100%' },
+	wrapText: { flexDirection: 'column', bottom: 100, position: 'absolute', width: '100%' },
 	sText: { textAlign: 'center', fontSize: 20, fontFamily: 'flatMedium', color: Colors.fontBold },
 	lText: { marginTop: 20, paddingHorizontal: 15, fontFamily: 'flatLight', lineHeight: 20, color: Colors.fontNormal, textAlign: 'center' },
 	DotContainer: { marginVertical: width * .2 },

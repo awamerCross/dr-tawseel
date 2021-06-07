@@ -172,13 +172,13 @@ function ProductDetailes({ navigation, route }) {
         }
     }
 
-
+    console.log(ProductDetailes)
     return (
 
 
 
         <Container loading={spinner}>
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ flex: 1, backgroundColor: Colors.bg, }} showsVerticalScrollIndicator={false}>
 
                 {
                     loading ?
@@ -186,13 +186,13 @@ function ProductDetailes({ navigation, route }) {
 
                         :
                         ProductDetailes &&
-                        <View style={{ backgroundColor: Colors.bg, flex: 1 }}>
+                        <View style={{ flex: 1 }}>
                             <ImageBackground
 
                                 onLoadStart={(e) => setloadingImage(true)}
                                 onLoad={onLoadImg}
-                                source={loadingImage ? { uri: ProductDetailes.image } : require('../../../assets/images/default.png')} style={{ width: width, height: height * .35, }}>
-                                <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', flex: 1, marginTop: isIOS ? 40 : 0 }}>
+                                source={loadingImage ? { uri: ProductDetailes.image } : require('../../../assets/images/default.png')} style={{ width: width, height: 250, }}>
+                                <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', flex: 1, }}>
                                     <View style={styles.wrap}>
                                         <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
                                             <Image source={require('../../../assets/images/menue.png')} style={[styles.MenueImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], padding: 12 }]} resizeMode='contain' />
@@ -209,25 +209,38 @@ function ProductDetailes({ navigation, route }) {
 
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={styles.Text}>{ProductDetailes.name} </Text>
-                                    <Text style={[styles.Text, { color: Colors.sky }]}> {ProductDetailes.price} {i18n.t('RS')}</Text>
+
+                                    {
+                                        ProductDetailes.price_discount === 0 ?
+                                            <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky, paddingTop: 5, alignSelf: 'flex-start' }}>{ProductDetailes.price} {i18n.t('RS')}</Text>
+
+                                            :
+                                            <View style={{ flexDirection: 'column', alignItems: 'center', }}>
+                                                <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky }}>{ProductDetailes.price_discount} {i18n.t('RS')}</Text>
+                                                <Text style={{ fontSize: 10, fontFamily: 'flatRegular', color: Colors.fontNormal, textDecorationLine: 'line-through', marginStart: 20 }}>{ProductDetailes.price} {i18n.t('RS')}</Text>
+
+
+                                            </View>
+
+                                    }
                                 </View>
                                 <Text style={[styles.yText, { alignSelf: 'flex-start' }]}>{ProductDetailes.details}</Text>
                                 <View style={{ marginTop: 40 }}>
 
 
 
-                                    <InputIcon
+                                    {/* <InputIcon
                                         label={i18n.t('orderQuantity')}
                                         value={AvailableKiloes}
                                         onChangeText={(e) => handleChange(e)}
                                         keyboardType='numeric'
                                         styleCont={{ marginHorizontal: '1%' }}
-                                    />
+                                    /> */}
 
 
                                     <Text style={[styles.yText, { marginTop: 0, marginVertical: 20, fontFamily: 'flatMedium', opacity: .9, fontSize: 12, alignSelf: 'flex-start' }]}>{i18n.t('avalQuantities')} {ProductDetailes.available_kilos} {i18n.t('kilo')}</Text>
                                 </View>
-                                <View style={{ width: width * .86, height: 1, backgroundColor: '#C0C0C0', marginVertical: 15, }} />
+                                <View style={{ height: 1, backgroundColor: '#C0C0C0', marginVertical: 15, }} />
 
 
                                 <View >
@@ -303,7 +316,7 @@ function ProductDetailes({ navigation, route }) {
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                                             <CheckBox checked={ExtraArr.indexOf(item) !== -1} color={ExtraArr.indexOf(item) !== -1 ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: ExtraArr.indexOf(item) !== -1 ? Colors.sky : Colors.bg, width: 20, height: 20, alignItems: 'center' }} onPress={() => toggleChecked(item,)} />
 
-                                                            <Text style={[styles.Text, { fontSize:14, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
+                                                            <Text style={[styles.Text, { fontSize: 14, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
                                                         </View>
                                                         <Text style={[styles.Text, { color: Colors.sky, fontSize: 14 }]}>{item.price} {i18n.t('RS')}</Text>
                                                     </TouchableOpacity>
@@ -335,15 +348,18 @@ function ProductDetailes({ navigation, route }) {
 
                                 </View>
 
-                                <LoadingBtn loading={loader} styleCount={{ marginTop: 300, }}>
-                                    <BTN title={i18n.t('orderNow')} onPress={AddProductToCarts} ContainerStyle={{ marginVertical: 0, marginBottom: 20, marginTop: 0, borderRadius: 20, backgroundColor: Colors.fontBold }} TextStyle={{ fontSize: 13 }} />
-                                </LoadingBtn>
+
 
                             </View>
 
 
                         </View>
+
+
                 }
+                <LoadingBtn loading={loader} >
+                    <BTN title={i18n.t('orderNow')} onPress={AddProductToCarts} ContainerStyle={{ marginVertical: 0, marginBottom: 20, marginTop: 0, borderRadius: 20, backgroundColor: Colors.fontBold }} TextStyle={{ fontSize: 13 }} />
+                </LoadingBtn>
             </ScrollView>
 
         </Container>

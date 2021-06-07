@@ -59,7 +59,7 @@ function CompSugget({ navigation }) {
         if (!val) {
 
             setIsSubmitted(true)
-            dispatch(sendComp(lang, token, name, email, subj, msg)).then(() => setIsSubmitted(false))
+            dispatch(sendComp(lang, token, name, email, subj, msg, navigation)).then(() => setIsSubmitted(false))
             setName('')
             setemail('')
             setSubj('')

@@ -66,7 +66,7 @@ function PasswordRecovery({ navigation }) {
 
                 </View>
             </View>
-            <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </ScrollView>
 
     )

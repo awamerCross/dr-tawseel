@@ -44,7 +44,7 @@ function Register({ navigation }) {
                     </View>
                 </View>
             </ScrollView>
-            <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </View>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Dimensions, StyleSheet, ScrollView, Image, } from 'react-native'
+import { View, Text, Dimensions, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, } from 'react-native'
 import Constants from "expo-constants";
 
 import {
@@ -71,10 +71,10 @@ function ClientRegister({ navigation, route }) {
 
 
     return (
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
 
-        <View style={styles.container}>
-            <LogoLogin navigation={navigation} />
-            <ScrollView style={{ flex: 1 , marginVertical:50 }}  >
+            <ScrollView style={styles.container}>
+                <LogoLogin navigation={navigation} />
                 <Text style={[styles.sText, { marginBottom: 50 }]}>{i18n.t("createAcc")}</Text>
                 <View style={{ marginTop: width * .01, }}>
                     <InputIcon
@@ -134,9 +134,9 @@ function ClientRegister({ navigation, route }) {
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15, marginLeft: 10 }}>
 
-                    <CheckBox checked={isSelected} color={isSelected ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: isSelected ? Colors.sky : '#DBDBDB', width: 17, height: 17, paddingBottom: 15 , marginHorizontal : 10}} onPress={() => setSelection(!isSelected)} />
+                    <CheckBox checked={isSelected} color={isSelected ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: isSelected ? Colors.sky : '#DBDBDB', width: 17, height: 17, paddingBottom: 15, marginHorizontal: 10 }} onPress={() => setSelection(!isSelected)} />
 
-                    <SText title={i18n.t("policy")} style={{ paddingVertical: 10, color: Colors.sky, marginLeft: 5 , marginHorizontal : 10 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
+                    <SText title={i18n.t("policy")} style={{ paddingVertical: 10, color: Colors.sky, marginLeft: 5, marginHorizontal: 10 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
                 </View>
                 <LoadingBtn loading={spinner}>
 
@@ -150,7 +150,7 @@ function ClientRegister({ navigation, route }) {
                     <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Login')} />
                 </View>
             </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 const styles = StyleSheet.create({

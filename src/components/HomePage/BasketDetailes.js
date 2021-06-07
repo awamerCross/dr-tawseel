@@ -51,7 +51,6 @@ function BasketDetailes({ navigation, route }) {
 
         const unsubscribe = navigation.addListener('focus', () => {
             dispatch(BasketStoreDetailes(BasketId, token, lang, Cuboun, mapRegion.latitude, mapRegion.longitude, navigation)).then(() => {
-
                 setCuboun('')
             })
 
@@ -110,10 +109,10 @@ function BasketDetailes({ navigation, route }) {
                             <View style={styles.card}>
 
                                 <Image source={{ uri: BasketDtailes.provider.avatar }} style={styles.ImgCard} />
-                                <View style={{ flexDirection: 'column', justifyContent: 'space-between', }}>
+                                <View style={{ flexDirection: 'column', flexWrap: 'wrap', marginStart: 10 }}>
 
                                     <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1, marginStart: 1 }]}>{BasketDtailes.provider.name}</Text>
-                                    <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 1, fontSize: 12, }]}>{BasketDtailes.provider.address}</Text>
+                                    <Text style={[styles.sText, { alignSelf: 'flex-start', marginStart: 1, fontSize: 12, flexWrap: 'wrap' }]}>{BasketDtailes.provider.address.length > 30 ? (BasketDtailes.provider.address).substr(0, 30) + '...' : BasketDtailes.provider.address.length}</Text>
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '85%' }}>
                                         <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
@@ -125,7 +124,7 @@ function BasketDetailes({ navigation, route }) {
                         }
                         <View style={styles.product}>
                             <Image source={require('../../../assets/images/product.png')} style={[styles.iconImg, { alignSelf: 'center', width: 25, height: 25, }]} resizeMode='contain' />
-                            <Text style={[styles.pro, { fontSize: 20, }]}>{i18n.t('Products')}</Text>
+                            <Text style={[styles.pro, { fontSize: 16, }]}>{i18n.t('Products')}</Text>
                         </View>
 
 
@@ -170,16 +169,16 @@ function BasketDetailes({ navigation, route }) {
                                     BasketDtailes.prices &&
                                     <View>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
-                                            <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 14 }]}>{i18n.t('taxes')} </Text>
+                                            <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 12 }]}>{i18n.t('taxes')} </Text>
                                             <Text style={[styles.sText, { color: Colors.sky, marginRight: 0 }]}>{BasketDtailes.prices.added_value} {i18n.t('RS')}</Text>
                                         </View>
-                                        <View style={{ width, height: height * .06, justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 5, flexDirection: 'row', backgroundColor: Colors.bg }}>
-                                            <Text style={[styles.oText, { color: Colors.fontBold, fontSize: 14, }]}>{i18n.t('sum')}</Text>
+                                        <View style={{ width, justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 5, flexDirection: 'row', backgroundColor: Colors.bg }}>
+                                            <Text style={[styles.oText, { color: Colors.fontBold, fontSize: 12, }]}>{i18n.t('sum')}</Text>
                                             <Text style={[styles.SPrice, { marginRight: 0 }]}> {BasketDtailes.prices.sum} {i18n.t('RS')}</Text>
                                         </View>
                                         <View style={{ width: '90%', marginHorizontal: '4%', height: 60, paddingHorizontal: 10, alignItems: 'center', flexDirection: 'row', marginTop: 20, borderColor: '#DBDBDB', justifyContent: 'space-between', backgroundColor: Colors.sky }}>
                                             <Text style={[styles.oText, { marginLeft: 0, color: Colors.bg }]}>{i18n.t('total')}</Text>
-                                            <Text style={{ color: Colors.bg, fontFamily: 'flatMedium', fontSize: 16 }}> {(BasketDtailes.prices.total)} {i18n.t('RS')}</Text>
+                                            <Text style={{ color: Colors.bg, fontFamily: 'flatMedium', fontSize: 14 }}> {(BasketDtailes.prices.total)} {i18n.t('RS')}</Text>
                                         </View>
 
                                     </View>
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 14,
+        fontSize: 12,
     },
     button: {
         width: '80%',
@@ -254,7 +253,7 @@ const styles = StyleSheet.create({
     oText: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
-        fontSize: 18,
+        fontSize: 14,
     },
     yText: {
         fontFamily: 'flatMedium',

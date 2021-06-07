@@ -16,7 +16,7 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useDispatch, useSelector } from 'react-redux';
 import { EditPasswordSettingsProfile, GetProfileAction, UpdateProfileAction } from '../../actions/ProfileAction';
-import { LogoutUser } from '../../actions';
+import { LogoutUser, ClearCaSh } from '../../actions';
 import Container from '../../common/Container';
 import Modal from "react-native-modal";
 import { ToasterNative } from '../../common/ToasterNatrive';
@@ -35,6 +35,9 @@ function MyProfile({ navigation }) {
     const [phone, setPhone] = useState(Profile.phone);
     const [email, setemail] = useState(Profile.email);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+
+    const tokens = useSelector(state => state.Auth.token ? state.Auth.token : null);
+
     const lang = useSelector(state => state.lang.lang);
     const [spinner, setSpinner] = useState(false);
     const [base64, setBase64] = useState(null);
@@ -51,17 +54,17 @@ function MyProfile({ navigation }) {
 
 
 
-
     const dispatch = useDispatch()
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            setloading(false)
             setModalVisible(false)
             setSpinner(true)
             dispatch(GetProfileAction(token, lang)).then(() => setSpinner(false))
         })
         setName(Profile.name)
-        setPhone(Profile.phone)
+        setPhone(`${Profile.phone}`)
         setemail(Profile.email)
         setUserImage(Profile.avatar)
         return unsubscribe
@@ -75,7 +78,6 @@ function MyProfile({ navigation }) {
 
         return nameErr || phoneErr || emailErr
     };
-
 
 
     const ChanPasswordProfile = () => {
@@ -92,10 +94,13 @@ function MyProfile({ navigation }) {
 
             return false
         } else {
-            dispatch(EditPasswordSettingsProfile(token, password, Newpassword, lang, navigation))
-            setPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
+            dispatch(EditPasswordSettingsProfile(token, password, Newpassword, lang, navigation)).then(() => {
+                // setPassword('');
+                // setNewPassword('');
+                // setConfirmPassword('');
+            }
+            )
+
 
         }
 
@@ -125,12 +130,8 @@ function MyProfile({ navigation }) {
         if (!isVal) {
 
             setloading(true)
-            if (phone == Profile.phone)
-                dispatch(UpdateProfileAction(token, name, phone, email, base64, lang, navigation)).then(() => setloading(false))
-            else {
-                navigation.navigate('activationCode', { token })
-                dispatch(LogoutUser(token))
-            }
+            dispatch(UpdateProfileAction(token, name, phone, email, base64, lang, Profile.id, navigation)).then(() => setloading(false))
+
         }
 
         else {
@@ -163,45 +164,48 @@ function MyProfile({ navigation }) {
                                 <Text style={styles.stext}>{name}</Text>
                             </View>
 
-                          <View style={{width : '100%'}}>
-                              <InputIcon
-                                  value={name}
-                                  onChangeText={(e) => setName(e)}
-                                  image={require('../../../assets/images/edit.png')}
-                                  styleCont={{ marginTop: 30, }}
+                            <View style={{ width: '100%' }}>
+                                <InputIcon
+                                    value={name}
+                                    onChangeText={(e) => setName(e)}
+                                    image={require('../../../assets/images/edit.png')}
+                                    styleCont={{ marginTop: 30, }}
+                                    LabelStyle={{ paddingHorizontal: 0 }}
 
+                                    inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky }}
 
-                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
+                                />
 
-                              />
+                                <InputIcon
+                                    value={phone}
+                                    onChangeText={(e) => setPhone(e)}
+                                    inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky }}
+                                    styleCont={{ marginTop: 20, }}
+                                    LabelStyle={{ paddingHorizontal: 0 }}
 
-                              <InputIcon
-                                  value={phone}
-                                  onChangeText={(e) => setPhone(e)}
-                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
-                                  styleCont={{ marginTop: 20, }}
-                                  image={require('../../../assets/images/edit.png')}
-                              />
+                                    image={require('../../../assets/images/edit.png')}
+                                />
 
-                              <InputIcon
-                                  placeholder={i18n.t('enterEmail')}
-                                  value={email}
-                                  onChangeText={(e) => setemail(e)}
-                                  inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky  }}
-                                  styleCont={{ marginTop: 20, }}
+                                <InputIcon
+                                    placeholder={i18n.t('enterEmail')}
+                                    value={email}
+                                    onChangeText={(e) => setemail(e)}
+                                    inputStyle={{ borderRadius: 20, height: 30, backgroundColor: '#fff', borderColor: Colors.sky }}
+                                    styleCont={{ marginTop: 20, }}
+                                    LabelStyle={{ paddingHorizontal: 0 }}
 
-                                  image={require('../../../assets/images/edit.png')}
+                                    image={require('../../../assets/images/edit.png')}
 
-                              />
+                                />
 
-                          </View>
-                          <View style={{marginVertical: 10}}>
-                              <BTN title={i18n.t('changePass')} onPress={() => { setShowModal(true); }} ContainerStyle={[styles.Btn, { borderRadius: 20 }]} TextStyle={{ fontSize: 13 }} />
-                              <LoadingBtn loading={loading}>
-                                  <BTN title={i18n.t('confirm')} onPress={UpdateProfile} ContainerStyle={[styles.Btn, { marginTop: 10, borderRadius: 20, marginBottom: 10 }]} TextStyle={{ fontSize: 13 }} />
+                            </View>
+                            <View style={{ marginVertical: 10 }}>
+                                <BTN title={i18n.t('changePass')} onPress={() => { setShowModal(true); }} ContainerStyle={[styles.Btn, { borderRadius: 20 }]} TextStyle={{ fontSize: 13 }} />
+                                <LoadingBtn loading={loading}>
+                                    <BTN title={i18n.t('confirm')} onPress={UpdateProfile} ContainerStyle={[styles.Btn, { marginTop: 10, borderRadius: 20, marginBottom: 10 }]} TextStyle={{ fontSize: 13 }} />
 
-                              </LoadingBtn>
-                          </View>
+                                </LoadingBtn>
+                            </View>
                         </>
 
                         :

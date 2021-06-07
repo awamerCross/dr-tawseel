@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import {View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, AppState,} from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, AppState, } from 'react-native'
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import StarRating from "react-native-star-rating";
@@ -17,6 +17,7 @@ import { _renderRows } from '../../common/LoaderImage';
 import { useIsFocused } from '@react-navigation/native';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import CONST from "../../consts";
+import { GetBasketLength } from '../../actions/BasketLength';
 
 
 const { width } = Dimensions.get('window');
@@ -26,18 +27,22 @@ const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
 function HomeScreen({ navigation }) {
-    const lang          = useSelector(state => state.lang.lang);
-    const categories    = useSelector(state => state.categories.categories);
-    const providers     = useSelector(state => state.providers.providers);
-    const banners       = useSelector(state => state.banners.banners);
-    const user          = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
+    const lang = useSelector(state => state.lang.lang);
+    const categories = useSelector(state => state.categories.categories);
+    const providers = useSelector(state => state.providers.providers);
+    const banners = useSelector(state => state.banners.banners);
+    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
+    const BasketLength = useSelector(state => state.BasketLength.BasketLength?.count);
 
+    console.log('BasketLength' + BasketLength);
     const dispatch = useDispatch();
     let loadingAnimated = [];
 
 
     const [spinner, setSpinner] = useState(true);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
+
+
     const isFocused = useIsFocused();
     // let mapRef = useRef('');
 
@@ -78,29 +83,28 @@ function HomeScreen({ navigation }) {
         appState.current = nextAppState;
 
         setAppStateVisible(appState.current);
-        if(appState.current === 'active'){
+        if (appState.current === 'active') {
             axios({
                 url: CONST.url + 'update-availability',
                 method: 'POST',
                 params: { lang },
-                data: { available : 1},
+                data: { available: 1 },
                 headers: { Authorization: 'Bearer ' + token, },
             }).then(response => {
 
             });
-        }else{
+        } else {
             axios({
                 url: CONST.url + 'update-availability',
                 method: 'POST',
                 params: { lang },
-                data: { available : 1},
+                data: { available: 1 },
                 headers: { Authorization: 'Bearer ' + token, },
             }).then(response => {
 
             });
         }
 
-        console.log('AppState', appState.current);
     };
 
     const fetchData = async () => {
@@ -149,31 +153,30 @@ function HomeScreen({ navigation }) {
 
 
     useEffect(() => {
-
-        if (isFocused) {
+        if (isFocused)
             setSpinner(true)
-            fetchData()
-            dispatch(getLatestProviders());
-            dispatch(getBanners(lang))
-            dispatch(getCategories(lang)).then(() => setSpinner(false))
+        fetchData()
+        dispatch(getLatestProviders());
+        dispatch(getBanners(lang))
+        dispatch(GetBasketLength(lang, token))
+        dispatch(getCategories(lang)).then(() => setSpinner(false))
 
 
-        }
+
 
     }, [isFocused]);
 
-    console.log(mapRegion);
 
 
     useEffect(() => {
 
 
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
-             let notification = res.notification;
+            let notification = res.notification;
 
             let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id
-             let room = notification.request.content.data.room
+            let room = notification.request.content.data.room
 
             if (type === 'block') {
                 dispatch(logout(token))
@@ -183,12 +186,12 @@ function HomeScreen({ navigation }) {
             else if (type === 'wallet')
                 navigation.navigate('Wallet')
             else if (type === 'order_offer')
-                console.log('oferrrrrrrrrrrrrrrrrrrrr' , OrderId)
-               // navigation.navigate('AllOffers', { id: OrderId })
+                console.log('oferrrrrrrrrrrrrrrrrrrrr', OrderId)
+            // navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
-                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
-            }else if (type === 'chat' && room) {
-               navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
+                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
+            } else if (type === 'chat' && room) {
+                navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
         });
@@ -200,7 +203,7 @@ function HomeScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.bg }}>
-            <HeaderHome navigation={navigation} />
+            <HeaderHome navigation={navigation} count={BasketLength} />
 
             <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
 
@@ -219,7 +222,7 @@ function HomeScreen({ navigation }) {
                         banners.map((img, i) => {
                             return (
                                 <TouchableOpacity style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} onPress={img.id == 1 ? () => { } : () => navigation.navigate('RestaurantDepartment', { Resid: img.id })}>
-                                    <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={ Platform.isPad ? 'strech' : 'contain'} />
+                                    <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={Platform.isPad ? 'stretch' : 'contain'} />
                                 </TouchableOpacity>
                             )
                         })
@@ -274,6 +277,7 @@ function HomeScreen({ navigation }) {
                                             onLoad={onLoadImg}
                                             source={loadingImage ? { uri: category.img } : require('../../../assets/images/default.png')}
                                             style={styles.allImg}
+                                            resizeMode='cover'
                                         />
 
                                         <Text style={styles.mText}>{category.name}</Text>
@@ -300,6 +304,8 @@ function HomeScreen({ navigation }) {
 
                                         source={{ uri: provider.avatar }}
                                         style={{ width: '80%', height: 70, alignSelf: 'center' }}
+                                        resizeMode='cover'
+
                                     />
 
                                     <View style={{ Width: '100%', paddingHorizontal: 20, flexDirection: 'column' }}>
@@ -441,8 +447,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     TextImg: {
-        width: width * .4,
-        height: height * .3,
         justifyContent: 'center',
         borderRadius: 25,
         borderTopStartRadius: 0,
@@ -452,8 +456,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     allImg: {
-        width: '100%',
-        height: '100%',
+        width: 160,
+        height: 200,
     },
     mText: {
         color: Colors.bg,

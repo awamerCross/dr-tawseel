@@ -22,6 +22,7 @@ import { ResturantDetailes, Products } from '../../actions';
 import Container from '../../common/Container';
 import LoadingBtn from '../../common/Loadbtn';
 import { _renderRows } from '../../common/LoaderImage';
+import { ToasterNative } from '../../common/ToasterNatrive';
 
 
 const { width } = Dimensions.get('window')
@@ -53,7 +54,7 @@ function RestaurantDepartment({ navigation, route }) {
         return unsubscribe
     }, [navigation, route])
 
-
+    console.log(RestDetailes);
     const SHowProduct = (id) => {
 
         setloading(true)
@@ -78,35 +79,41 @@ function RestaurantDepartment({ navigation, route }) {
     function Item({ name, price, id, image, discount, menue, price_discount }) {
         return (
 
-            <TouchableOpacity onPress={() => navigation.navigate('ProductDetailes', { productId: id })} style={[styles.notiBlock]}>
+            <TouchableOpacity onPress={() => RestDetailes.available == 0 ? ToasterNative(i18n.t('close'), 'danger') : navigation.navigate('ProductDetailes', { productId: id })} style={[styles.notiBlock]}>
 
                 <Image
                     onLoadStart={(e) => setloadingImage(true)}
                     onLoad={onLoadImg}
                     source={loadingImage ? { uri: image } : require('../../../assets/images/default.png')}
                     style={styles.restImg}
-                    resizeMode={'cover'} />
+                />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
 
-                <View style={[styles.directionColumn, { flex: 1, marginStart: 5 }]}>
-                    <Text style={{ fontSize: 14, fontFamily: 'flatMedium', alignSelf: 'flex-start', paddingVertical: 5 }}>{name.length > 25 ? (name).substr(0, 25) + '...' : name}</Text>
-                    <Text style={[{ fontFamily: 'flatRegular', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', fontSize: 10, color: Colors.fontNormal, }]}>{menue.length > 25 ? (menue).substr(0, 25) + '...' : menue}</Text>
+                    <View style={[styles.directionColumn, { marginStart: 5 }]}>
+                        <Text style={{ fontSize: 14, fontFamily: 'flatMedium', alignSelf: 'flex-start', paddingVertical: 5 }}>{name.length > 25 ? (name).substr(0, 25) + '...' : name}</Text>
+                        <Text style={[{ fontFamily: 'flatRegular', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', fontSize: 12, color: Colors.fontNormal, marginTop: 10 }]}>{menue.length > 25 ? (menue).substr(0, 25) + '...' : menue}</Text>
+                    </View>
 
-                    {
-                        discount === 0 ?
-                            <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky, paddingTop: 5, alignSelf: 'flex-start' }}>{price} {i18n.t('RS')}</Text>
+                    <View style={{ alignSelf: 'center', justifyContent: 'flex-end' }}>
+                        {
+                            discount === 0 ?
+                                <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky, paddingTop: 5, }}>{price} {i18n.t('RS')}</Text>
 
-                            :
-                            <View style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 5, alignSelf: 'flex-start', marginStart: 0 }}>
-                                <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky }}>{price_discount} {i18n.t('RS')}</Text>
-                                <Text style={{ fontSize: 10, fontFamily: 'flatRegular', color: Colors.fontNormal, textDecorationLine: 'line-through', marginStart: 20 }}>{price} {i18n.t('RS')}</Text>
+                                :
+                                <View style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 10, marginStart: 0 }}>
+                                    <Text style={{ fontSize: 14, fontFamily: 'flatMedium', color: Colors.sky }}>{price_discount} {i18n.t('RS')}</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: 'flatRegular', color: Colors.fontNormal, textDecorationLine: 'line-through', marginStart: 20 }}>{price} {i18n.t('RS')}</Text>
 
 
-                            </View>
+                                </View>
 
-                    }
+                        }
+                    </View>
+
 
 
                 </View>
+
             </TouchableOpacity>
         );
     }
@@ -148,7 +155,7 @@ function RestaurantDepartment({ navigation, route }) {
                                         <Image source={{ uri: RestDetailes.avatar }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode='cover' />
                                     </View>
                                     <Text style={[styles.Text, { color: Colors.bg, fontSize: 18, marginTop: 10 }]}> {RestDetailes.name}</Text>
-                                    <Text style={[styles.Text, { color: Colors.bg, fontSize: 18, marginTop: 10 }]}> {RestDetailes.available}</Text>
+                                    <Text style={[styles.Text, { color: Colors.bg, fontSize: 18, marginTop: 10 }]}> {RestDetailes.available == 0 ? i18n.t('close') : i18n.t('open')}</Text>
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginHorizontal: 5, }}>
                                         <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
@@ -338,24 +345,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 5,
         backgroundColor: '#F8F8F8',
-        marginHorizontal: '2%',
-        width: '95%',
         marginTop: 5,
         borderRadius: 5,
         flex: 1,
         padding: 10
     },
     restImg: {
-        width: 100,
-        height: '100%',
-        borderRadius: 5,
+        width: Platform.isPad ? 100 : 80,
+        height: Platform.isPad ? 100 : 80,
+        borderRadius: 10
 
 
     },
     directionColumn: {
         flexDirection: 'column',
+        alignItems: 'center'
     },
     directionColumnCenter: {
         justifyContent: 'center',

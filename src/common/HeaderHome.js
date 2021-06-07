@@ -1,16 +1,17 @@
 
 
 import React from 'react'
-import { View, Image, TouchableOpacity, Dimensions, StyleSheet, I18nManager } from 'react-native'
+import { View, Image, TouchableOpacity, Dimensions, StyleSheet, I18nManager, Text } from 'react-native'
 import { useSelector } from 'react-redux'
 import Constants from "expo-constants";
+import Colors from '../consts/Colors';
 
 
 
 const { width } = Dimensions.get('window');
 const { height } = Dimensions.get('window');
 
-function HeaderHome({ navigation }) {
+function HeaderHome({ navigation, count }) {
 
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
 
@@ -34,7 +35,32 @@ function HeaderHome({ navigation }) {
                     }
                 </View>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Basket')}>
+                <TouchableOpacity onPress={() => navigation.navigate('Basket')} style={{ flexDirection: 'row' }}>
+                    <View style={{
+                        backgroundColor: Colors.sky,
+                        borderRadius: 5,
+                        elevation: 1,
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        alignSelf: 'flex-end',
+                        bottom: 0,
+                        height: 18,
+                        width: 18,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        top: 5,
+                        left: 5,
+
+                    }}>
+                        <Text style={{
+                            fontFamily: 'flatMedium', color: Colors.IconBlack, fontSize: 14,
+                        }}>{count}</Text>
+                    </View>
                     <Image source={require('../../assets/images/basket.png')} style={styles.LeftImg} resizeMode='contain' />
                 </TouchableOpacity>
 
@@ -45,8 +71,9 @@ function HeaderHome({ navigation }) {
 
 const styles = StyleSheet.create({
     BigImg: {
-        height: height * .17,
-        width: width * .27,
+        height: 100,
+        width: 150,
+        right: 35
     },
     wrapImg: {
         // marginTop: Constants.statusBarHeight,

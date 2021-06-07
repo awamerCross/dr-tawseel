@@ -31,7 +31,7 @@ const InputIcon = ({
             <Text style={[styles.labelText,
             {
                 color: focused || value ? Colors.sky : Colors.fontNormal, paddingHorizontal: 10, fontSize: 13,
-                bottom: focused || value ? width * .13 : null
+                bottom: focused || value ? 40 : null
             }, LabelStyle
             ]}  >
                 {label}
@@ -50,7 +50,7 @@ const InputIcon = ({
 
             />
             <TouchableOpacity onPress={onPress} style={{ position: 'absolute', alignSelf: 'flex-end', marginTop: 15, alignItems: 'center', right: 5 }}>
-                <Image source={image} style={[styles.image, imgStyle , {width : 20 , height : 20}]} resizeMode='contain' />
+                <Image source={image} style={[styles.image, imgStyle, { width: 20, height: 20 }]} resizeMode='contain' />
             </TouchableOpacity>
         </View>
 

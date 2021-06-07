@@ -29,13 +29,13 @@ function CustomDrawerMenue({ navigation }) {
         dispatch(getAppInfo(lang));
     }, []);
 
-    function navigateTo(name){
+    function navigateTo(name) {
         navigation.navigate(name)
         axios({
             url: CONST.url + 'update-availability',
             method: 'POST',
             params: { lang },
-            data: { available : 1},
+            data: { available: 1 },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
 
@@ -45,8 +45,8 @@ function CustomDrawerMenue({ navigation }) {
         <View style={{ flex: 1 }}>
             <View style={styles.ImgsContainer}>
                 <ImageBackground source={require('../../../assets/images/bgmenue.png')} style={styles.BgImg} />
-                     <Image source={user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={user ? 'cover' : 'contain'} />
-                <View style={{position:'absolute' , bottom : '30%'}}>
+                <Image source={user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={user ? 'cover' : 'contain'} />
+                <View style={{ position: 'absolute', bottom: '30%' }}>
                     <Text style={styles.text}>{user ? user.name : i18n.t('guest')}</Text>
                 </View>
 
@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.bg,
-        fontSize: 18
+        fontSize: 14,
+        top: 25
     },
     DrText: {
         textAlign: 'center',

@@ -20,8 +20,8 @@ const isIOS = Platform.OS === 'ios';
 
 function OrderDetailes({ navigation, route }) {
 
-    const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', {jsonp: false});
-    const {orderId, latitude, longitude} = route.params;
+    const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
+    const { orderId, latitude, longitude } = route.params;
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
@@ -57,7 +57,7 @@ function OrderDetailes({ navigation, route }) {
     }
 
     function joinRoom(data) {
-        socket.emit('subscribe', {room: data.room});
+        socket.emit('subscribe', { room: data.room });
         socket.emit('delegate_Updated', data);
     }
 
@@ -135,7 +135,7 @@ function OrderDetailes({ navigation, route }) {
     }
 
     function navigateToMap(lat, lng) {
-        const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
+        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
         const latLng = `${lat},${lng}`;
         const label = 'Custom Label';
         const url = Platform.select({
@@ -146,19 +146,19 @@ function OrderDetailes({ navigation, route }) {
 
         Linking.openURL(url);
     }
-
+    console.log(orderDetails);
     return (
         <Container loading={spinner}>
             {
                 orderDetails ?
-                    <View style={{flex: 1, backgroundColor: Colors.bg}}>
-                        <Header navigation={navigation} label={i18n.t('orderDetails')}/>
-                        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+                    <View style={{ flex: 1, backgroundColor: Colors.bg }}>
+                        <Header navigation={navigation} label={i18n.t('orderDetails')} />
+                        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
                             <View style={styles.card}>
                                 {
                                     orderDetails && orderDetails.provider ?
-                                        <View style={{flexDirection: 'row', flex: .75}}>
+                                        <View style={{ flexDirection: 'row', flex: .75 }}>
                                             <View style={{
                                                 backgroundColor: '#f8f8f8',
                                                 width: 70,
@@ -167,10 +167,10 @@ function OrderDetailes({ navigation, route }) {
                                                 justifyContent: 'center',
                                                 alignItems: 'center'
                                             }}>
-                                                <Image source={{uri: orderDetails.provider.avatar}}
-                                                       style={styles.ImgCard} resizeMode={'cover'}/>
+                                                <Image source={{ uri: orderDetails.provider.avatar }}
+                                                    style={styles.ImgCard} resizeMode={'cover'} />
                                             </View>
-                                            <View style={{flexDirection: 'column', justifyContent: 'center',}}>
+                                            <View style={{ flexDirection: 'column', justifyContent: 'center', }}>
                                                 <Text style={[styles.sText, {
                                                     alignSelf: 'flex-start',
                                                     fontSize: 14,
@@ -192,7 +192,7 @@ function OrderDetailes({ navigation, route }) {
                                         </View> : null
                                 }
 
-                                <View style={[styles.sLine]}/>
+                                <View style={[styles.sLine]} />
                                 <View style={{
                                     flexDirection: 'column',
                                     justifyContent: 'center',
@@ -203,13 +203,13 @@ function OrderDetailes({ navigation, route }) {
                                         color: Colors.sky,
                                         marginHorizontal: 0
                                     }]}>{i18n.t('orderNum')}</Text>
-                                    <Text style={[styles.sText, {marginVertical: 5}]}>{orderDetails.order_id}</Text>
+                                    <Text style={[styles.sText, { marginVertical: 5 }]}>{orderDetails.order_id}</Text>
                                 </View>
                             </View>
 
                             {
                                 orderDetails.type !== 'special' &&
-                                orderDetails.status == 'PROGRESS' ?
+                                    orderDetails.status == 'PROGRESS' ?
                                     <View>
                                         <Text style={{
                                             marginHorizontal: 30,
@@ -220,14 +220,14 @@ function OrderDetailes({ navigation, route }) {
                                             until={orderDetails.end_seconds}
                                             size={20}
                                             // onFinish={() => { setShowCounter(false); }}
-                                            digitStyle={{backgroundColor: '#FFF'}}
-                                            digitTxtStyle={{color: Colors.sky}}
-                                            timeLabelStyle={{color: 'red', fontWeight: 'bold'}}
-                                            separatorStyle={{color: Colors.sky}}
+                                            digitStyle={{ backgroundColor: '#FFF' }}
+                                            digitTxtStyle={{ color: Colors.sky }}
+                                            timeLabelStyle={{ color: 'red', fontWeight: 'bold' }}
+                                            separatorStyle={{ color: Colors.sky }}
                                             timeToShow={['H', 'M', 'S']}
-                                            timeLabels={{m: null, s: null}}
+                                            timeLabels={{ m: null, s: null }}
                                             showSeparator={true}
-                                            style={{flexDirection: 'row-reverse', justifyContent: 'center'}}
+                                            style={{ flexDirection: 'row-reverse', justifyContent: 'center' }}
                                         />
                                     </View>
                                     :
@@ -244,7 +244,7 @@ function OrderDetailes({ navigation, route }) {
 
                                 orderDetails.type !== 'special' ?
                                     <View>
-                                        <View style={[styles.warb, {alignItems: 'flex-start'}]}>
+                                        <View style={[styles.warb, { alignItems: 'flex-start' }]}>
                                             <Text style={styles.aloneText}>{i18n.t('followOrder')}</Text>
                                         </View>
 
@@ -255,56 +255,56 @@ function OrderDetailes({ navigation, route }) {
                                         }}>
                                             <View style={styles.followStep}>
                                                 <View style={[styles.skyCircle,
-                                                    {
-                                                        backgroundColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : '#fff',
-                                                        borderColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : Colors.fontNormal
-                                                    }]}>
-                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]}/>
+                                                {
+                                                    backgroundColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : '#fff',
+                                                    borderColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : Colors.fontNormal
+                                                }]}>
+                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]} />
                                                 </View>
                                                 <Text
-                                                    style={[styles.nText, {marginHorizontal: 0}]}>{i18n.t('progressOrder')}</Text>
+                                                    style={[styles.nText, { marginHorizontal: 0 }]}>{i18n.t('progressOrder')}</Text>
                                                 <View style={[styles.stepLine,
-                                                    {backgroundColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : Colors.fontNormal,}]}/>
+                                                { backgroundColor: checkOrderStatus(orderDetails.status, 'PROGRESS') ? Colors.sky : Colors.fontNormal, }]} />
                                             </View>
 
                                             <View style={[styles.followStep]}>
                                                 <View style={[styles.skyCircle,
-                                                    {
-                                                        backgroundColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : '#fff',
-                                                        borderColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : Colors.fontNormal
-                                                    }]}>
-                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]}/>
+                                                {
+                                                    backgroundColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : '#fff',
+                                                    borderColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : Colors.fontNormal
+                                                }]}>
+                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]} />
                                                 </View>
                                                 <Text
-                                                    style={[styles.nText, {marginHorizontal: 0}]}>{i18n.t('readyOrder')}</Text>
+                                                    style={[styles.nText, { marginHorizontal: 0 }]}>{i18n.t('readyOrder')}</Text>
                                                 <View style={[styles.stepLine,
-                                                    {backgroundColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : Colors.fontNormal,}]}/>
+                                                { backgroundColor: checkOrderStatus(orderDetails.status, 'READY') ? Colors.sky : Colors.fontNormal, }]} />
                                             </View>
 
                                             <View style={[styles.followStep]}>
                                                 <View style={[styles.skyCircle,
-                                                    {
-                                                        backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : '#fff',
-                                                        borderColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : Colors.fontNormal
-                                                    }]}>
-                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]}/>
+                                                {
+                                                    backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : '#fff',
+                                                    borderColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : Colors.fontNormal
+                                                }]}>
+                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]} />
                                                 </View>
                                                 <Text
-                                                    style={[styles.nText, {marginHorizontal: 0}]}>{i18n.t('delegateAccept')}</Text>
+                                                    style={[styles.nText, { marginHorizontal: 0 }]}>{i18n.t('delegateAccept')}</Text>
                                                 <View style={[styles.stepLine,
-                                                    {backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : Colors.fontNormal,}]}/>
+                                                { backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ? Colors.sky : Colors.fontNormal, }]} />
                                             </View>
 
                                             <View style={[styles.followStep]}>
                                                 <View style={[styles.skyCircle,
-                                                    {
-                                                        backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEARRIVED') ? Colors.sky : '#fff',
-                                                        borderColor: checkOrderStatus(orderDetails.status, 'DELEGATEARRIVED') ? Colors.sky : Colors.fontNormal
-                                                    }]}>
-                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]}/>
+                                                {
+                                                    backgroundColor: checkOrderStatus(orderDetails.status, 'DELEGATEARRIVED') ? Colors.sky : '#fff',
+                                                    borderColor: checkOrderStatus(orderDetails.status, 'DELEGATEARRIVED') ? Colors.sky : Colors.fontNormal
+                                                }]}>
+                                                    <Icon type={'Feather'} name={'check'} style={[styles.checkCircle]} />
                                                 </View>
                                                 <Text
-                                                    style={[styles.nText, {marginHorizontal: 0}]}>{i18n.t('delegateArrived')}</Text>
+                                                    style={[styles.nText, { marginHorizontal: 0 }]}>{i18n.t('delegateArrived')}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -314,7 +314,7 @@ function OrderDetailes({ navigation, route }) {
 
                             }
 
-                            <View style={{flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5}}>
+                            <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
                                 <View style={styles.accordion}>
                                     <Text style={[styles.DText, {
                                         color: Colors.sky,
@@ -336,14 +336,14 @@ function OrderDetailes({ navigation, route }) {
                                             height: 50,
                                         }]}>
                                             <Image source={require('../../../assets/images/pinblue.png')}
-                                                   style={{width: 20, height: 20}} resizeMode={'contain'}/>
+                                                style={{ width: 20, height: 20 }} resizeMode={'contain'} />
                                             <Text
-                                                style={[styles.nText, {fontSize: 13}]}>{(orderDetails.address.address_provider).substr(0, 25)}...</Text>
+                                                style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_provider).substr(0, 25)}...</Text>
 
                                             <TouchableOpacity
                                                 onPress={() => navigateToMap(orderDetails.address.latitude_provider, orderDetails.address.longitude_provider)}>
                                                 <Text
-                                                    style={[styles.nText, {color: Colors.sky}]}>( {i18n.t('seeLocation')} )</Text>
+                                                    style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
                                             </TouchableOpacity>
                                         </View> : null
                                 }
@@ -369,21 +369,21 @@ function OrderDetailes({ navigation, route }) {
                                             height: 50,
                                         }]}>
                                             <Image source={require('../../../assets/images/pinblue.png')}
-                                                   style={{width: 20, height: 20}} resizeMode={'contain'}/>
+                                                style={{ width: 20, height: 20 }} resizeMode={'contain'} />
                                             <Text
-                                                style={[styles.nText, {fontSize: 13}]}>{(orderDetails.address.address_to).substr(0, 25)}...</Text>
+                                                style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_to).substr(0, 25)}...</Text>
 
                                             <TouchableOpacity
                                                 onPress={() => navigateToMap(orderDetails.address.latitude_to, orderDetails.address.longitude_to)}>
                                                 <Text
-                                                    style={[styles.nText, {color: Colors.sky}]}>( {i18n.t('seeLocation')} )</Text>
+                                                    style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
                                             </TouchableOpacity>
                                         </View> : null
                                 }
                             </View>
 
 
-                            <View style={{flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5}}>
+                            <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
                                 <View style={styles.accordion}>
                                     <Text style={[styles.DText, {
                                         color: Colors.sky,
@@ -402,8 +402,8 @@ function OrderDetailes({ navigation, route }) {
                                     height: 50,
                                 }]}>
                                     <Icon type={'FontAwesome'} name={'money'}
-                                          style={{color: Colors.sky, fontSize: 15}}/>
-                                    <Text style={[styles.nText, {fontSize: 13}]}>{orderDetails.payment_text}</Text>
+                                        style={{ color: Colors.sky, fontSize: 15 }} />
+                                    <Text style={[styles.nText, { fontSize: 13 }]}>{orderDetails.payment_text}</Text>
                                 </View>
                             </View>
 
@@ -417,8 +417,8 @@ function OrderDetailes({ navigation, route }) {
                                     }]}>{i18n.t('orderDetails')}</Text>
                                     <Image
                                         source={toggle ? require('../../../assets/images/arro.png') : require('../../../assets/images/arrblue.png')}
-                                        style={{width: 10, height: 10, alignSelf: 'center', marginHorizontal: 20}}
-                                        resizeMode={'contain'}/>
+                                        style={{ width: 10, height: 10, alignSelf: 'center', marginHorizontal: 20 }}
+                                        resizeMode={'contain'} />
                                 </View>
                             </TouchableOpacity>
 
@@ -475,32 +475,32 @@ function OrderDetailes({ navigation, route }) {
                                                                     fontFamily: 'flatMedium',
                                                                 }}>{i18n.t('total')} :</Text>
                                                                 <Text
-                                                                    style={[styles.nText, {color: Colors.sky}]}> {orderDetails.total} {i18n.t('RS')}</Text>
+                                                                    style={[styles.nText, { color: Colors.sky }]}> {orderDetails.total} {i18n.t('RS')}</Text>
 
                                                             </View>
                                                         </View>
                                                     ))
                                                     :
-                                                    <View style={{width: '100%'}}>
-                                                        <View style={{flexDirection: 'row'}}>
+                                                    <View style={{ width: '100%' }}>
+                                                        <View style={{ flexDirection: 'row' }}>
                                                             {
                                                                 orderDetails.images.map((img, i) => (
                                                                     <TouchableOpacity onPress={() => {
                                                                         setClickImg(true);
                                                                         setOpenedImg(img)
-                                                                    }} style={{flexDirection: 'row', padding: 5}}>
-                                                                        <Image source={{uri: img}} key={i} style={{
+                                                                    }} style={{ flexDirection: 'row', padding: 5 }}>
+                                                                        <Image source={{ uri: img }} key={i} style={{
                                                                             width: 100,
                                                                             height: 100,
                                                                             borderRadius: 5,
                                                                             marginHorizontal: 5
-                                                                        }} resizeMode={'contain'}/>
+                                                                        }} resizeMode={'contain'} />
                                                                     </TouchableOpacity>
                                                                 ))
                                                             }
                                                         </View>
                                                         <Text
-                                                            style={[styles.sText, {alignSelf: 'flex-start'}]}> {orderDetails.details} </Text>
+                                                            style={[styles.sText, { alignSelf: 'flex-start' }]}> {orderDetails.details} </Text>
                                                     </View>
                                             }
                                         </>
@@ -512,7 +512,7 @@ function OrderDetailes({ navigation, route }) {
                                     onBackdropPress={() => setClick(false)}
                                     onBackButtonPress={() => setClick(false)}
                                     isVisible={click}
-                                    style={{flex: 1, alignSelf: 'center',}}
+                                    style={{ flex: 1, alignSelf: 'center', }}
                                 >
 
                                     <View style={styles.modalView}>
@@ -527,9 +527,9 @@ function OrderDetailes({ navigation, route }) {
                                             flexDirection: 'row'
                                         }}>
                                             <Text
-                                                style={[styles.modetext, {color: Colors.bg,}]}>{i18n.t('details')}</Text>
+                                                style={[styles.modetext, { color: Colors.bg, }]}>{i18n.t('details')}</Text>
                                         </View>
-                                        <View style={{flexDirection: 'column', marginTop: 10, marginLeft: 10,}}>
+                                        <View style={{ flexDirection: 'column', marginTop: 10, marginLeft: 10, }}>
 
                                             {
                                                 !ModelProduct.extras ?
@@ -543,8 +543,8 @@ function OrderDetailes({ navigation, route }) {
                                                     </Text> :
                                                     ModelProduct.extras.map((ex, i) => {
                                                         return (
-                                                            <View style={{flexDirection: 'row', alignItems: 'center'}}
-                                                                  key={'_' + i}>
+                                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}
+                                                                key={'_' + i}>
                                                                 <Text style={[styles.modetext, {
                                                                     color: Colors.IconBlack,
                                                                     marginVertical: 5
@@ -557,22 +557,22 @@ function OrderDetailes({ navigation, route }) {
                                                         )
                                                     })}
 
-                                            <View style={{flexDirection: 'row'}}>
+                                            <View style={{ flexDirection: 'row' }}>
                                                 <Text
-                                                    style={[styles.nText, {color: Colors.fontNormal}]}> {i18n.t('quantity')} : </Text>
+                                                    style={[styles.nText, { color: Colors.fontNormal }]}> {i18n.t('quantity')} : </Text>
                                                 <Text style={[styles.nText]}> ({ModelProduct.quantity})</Text>
                                             </View>
 
-                                            <View style={{flexDirection: 'row'}}>
+                                            <View style={{ flexDirection: 'row' }}>
                                                 <Text
-                                                    style={[styles.nText, {color: Colors.fontNormal}]}> {i18n.t('taxes')} : </Text>
+                                                    style={[styles.nText, { color: Colors.fontNormal }]}> {i18n.t('taxes')} : </Text>
                                                 <Text
                                                     style={[styles.nText]}> ({orderDetails.added_value} {i18n.t('RS')})</Text>
                                             </View>
 
-                                            <View style={{flexDirection: 'row'}}>
+                                            <View style={{ flexDirection: 'row' }}>
                                                 <Text
-                                                    style={[styles.nText, {color: Colors.fontNormal}]}> {i18n.t('delevierPrice')} : </Text>
+                                                    style={[styles.nText, { color: Colors.fontNormal }]}> {i18n.t('delevierPrice')} : </Text>
                                                 <Text
                                                     style={[styles.nText]}> ({orderDetails.shipping} {i18n.t('RS')})</Text>
                                             </View>
@@ -589,21 +589,21 @@ function OrderDetailes({ navigation, route }) {
                                             onBackdropPress={() => setClickImg(false)}
                                             onBackButtonPress={() => setClickImg(false)}
                                             isVisible={clickImg}
-                                            style={{flex: 1, alignSelf: 'center',}}
+                                            style={{ flex: 1, alignSelf: 'center', }}
                                         >
 
-                                            <View style={[styles.modalView, {paddingBottom: 5,}]}>
+                                            <View style={[styles.modalView, { paddingBottom: 5, }]}>
                                                 <View style={{
                                                     flexDirection: 'row',
                                                     padding: 5,
                                                     justifyContent: 'center',
                                                     alignItems: 'center'
                                                 }}>
-                                                    <Image source={{uri: openedImg}} style={{
+                                                    <Image source={{ uri: openedImg }} style={{
                                                         width: '100%',
                                                         height: 400,
                                                         borderRadius: 5,
-                                                    }} resizeMode={'contain'}/>
+                                                    }} resizeMode={'contain'} />
                                                 </View>
                                             </View>
 
@@ -612,7 +612,7 @@ function OrderDetailes({ navigation, route }) {
                                 }
                                 {
                                     user && user.user_type === 2 && orderDetails.delegate && orderDetails.status !== 'DELIVERED' ?
-                                        <View style={{flexDirection: 'column'}}>
+                                        <View style={{ flexDirection: 'column' }}>
                                             <Text style={[styles.nText, {
                                                 marginHorizontal: width * .08,
                                                 marginVertical: 10
@@ -624,21 +624,21 @@ function OrderDetailes({ navigation, route }) {
                                                 paddingHorizontal: 20
                                             }]}>
                                                 <Text
-                                                    style={[styles.nText, {alignSelf: 'flex-start'}]}>{orderDetails.delegate.name}</Text>
+                                                    style={[styles.nText, { alignSelf: 'flex-start' }]}>{orderDetails.delegate.name}</Text>
                                             </View>
 
                                             <Text style={[styles.nText, {
                                                 marginHorizontal: width * .08,
                                                 marginVertical: 10
                                             }]}>{i18n.t('phone')}</Text>
-                                            <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                                            <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                                                 <View style={[styles.warb, {
                                                     width: '70%',
                                                     borderRadius: 3,
                                                     paddingHorizontal: 20
                                                 }]}>
                                                     <Text
-                                                        style={[styles.nText, {textAlign: 'left'}]}>{orderDetails.delegate.phone}</Text>
+                                                        style={[styles.nText, { textAlign: 'left' }]}>{orderDetails.delegate.phone}</Text>
                                                 </View>
                                                 <TouchableOpacity
                                                     onPress={() => Linking.openURL(`tel://${orderDetails.delegate.phone}`)}
@@ -649,17 +649,17 @@ function OrderDetailes({ navigation, route }) {
                                                         borderRadius: 5
                                                     }}>
                                                     <Text
-                                                        style={[styles.aloneText, {color: '#fff'}]}>{i18n.t('call')}</Text>
+                                                        style={[styles.aloneText, { color: '#fff' }]}>{i18n.t('call')}</Text>
                                                 </TouchableOpacity>
                                             </View>
 
-                                            <TouchableOpacity style={{marginTop: 20}}
-                                                              onPress={() => navigation.navigate('Followrepresentative', {
-                                                                  address: orderDetails.address,
-                                                                  orderDetails
-                                                              })}>
+                                            <TouchableOpacity style={{ marginTop: 20 }}
+                                                onPress={() => navigation.navigate('Followrepresentative', {
+                                                    address: orderDetails.address,
+                                                    orderDetails
+                                                })}>
                                                 <Text
-                                                    style={[styles.aloneText, {textAlign: 'center',}]}>({i18n.t('delegateTracking')})</Text>
+                                                    style={[styles.aloneText, { textAlign: 'center', }]}>({i18n.t('delegateTracking')})</Text>
                                             </TouchableOpacity>
                                         </View>
 
@@ -691,19 +691,19 @@ function OrderDetailes({ navigation, route }) {
                                                 borderColor: '#ddd',
                                                 height: 50,
                                             }]}>
-                                                <Image source={{uri: orderDetails.user.avatar}}
-                                                       style={{width: 45, height: 45, borderRadius: 5}}
-                                                       resizeMode={'contain'}/>
+                                                <Image source={{ uri: orderDetails.user.avatar }}
+                                                    style={{ width: 45, height: 45, borderRadius: 5 }}
+                                                    resizeMode={'contain'} />
                                                 <Text style={[styles.nText]}>{orderDetails.user.name}</Text>
                                                 {
-                                                    orderDetails.status !== 'READY' ?
+                                                    orderDetails.status !== 'READY' || orderDetails.user.hide_phone == 0 ?
                                                         <TouchableOpacity onPress={() => {
                                                             Linking.openURL(`tel://${orderDetails.user.phone}`)
                                                         }}
-                                                                          style={{position: 'absolute', right: 10}}>
+                                                            style={{ position: 'absolute', right: 10 }}>
                                                             <Image
                                                                 source={require('../../../assets/images/callchat.png')}
-                                                                style={{width: 40, height: 40}} resizeMode={'contain'}/>
+                                                                style={{ width: 40, height: 40 }} resizeMode={'contain'} />
                                                         </TouchableOpacity> : null
                                                 }
                                             </View>
@@ -713,27 +713,27 @@ function OrderDetailes({ navigation, route }) {
                                 {
                                     user && user.user_type === 3 && orderDetails.delegate == null && orderDetails.type !== 'special' ?
                                         <BTN title={i18n.t('IWillDeliver')}
-                                             onPress={() => onDeliverOrder()}
-                                             ContainerStyle={{marginBottom: 40, borderRadius: 20,}}
-                                             TextStyle={{fontSize: 13}}/>
+                                            onPress={() => onDeliverOrder()}
+                                            ContainerStyle={{ marginBottom: 40, borderRadius: 20, }}
+                                            TextStyle={{ fontSize: 13 }} />
                                         : null
                                 }
 
                                 {
 
                                     user && user.user_type === 3 && orderDetails.type === 'special' && orderDetails.status === 'READY' ?
-                                        <View style={{marginTop: 20}}>
+                                        <View style={{ marginTop: 20 }}>
                                             <BTN title={i18n.t('sendOfferPrice')}
-                                                 onPress={() => navigation.navigate('SetOffer', {orderDetails})}
-                                                 ContainerStyle={{marginBottom: 40, borderRadius: 20,}}
-                                                 TextStyle={{fontSize: 13}}/>
+                                                onPress={() => navigation.navigate('SetOffer', { orderDetails })}
+                                                ContainerStyle={{ marginBottom: 40, borderRadius: 20, }}
+                                                TextStyle={{ fontSize: 13 }} />
                                         </View>
                                         : null
                                 }
 
                                 {
                                     Isopen ?
-                                        <View style={{flexDirection: 'column'}}>
+                                        <View style={{ flexDirection: 'column' }}>
                                             <Text style={[styles.nText, {
                                                 marginHorizontal: width * .08,
                                                 marginVertical: 10
@@ -744,7 +744,7 @@ function OrderDetailes({ navigation, route }) {
                                                 borderRadius: 3,
                                                 paddingHorizontal: 20
                                             }]}>
-                                                <Text style={[styles.nText, {justifyContent: 'center'}]}>اوامر
+                                                <Text style={[styles.nText, { justifyContent: 'center' }]}>اوامر
                                                     الشبكه</Text>
                                             </View>
                                             {/*<TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.navigate('Followrepresentative')}>*/}
@@ -756,15 +756,15 @@ function OrderDetailes({ navigation, route }) {
 
                                 {
                                     checkOrderStatus(orderDetails.status, 'DELEGATEACCEPT') ?
-                                        <View style={{marginTop: 20}}>
+                                        <View style={{ marginTop: 20 }}>
                                             <BTN title={i18n.t('startChat')}
-                                                 onPress={() => navigation.navigate('OrderChatting', {
-                                                     receiver: user && user.user_type == 2 ? orderDetails.delegate : orderDetails.user,
-                                                     sender: user.user_type == 2 ? orderDetails.user : orderDetails.delegate,
-                                                     orderDetails
-                                                 })}
-                                                 ContainerStyle={{marginHorizontal: 20, borderRadius: 20,}}
-                                                 TextStyle={{fontSize: 13}}/>
+                                                onPress={() => navigation.navigate('OrderChatting', {
+                                                    receiver: user && user.user_type == 2 ? orderDetails.delegate : orderDetails.user,
+                                                    sender: user.user_type == 2 ? orderDetails.user : orderDetails.delegate,
+                                                    orderDetails
+                                                })}
+                                                ContainerStyle={{ marginHorizontal: 20, borderRadius: 20, }}
+                                                TextStyle={{ fontSize: 13 }} />
                                         </View>
                                         : null
                                 }
@@ -793,14 +793,14 @@ const styles = StyleSheet.create({
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize:14,
+        fontSize: 14,
         textAlign: 'center',
         top: width * .19
     },
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize:14,
+        fontSize: 14,
         marginHorizontal: 10
     },
     card: {
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     yText: {
         fontFamily: 'flatLight',
         color: Colors.IconBlack,
-        fontSize:14,
+        fontSize: 14,
         marginHorizontal: 10
     },
     warb: {
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize:14,
+        fontSize: 14,
     },
     accordion: {
         backgroundColor: '#f8f8f8',

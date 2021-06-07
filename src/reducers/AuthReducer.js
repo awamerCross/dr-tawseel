@@ -1,13 +1,13 @@
-import { login_success, login_failed, Sign_In, Sign_up, Activate_Code, logout } from "../actions/AuthAction";
+import { login_success, login_failed, Sign_In, Sign_up, Activate_Code, logout, ClearـCaSh } from "../actions/AuthAction";
 import { UpdateـProfile } from "../actions/ProfileAction";
-const initial_State = { user: null, loading: false, message: '', success: false }
+const initial_State = { user: null, loading: false, message: '', success: false, token: '' }
 
 export default (state = initial_State, action) => {
     switch (action.type) {
         case Sign_In:
             return { ...state };
         case login_success:
-            return { ...state, user: action.data, message: action.data.message, success: action.data.success }
+            return { ...state, user: action.data, message: action.data.message, success: action.data.success, token: action.data.data.token }
         case login_failed:
             return { ...state, message: action.error.message, success: action.error.success }
         case Sign_up:
@@ -17,6 +17,8 @@ export default (state = initial_State, action) => {
         case UpdateـProfile:
             return { ...state, user: action.data }
         case logout:
+            return { user: null }
+        case ClearـCaSh:
             return { user: null }
         default:
             return state;

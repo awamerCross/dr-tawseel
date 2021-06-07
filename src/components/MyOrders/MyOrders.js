@@ -43,14 +43,16 @@ function MyOrders({ navigation }) {
     }, [navigation]);
 
     const [routes] = useState(user && user.user_type == 2 ? [
-        { key: 'first', title:  i18n.t('waiting') },
+        { key: 'first', title: i18n.t('waiting') },
         { key: 'second', title: i18n.t('underimplement') },
         { key: 'third', title: i18n.t('CompletedOrder') },
     ] : [
-        { key: 'second', title: i18n.t('underimplement') },
-        { key: 'third', title: i18n.t('CompletedOrder') },
-    ]);
+            { key: 'second', title: i18n.t('underimplement') },
+            { key: 'third', title: i18n.t('CompletedOrder') },
+        ]);
 
+
+    console.log(status);
     const changeTab = (index) => {
         setLoading(true)
 
@@ -121,7 +123,7 @@ function MyOrders({ navigation }) {
         )
     }
 
-    const renderScene =  user && user.user_type == 2 ? SceneMap({
+    const renderScene = user && user.user_type == 2 ? SceneMap({
         first: renderOrders,
         second: renderOrders,
         third: renderOrders,

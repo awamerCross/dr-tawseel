@@ -19,20 +19,27 @@ export const GetProfileAction = (token, lang) => {
     }
 };
 
-export const UpdateProfileAction = (token, name, phone, email, avatar, lang, navigation) => {
-    return async (dispatch) => {
-
+export const UpdateProfileAction = (token, name, phone, email, avatar, lang, id, navigation) => {
+    return async (dispatch, getState) => {
+        let { profile } = getState().profile
         await axios({
             url: CONST.url + 'edit-profile',
             method: 'POST',
-            data: { name, phone, email, avatar, },
+            data: { name, phone, email, avatar, id },
             headers: { Authorization: 'Bearer ' + token, },
             params: { lang }
         }).then(response => {
+            console.log(profile.data.phone);
+            console.log("PhoneService" + phone);
+
             if (response.data.success) {
 
+                profile.data.phone == phone ?
+                    navigation.navigate('GoHome')
+                    :
+                    navigation.navigate('AccountActivation', { token, pathname: 'MyProfile' })
+
                 dispatch({ type: UpdateـProfile, data: response.data });
-                // navigation.navigate('GoHome')
 
             }
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'bottom')
@@ -43,12 +50,12 @@ export const UpdateProfileAction = (token, name, phone, email, avatar, lang, nav
 
 
 
-export const EditPasswordSettingsProfile = (token, old_password, current_password, lang, navigation) => {
+export const EditPasswordSettingsProfile = (token, old_password, current_password, lang, id, navigation) => {
     return async dispatch => {
         await axios({
             url: CONST.url + 'edit-password',
             method: 'POST',
-            data: { old_password, current_password },
+            data: { old_password, current_password, id },
             headers: { Authorization: 'Bearer ' + token, },
             params: { lang, }
 

@@ -117,15 +117,15 @@ function PaymentDetailes({ navigation, route }) {
             <Header navigation={navigation} label={i18n.t('orderDetails')} />
             <ScrollView style={{ flex: 1, backgroundColor: Colors.bg }} showsVerticalScrollIndicator={false}>
 
-                <View style={{ marginTop: width * .16 }}>
-                    <View style={{ alignItems: 'center', justifyContent: 'center'  }}>
+                <View style={{ marginTop: 50 }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                        <TouchableOpacity style={{width : '100%', marginHorizontal: 10}}  onPress={() => { navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' }) }}>
+                        <TouchableOpacity style={{ width: '100%', marginHorizontal: 10 }} onPress={() => { navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' }) }}>
                             <InputIcon
                                 label={i18n.t('deliveryLocation')}
                                 placeholder={i18n.t('selectLocation')}
                                 inputStyle={{ borderRadius: 0, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                                styleCont={{ height: 40, marginTop: width * .05 }}
+                                styleCont={{ height: 40, marginTop: 20 }}
                                 LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 0 }}
                                 image={require('../../../assets/images/pingray.png')}
                                 onPress={() => navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' })}
@@ -145,8 +145,8 @@ function PaymentDetailes({ navigation, route }) {
                         BasketDetailes && MinPriceCoast && MinPriceCoast.delivery && cityName ?
                             <View>
                                 <View style={{ paddingVertical: 10, width, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', borderColor: '#DBDBDB', borderTopWidth: 1, borderBottomWidth: 1, marginTop: 20, backgroundColor: Colors.bg }}>
-                                    <Text style={[{ fontFamily: 'flatMedium', marginLeft: 25, }]}>{i18n.t('delevierPrice')}</Text>
-                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25 }}> {MinPriceCoast.delivery && MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
+                                    <Text style={[{ fontFamily: 'flatMedium', marginLeft: 25, fontSize: 12 }]}>{i18n.t('delevierPrice')}</Text>
+                                    <Text style={{ fontFamily: 'flatMedium', marginRight: 25, fontSize: 12 }}> {MinPriceCoast.delivery && MinPriceCoast.delivery.min}{i18n.t('RS')}</Text>
                                 </View>
 
 
@@ -161,7 +161,7 @@ function PaymentDetailes({ navigation, route }) {
                             null
                     }
 
-                    <Text style={[styles.sText, { marginTop: 30, alignSelf: 'flex-start', marginHorizontal: 20, fontSize: 18 }]}>{i18n.t('selectPayment')} : </Text>
+                    <Text style={[styles.sText, { marginTop: 30, alignSelf: 'flex-start', marginHorizontal: 20, fontSize: 14 }]}>{i18n.t('selectPayment')} : </Text>
 
                     <FlatList data={data}
                         keyExtractor={(item) => (item.id).toString()}
@@ -213,27 +213,18 @@ function PaymentDetailes({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    BigImg: {
-        height: height * .15,
-        width: width * .2,
-    },
-    MenueImg: {
-        width: 18,
-        height: 20,
-        marginHorizontal: 4,
 
-    },
+
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .04,
+        fontSize: 13,
         textAlign: 'center',
-        top: width * .19
     },
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
-        fontSize: 14,
+        fontSize: 12,
     },
 })
 export default PaymentDetailes

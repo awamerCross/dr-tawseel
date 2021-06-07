@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, I18nManager } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, I18nManager, Platform } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
@@ -22,15 +22,17 @@ function Department({ navigation, route }) {
     const [name, setname] = useState('')
     const [label, setLabel] = useState('')
 
-    const ProviderDetaile       = useSelector(state => state.categories.Detailes ? state.categories.Detailes : []);
-    const lang                  = useSelector(state => state.lang.lang);
+    const ProviderDetaile = useSelector(state => state.categories.Detailes ? state.categories.Detailes : []);
+    const lang = useSelector(state => state.lang.lang);
     const [spinner, setSpinner] = useState(true);
-    const dispatch              = useDispatch();
-    let loadingAnimated         = []
+    const dispatch = useDispatch();
+    let loadingAnimated = []
 
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            setname('');
+
             setSpinner(true)
             dispatch(Providerdetailes(lang, categoryId, label, mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
         })
@@ -76,31 +78,43 @@ function Department({ navigation, route }) {
 
                             :
                             ProviderDetaile.map((item, i) => {
+                                console.log(item);
                                 return (
+
+
                                     <TouchableOpacity onPress={() => navigation.navigate('RestaurantDepartment', { Resid: item.id })} key={i}>
                                         <View style={styles.card}>
-                                            <Image source={{ uri: item.avatar }} style={styles.ImgCard} resizeMode='contain' />
-                                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingHorizontal: 10, flex: 1 }}>
-                                                <Text style={[styles.sText, { alignSelf: 'flex-start', flex: 1 }]}>{item.name}</Text>
-                                                <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{item.available}</Text>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <StarRating
-                                                        disabled={true}
-                                                        maxStars={5}
-                                                        rating={item.rate}
-                                                        fullStarColor={'yellow'}
-                                                        starSize={14}
-                                                        starStyle={{ marginHorizontal: 1 }}
-                                                    />
-                                                    <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 10, }}>{item.rate}/5</Text>
-                                                </View>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
-                                                    <Text style={[styles.yText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', lineHeight: 22 }]}>{i18n.t('distance')} : </Text>
-                                                    <Text style={[styles.yText, { alignSelf: 'flex-start', lineHeight: 22, color: Colors.fontBold }]}>{item.distance}</Text>
+                                            <View style={{ flexDirection: 'row', padding: Platform.isPad ? 30 : 10, alignItems: 'center', }}>
+                                                <Image source={{ uri: item.avatar }} style={styles.ImgCard} />
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                    <View style={{ flexDirection: 'column', marginStart: 10 }}>
+                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', fontSize: 12 }]}>{item.name}</Text>
+                                                        <Text style={[styles.sText, { alignSelf: 'flex-start', fontFamily: 'flatLight', marginTop: 10 }]}>{item.available == 0 ? i18n.t('close') : i18n.t('open')}</Text>
 
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', marginTop: 10 }}>
+                                                            <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
+                                                            <Text style={[styles.yText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', lineHeight: 22 }]}>{i18n.t('distance')} : </Text>
+                                                            <Text style={[styles.yText, { alignSelf: 'flex-start', lineHeight: 22, color: Colors.fontBold }]}>{item.distance}</Text>
+
+                                                        </View>
+                                                    </View>
+
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                                                        <StarRating
+                                                            disabled={true}
+                                                            maxStars={5}
+                                                            rating={item.rate}
+                                                            fullStarColor={'yellow'}
+                                                            starSize={14}
+                                                            starStyle={{ marginHorizontal: 1 }}
+                                                        />
+                                                        <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 10, }}>{item.rate}/5</Text>
+                                                    </View>
                                                 </View>
+
+
                                             </View>
+
                                         </View>
                                     </TouchableOpacity>
                                 )
@@ -110,7 +124,7 @@ function Department({ navigation, route }) {
 
             </ScrollView>
 
-        </View>
+        </View >
 
 
     )
@@ -136,7 +150,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 13,
+        fontSize: 14,
     },
     iconImg: {
         width: 12,
@@ -153,10 +167,6 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: Colors.bg,
-        flexDirection: 'row',
-        marginVertical: 8,
-        width: '100%',
-        padding: 15,
         borderRadius: 5,
         flex: 1,
 
@@ -170,9 +180,9 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
     },
     ImgCard: {
-        width: width * .2,
-        height: '100%',
-        borderRadius: 5
+        width: Platform.isPad ? 100 : 80,
+        height: Platform.isPad ? 100 : 80,
+        borderRadius: 10
     }
 })
 export default Department

@@ -21,6 +21,9 @@ import questions from './QuestionsReducer';
 import places from './PlacesReducer';
 import comments from './CommentsReducer';
 import cancelReasons from './CancelOrderReasonsReducer';
+import BasketLength from './BasketLength'
+
+
 
 export default combineReducers({
 	lang,
@@ -45,4 +48,5 @@ export default combineReducers({
 	places,
 	comments,
 	cancelReasons,
+	BasketLength
 });

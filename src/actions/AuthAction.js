@@ -14,6 +14,8 @@ export const Sign_up = 'Sign_up';
 export const login_success = 'login_success'
 export const login_failed = 'login_failed';
 export const logout = 'logout'
+export const ClearـCaSh = 'ClearـCaSh'
+
 
 export const SignIn = (phone, password, device_id, lang, navigation) => {
 
@@ -119,9 +121,10 @@ export const UserRegister = (name, phone, password, email, user_type, lang, navi
                 data: { name, phone, password, email, user_type, device_id: deviceId },
                 params: { lang, }
             }).then(res => {
-                dispatch({ type: Sign_up, payload: res.data })
                 if (res.data.success) {
-                    navigation.navigate('AccountActivation', { token: res.data.data.token })
+                    dispatch({ type: Sign_up, payload: res.data })
+
+                    navigation.navigate('AccountActivation', { token: res.data.data.token, code: res.data.data.code })
                 }
                 else {
                     Toast.show({
@@ -177,7 +180,7 @@ export const DelegateRegister = (name, phone, password, email, user_type, identi
 }
 
 
-export const ActivationCode = (code, token, lang) => {
+export const ActivationCode = (code, token, lang, navigation, route) => {
     return async dispatch => {
         await axios({
             method: 'POST',
@@ -193,6 +196,11 @@ export const ActivationCode = (code, token, lang) => {
         ).then(res => {
             if (res.data.success) {
                 dispatch({ type: Activate_Code, data: res.data })
+
+                if (route?.pathname == 'MyProfile') {
+                    navigation.navigate('Profile')
+
+                }
 
             }
             Toast.show({
@@ -225,18 +233,18 @@ export const ResetPassword = (password, code, token, navigation) => {
             if (res.data.success) {
                 navigation.navigate('Login')
             }
-            else {
-                Toast.show({
-                    text: res.data.message,
-                    type: res.data.success ? "success" : "danger",
-                    duration: 3000,
-                    textStyle: {
-                        color: "white",
-                        fontFamily: 'flatMedium',
-                        textAlign: 'center'
-                    }
-                });
-            }
+
+            Toast.show({
+                text: res.data.message,
+                type: res.data.success ? "success" : "danger",
+                duration: 3000,
+                textStyle: {
+                    color: "white",
+                    fontFamily: 'flatMedium',
+                    textAlign: 'center'
+                }
+            });
+
         })
     }
 }
@@ -254,19 +262,19 @@ export const CheckPhone = (lang, phone, navigation) => {
             if (res.data.success) {
                 navigation.navigate('PassVerify', { token: res.data.data.token })
             }
-            else {
-                Toast.show({
-                    text: res.data.message,
-                    type: res.data.success ? "success" : "danger",
-                    duration: 3000,
-                    textStyle: {
-                        color: "white",
-                        fontFamily: 'flatMedium',
-                        textAlign: 'center'
-                    }
-                });
-            }
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+
+            Toast.show({
+                text: res.data.message,
+                type: res.data.success ? "success" : "danger",
+                duration: 3000,
+                textStyle: {
+                    color: "white",
+                    fontFamily: 'flatMedium',
+                    textAlign: 'center'
+                }
+            });
+
+        })
 
     }
 }
@@ -279,10 +287,10 @@ export const tempAuth = () => {
 };
 
 export const LogoutUser = (token) => {
-    return dispatch => {
+    return async dispatch => {
 
-        AsyncStorage.getItem('deviceID').then(device_id => {
-            axios({
+        await AsyncStorage.getItem('deviceID').then(async device_id => {
+            await axios({
                 method: 'POST',
                 url: consts.url + 'logout',
                 headers: { Authorization: 'Bearer ' + token, },
@@ -292,6 +300,20 @@ export const LogoutUser = (token) => {
 
             })
         }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+
+    }
+}
+
+
+
+export const ClearCaSh = (navigation) => {
+    return async (dispatch, getState) => {
+        const { token } = getState().Auth
+        console.log('tokentokentokentoken', token);
+        await dispatch({ type: ClearـCaSh })
+        navigation.navigate('AccountActivation', { token })
+
+
 
     }
 }
