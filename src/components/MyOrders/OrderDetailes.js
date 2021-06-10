@@ -563,12 +563,12 @@ function OrderDetailes({ navigation, route }) {
                                                 <Text style={[styles.nText]}> ({ModelProduct.quantity})</Text>
                                             </View>
 
-                                            <View style={{ flexDirection: 'row' }}>
+                                            {/* <View style={{ flexDirection: 'row' }}>
                                                 <Text
                                                     style={[styles.nText, { color: Colors.fontNormal }]}> {i18n.t('taxes')} : </Text>
                                                 <Text
                                                     style={[styles.nText]}> ({orderDetails.added_value} {i18n.t('RS')})</Text>
-                                            </View>
+                                            </View> */}
 
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Text

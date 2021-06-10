@@ -79,13 +79,13 @@ export const Providerdetailes = (lang, category_id, name, latitude, longitude) =
 	}
 }
 
-export const ResturantDetailes = (id, lang) => {
+export const ResturantDetailes = (id, lang, latitude, longitude) => {
 	return async (dispatch) => {
 		await AsyncStorage.getItem('deviceID').then(async deviceId => {
 			await axios({
 				url: CONST.url + 'provider-details',
 				method: 'POST',
-				data: { id, device_id: deviceId },
+				data: { id, device_id: deviceId, latitude, longitude },
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'RestDetailes', data: response.data });

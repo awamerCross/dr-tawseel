@@ -32,7 +32,7 @@ const isIOS = Platform.OS === 'ios';
 
 function RestaurantDepartment({ navigation, route }) {
 
-    const { Resid } = route.params
+    const { Resid, mapRegion } = route.params
     const [spinner, setSpinner] = useState(true);
     const lang = useSelector(state => state.lang.lang);
     const [loading, setloading] = useState(false);
@@ -47,7 +47,7 @@ function RestaurantDepartment({ navigation, route }) {
         const unsubscribe = navigation.addListener('focus', () => {
             setSpinner(true);
             setloading(true)
-            dispatch(ResturantDetailes(Resid, lang)).then(() => dispatch(Products(Resid, lang))).then(() => setSpinner(false)).then(() => setloading(false))
+            dispatch(ResturantDetailes(Resid, lang, mapRegion.latitude, mapRegion.longitude)).then(() => dispatch(Products(Resid, lang))).then(() => setSpinner(false)).then(() => setloading(false))
             setActiveType(0)
 
         })
@@ -353,8 +353,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     restImg: {
-        width: Platform.isPad ? 100 : 80,
-        height: Platform.isPad ? 100 : 80,
+        width: 100,
+        height: 100,
         borderRadius: 10
 
 

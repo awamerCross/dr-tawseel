@@ -20,7 +20,7 @@ function SuccessEvaluation({ navigation }) {
                 <Text style={styles.tText}>{i18n.t('rateSent')}</Text>
                 <BTN title={i18n.t('backHome')} onPress={user && user.user_type == 3 ? () => navigation.navigate('RebHome') : () => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 50, borderRadius: 20, flex: .1 }} TextStyle={{ fontSize: 13 }} />
             </View>
-            <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' />
+            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </View>
     )
 }

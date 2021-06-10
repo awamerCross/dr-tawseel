@@ -33,7 +33,7 @@ const en = {
   EnsureSite: 'Cofirm Site',
   online: 'Online',
   bankname: 'Bank',
-  discountDelivery : "Delivery discount",
+  discountDelivery: "Delivery discount",
   you: 'You',
   clientsComments: 'Clients Comments',
   RebName: 'Rebrasentative Name',
@@ -460,6 +460,6 @@ const en = {
   seeClosestOrders: 'See Colsest New Order',
   farFrom: 'Far from',
   waitOffers: 'Your Request Has Been Sent And Is Waiting For Offers ...',
-
+  Totalprice: 'Total price of extras',
 };
 export default en;

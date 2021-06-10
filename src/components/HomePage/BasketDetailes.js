@@ -92,7 +92,6 @@ function BasketDetailes({ navigation, route }) {
     }
 
 
-    console.log('LoaderHere', Loader);
 
     return (
 
@@ -168,14 +167,21 @@ function BasketDetailes({ navigation, route }) {
                                 {
                                     BasketDtailes.prices &&
                                     <View>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
+                                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
                                             <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 12 }]}>{i18n.t('taxes')} </Text>
                                             <Text style={[styles.sText, { color: Colors.sky, marginRight: 0 }]}>{BasketDtailes.prices.added_value} {i18n.t('RS')}</Text>
+                                        </View> */}
+
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, paddingHorizontal: 30 }}>
+                                            <Text style={[styles.sText, { marginRight: 0, color: Colors.fontBold, fontSize: 12 }]}>{i18n.t('Totalprice')} </Text>
+                                            <Text style={[styles.sText, { color: Colors.sky, marginRight: 0 }]}>{BasketDtailes.prices.extraPrice} {i18n.t('RS')}</Text>
                                         </View>
+
                                         <View style={{ width, justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 5, flexDirection: 'row', backgroundColor: Colors.bg }}>
                                             <Text style={[styles.oText, { color: Colors.fontBold, fontSize: 12, }]}>{i18n.t('sum')}</Text>
                                             <Text style={[styles.SPrice, { marginRight: 0 }]}> {BasketDtailes.prices.sum} {i18n.t('RS')}</Text>
                                         </View>
+
                                         <View style={{ width: '90%', marginHorizontal: '4%', height: 60, paddingHorizontal: 10, alignItems: 'center', flexDirection: 'row', marginTop: 20, borderColor: '#DBDBDB', justifyContent: 'space-between', backgroundColor: Colors.sky }}>
                                             <Text style={[styles.oText, { marginLeft: 0, color: Colors.bg }]}>{i18n.t('total')}</Text>
                                             <Text style={{ color: Colors.bg, fontFamily: 'flatMedium', fontSize: 14 }}> {(BasketDtailes.prices.total)} {i18n.t('RS')}</Text>

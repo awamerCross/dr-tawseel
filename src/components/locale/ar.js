@@ -463,6 +463,6 @@ const ar = {
   receiveLocation: 'موقع التسليم',
   farFrom: 'يبعد عنك',
   waitOffers: 'تم ارسال طلبك و في انتظار استقبال العروض ...',
-
+  Totalprice: 'مجموع سعر الاضافات',
 };
 export default ar;

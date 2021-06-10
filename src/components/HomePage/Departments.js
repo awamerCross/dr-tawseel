@@ -82,7 +82,7 @@ function Department({ navigation, route }) {
                                 return (
 
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('RestaurantDepartment', { Resid: item.id })} key={i}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('RestaurantDepartment', { Resid: item.id, mapRegion })} key={i}>
                                         <View style={styles.card}>
                                             <View style={{ flexDirection: 'row', padding: Platform.isPad ? 30 : 10, alignItems: 'center', }}>
                                                 <Image source={{ uri: item.avatar }} style={styles.ImgCard} />

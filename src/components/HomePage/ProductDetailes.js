@@ -162,7 +162,7 @@ function ProductDetailes({ navigation, route }) {
             ToasterNative(i18n.t('EnterSize'), 'danger', 'bottom')
         }
         else {
-            dispatch(AddTOCart(productId, selectedRadion, count, GetID, AvailableKiloes, ProductDetailes.price, lang, token,)).then(() => setloader(false))
+            dispatch(AddTOCart(productId, selectedRadion, count, GetID, AvailableKiloes, ExtraPrice, lang, token,)).then(() => setloader(false))
 
         }
     }
