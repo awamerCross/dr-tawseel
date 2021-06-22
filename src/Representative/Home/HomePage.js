@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     View,
     Text,
@@ -16,7 +16,7 @@ import {
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import {getDelegateOrders, GetDeligate, getMyOrders, logout} from "../../actions";
+import { getDelegateOrders, GetDeligate, getMyOrders, logout } from "../../actions";
 import i18n from "../../components/locale/i18n";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Notifications from 'expo-notifications'
@@ -34,13 +34,13 @@ const longitudeDelta = 0.0421;
 function HomePage({ navigation }) {
     const [refreshing, setRefreshing] = React.useState(false);
 
-    const [spinner, setSpinner]     = useState(true);
-    const lang                      = useSelector(state => state.lang.lang);
-    const token                     = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const myOrders                  = useSelector(state => state.delegate.orders);
-    const user                      = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
-    let loadingAnimated             = []
-    const dispatch                  = useDispatch();
+    const [spinner, setSpinner] = useState(true);
+    const lang = useSelector(state => state.lang.lang);
+    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const myOrders = useSelector(state => state.delegate.orders);
+    const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
+    let loadingAnimated = []
+    const dispatch = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
@@ -72,22 +72,22 @@ function HomePage({ navigation }) {
         appState.current = nextAppState;
 
         setAppStateVisible(appState.current);
-        if(appState.current === 'active'){
+        if (appState.current === 'active') {
             axios({
                 url: CONST.url + 'update-availability',
                 method: 'POST',
                 params: { lang },
-                data: { available : 1},
+                data: { available: 1 },
                 headers: { Authorization: 'Bearer ' + token, },
             }).then(response => {
 
             });
-        }else{
+        } else {
             axios({
                 url: CONST.url + 'update-availability',
                 method: 'POST',
                 params: { lang },
-                data: { available : 1},
+                data: { available: 1 },
                 headers: { Authorization: 'Bearer ' + token, },
             }).then(response => {
 
@@ -133,7 +133,7 @@ function HomePage({ navigation }) {
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
 
-            let type    = notification.request.content.data.type;
+            let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id;
 
             if (type === 'special_order' && OrderId) {
@@ -149,9 +149,9 @@ function HomePage({ navigation }) {
 
             let notification = res.notification;
 
-            let type    = notification.request.content.data.type;
+            let type = notification.request.content.data.type;
             let OrderId = notification.request.content.data.order_id
-            let room    = notification.request.content.data.room
+            let room = notification.request.content.data.room
 
 
             if (type === 'block') {
@@ -164,10 +164,10 @@ function HomePage({ navigation }) {
             else if (type === 'order_offer')
                 navigation.navigate('AllOffers', { id: OrderId })
             else if (type === 'order' && OrderId) {
-                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
-            }else if (type === 'special_order' && OrderId) {
-                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })
-            }else if (type === 'chat' && room) {
+                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
+            } else if (type === 'special_order' && OrderId) {
+                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
+            } else if (type === 'chat' && room) {
                 navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
 
@@ -214,14 +214,14 @@ function HomePage({ navigation }) {
             </View>
 
             <View style={{ width: '90%', height: 40, borderRadius: 10, borderWidth: 1, borderColor: Colors.sky, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', padding: 3 }}>
-                <Text style={{ color: Colors.fontBold, fontFamily: 'flatMedium', textAlign: 'center' }}>{ i18n.t('seeClosestOrders') }</Text>
+                <Text style={{ color: Colors.fontBold, fontFamily: 'flatMedium', textAlign: 'center' }}>{i18n.t('seeClosestOrders')}</Text>
             </View>
 
             <ScrollView style={[styles.container,]}
 
-                        contentContainerStyle={styles.scrollView}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                        showsVerticalScrollIndicator={false}>
+                contentContainerStyle={styles.scrollView}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                showsVerticalScrollIndicator={false}>
 
                 {
 
@@ -230,8 +230,8 @@ function HomePage({ navigation }) {
                         :
                         myOrders &&
                         myOrders.map((order, i) => (
-                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id, latitude: mapRegion.latitude , longitude: mapRegion.longitude })}
-                                              style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
+                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id, latitude: mapRegion.latitude, longitude: mapRegion.longitude })}
+                                style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
                                 <View style={styles.card}>
                                     <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
                                     <View style={{ flexDirection: 'column', width: '60%' }}>
@@ -240,7 +240,7 @@ function HomePage({ navigation }) {
                                             <Text style={styles.yText}> {order.date}</Text>
                                         </View>
                                         <View style={{ flexDirection: 'row', paddingStart: 5 }}>
-                                            <Text style={styles.yText}> { i18n.t('farFrom') } : {order.distance}</Text>
+                                            <Text style={styles.yText}> {i18n.t('farFrom')} : {order.distance}</Text>
                                         </View>
                                     </View>
                                     <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
@@ -268,25 +268,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     BigImg: {
-        height: height * .15,
-        width: width * .23,
+        height: 80,
+        width: 80,
     },
     MenueImg: {
         width: 20,
         height: 20,
 
     },
-    LeftImg: {
-        width: 20,
-        height: 20,
-        marginLeft: width * .64
 
-    },
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
         textAlign: 'center',
-        fontSize: width * .04
+        fontSize: 14
     },
     scroll: {
         flex: 1, marginVertical: 20,

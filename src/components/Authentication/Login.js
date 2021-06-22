@@ -14,7 +14,6 @@ import Constants from 'expo-constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { SignIn } from '../../actions/AuthAction';
 import { ToasterNative } from '../../common/ToasterNatrive';
-import LoadingBtn from '../../common/Loadbtn';
 import { getAppInfo } from '../../actions';
 
 
@@ -33,13 +32,13 @@ function Login({ navigation }) {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState('');
     const [spinner, setSpinner] = useState(false);
-
     const lang = useSelector(state => state.lang.lang);
     const dispatch = useDispatch();
 
     const [showPass, setShowPass] = useState(false);
     const isFocused = useIsFocused();
     const appInfo = useSelector(state => state.appInfo.appInfo);
+    const UserType = useSelector(state => state.lang.usertype);
 
 
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -131,49 +130,46 @@ function Login({ navigation }) {
 
     }
 
+    console.log('UserType' + UserType);
 
     return (
 
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <View style={{ flex: 1, backgroundColor: Colors.bg }}>
 
-                <LogoLogin navigation={navigation} />
-                <Text style={styles.sText}>{i18n.t("signIn")}</Text>
-                <View style={{ marginTop: width * .1, }}>
-                    <InputIcon
-                        label={i18n.t("phone")}
-                        onChangeText={(e) => setPhone(e)}
-                        value={phone}
+            <LogoLogin navigation={navigation} />
+            <Text style={styles.sText}>{i18n.t("signIn")}</Text>
+            <View style={{ marginTop: 20, }}>
+                <InputIcon
+                    label={i18n.t("phone")}
+                    onChangeText={(e) => setPhone(e)}
+                    value={phone}
+                    keyboardType='numeric' />
 
-                        keyboardType='numeric' />
-                    <InputIcon
-                        label={i18n.t("password")}
-                        onChangeText={(e) => setPassword(e)}
-                        value={password}
-                        secureTextEntry={!showPass}
-                        image={require('../../../assets/images/view.png')}
-                        onPress={() => setShowPass(!showPass)}
-                        styleCont={{ marginTop: 10 }}
-                    />
-                </View>
+                <InputIcon
+                    label={i18n.t("password")}
+                    onChangeText={(e) => setPassword(e)}
+                    value={password}
+                    secureTextEntry={!showPass}
+                    image={require('../../../assets/images/view.png')}
+                    onPress={() => setShowPass(!showPass)}
+                    styleCont={{ marginTop: 10 }}
+                />
+            </View>
 
-                <LoadingBtn loading={spinner}>
-                    <BTN title={i18n.t("signIn")} onPress={SubmitLoginHandler} />
-                </LoadingBtn>
+            <BTN title={i18n.t("signIn")} onPress={SubmitLoginHandler} spinner={spinner} />
 
-                <BTN title={i18n.t("logInAsVisitor")} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, backgroundColor: '#EBEBEB' }} TextStyle={{ color: '#BDBDBD' }} />
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 15 }}>
-                    <SText title={i18n.t("forgetPassword")} style={{ marginTop: 5, color: Colors.IconBlack }} onPress={() => navigation.navigate('PassRecover')} />
-                </View>
-                <View style={styles.WrapText}>
-                    <Text style={styles.Text}>{i18n.t("haveNoAcc")}</Text>
-                    <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Register')} />
-                </View>
+            <BTN title={i18n.t("logInAsVisitor")} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, backgroundColor: '#EBEBEB' }} TextStyle={{ color: '#BDBDBD' }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 15 }}>
+                <SText title={i18n.t("forgetPassword")} style={{ marginTop: 5, color: Colors.IconBlack }} onPress={() => navigation.navigate('PassRecover')} />
+            </View>
+            <View style={styles.WrapText}>
+                <Text style={styles.Text}>{i18n.t("haveNoAcc")}</Text>
+                <SText title={i18n.t("clickHere")} style={{ paddingTop: 0, color: Colors.sky, marginLeft: 5 }} onPress={() => navigation.navigate('Register')} />
+            </View>
 
-                <View style={[styles.WrapText, { marginTop: 30 }]}>
-                    <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
-                    <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
-                </View>
+            <View style={[styles.WrapText, { marginTop: 30 }]}>
+                <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
+                <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
             </View>
 
             {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
@@ -183,6 +179,7 @@ function Login({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.bg
 
     },
     Text: {
@@ -194,7 +191,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: 20,
+        fontSize: 18,
         marginTop: 20
 
     },
@@ -203,7 +200,11 @@ const styles = StyleSheet.create({
         height: 100,
         alignSelf: 'flex-end'
     },
-    WrapText: { flexDirection: 'row', justifyContent: 'center', marginTop: 10 }
+    WrapText: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10
+    }
 
 })
 export default Login

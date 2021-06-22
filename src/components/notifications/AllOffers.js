@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import {
-    ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ActivityIndicator, FlatList } from 'react-native'
+    ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ActivityIndicator, FlatList, RefreshControl
+} from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
-import {getAllOffers, acceptOffer, logout, cancelOrder, getCancelReasons} from '../../actions';
+import { getAllOffers, acceptOffer, logout, cancelOrder, getCancelReasons } from '../../actions';
 import StarRating from "react-native-star-rating";
 import * as Notifications from "expo-notifications";
 import Modal from "react-native-modal";
@@ -18,17 +19,18 @@ const { width, height } = Dimensions.get('window')
 
 function AllOffers({ navigation, route }) {
 
-    const id                                    = route.params.id;
-    const lang                                  = useSelector(state => state.lang.lang);
-    const token                                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const user                                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
-    const allOffers                             = useSelector(state => state.allOffers.allOffers);
-    const cancelReasons                         = useSelector(state => state.cancelReasons.cancelReasons);
-    const dispatch                              = useDispatch();
-    const [spinner, setSpinner]                 = useState(false);
-    const [isSubmitted, setIsSubmitted]         = useState(false);
-    const [showModal, setShowModal]             = useState(false);
-    const [selectedRadion, setSelectedRadio]    = useState(0)
+    const id = route.params.id;
+    const lang = useSelector(state => state.lang.lang);
+    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
+    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
+    const allOffers = useSelector(state => state.allOffers.allOffers);
+    const cancelReasons = useSelector(state => state.cancelReasons.cancelReasons);
+    const dispatch = useDispatch();
+    const [spinner, setSpinner] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedRadion, setSelectedRadio] = useState(0)
+    const [refreshing, setRefreshing] = useState(false);
 
 
     function fetchData() {
@@ -47,7 +49,7 @@ function AllOffers({ navigation, route }) {
 
     function handleNotification(notification) {
         if (notification && notification.origin !== 'received') {
-            let { type, order_id }            = notification.request.content.data;
+            let { type, order_id } = notification.request.content.data;
 
             if (type === 'order_offer') {
                 dispatch(getAllOffers(lang, token, order_id)).then(() => setSpinner(false))
@@ -76,11 +78,18 @@ function AllOffers({ navigation, route }) {
         dispatch(acceptOffer(lang, token, offerID, id, navigation, user)).then(() => setIsSubmitted(false))
     }
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        dispatch(getAllOffers(lang, token, id)).then(() => setRefreshing(false))
+
+    }, []);
+
     return (
         <View style={{ flex: 1 }}>
             <Header navigation={navigation} label={i18n.t('allOffers')} />
 
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            >
                 <View style={styles.warp}>
                     <Text style={styles.sText}>{i18n.t('orderNumber')}</Text>
                     <Text style={{ fontFamily: 'flatMedium', opacity: .5, fontSize: 15, marginLeft: 5 }}>{id}</Text>
@@ -94,7 +103,7 @@ function AllOffers({ navigation, route }) {
                                 <View style={styles.WarpAll}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                         <Image source={{ uri: offer.user.avatar }} style={styles.ImgModal} />
-                                        <View style={{ flexDirection: 'column', marginHorizontal: width * .07 }}>
+                                        <View style={{ flexDirection: 'column', marginStart: 5 }}>
                                             <Text style={[styles.textClock, { alignSelf: 'flex-start' }]}>{offer.user.name}</Text>
                                             <StarRating
                                                 disabled={true}
@@ -130,7 +139,7 @@ function AllOffers({ navigation, route }) {
                             </View>
                         ))
                         :
-                        <View style={{ alignItems: 'center', height: height*0.7 }}>
+                        <View style={{ alignItems: 'center', height: height * 0.7 }}>
                             <Image source={require('../../../assets/images/wait_offer.gif')} style={{ width: 120, height: 120, alignSelf: 'center', marginVertical: 50 }} />
                             <Text style={styles.textClock}>{i18n.t('waitOffers')}</Text>
 
@@ -153,41 +162,41 @@ function AllOffers({ navigation, route }) {
                             <Text style={[{ fontFamily: 'flatMedium', color: Colors.IconBlack, fontSize: 14 }]}>{i18n.t('chooseReason')}</Text>
                         </View>
                         <FlatList data={cancelReasons}
-                                  keyExtractor={(item) => item.id}
-                                  renderItem={({ item, index }) => {
-                                      return (
-                                          <View>
-                                              <TouchableOpacity key={index} onPress={() => setSelectedRadio(item.id)} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 15 }}>
-                                                  <View >
-                                                      <View style={{
-                                                          height: 15,
-                                                          width: 15,
-                                                          borderRadius: 12,
-                                                          borderWidth: 2,
-                                                          borderColor: selectedRadion === item.id ? Colors.sky : Colors.fontNormal,
-                                                          alignItems: 'center',
-                                                          justifyContent: 'center',
-                                                      }}>
-                                                          {
-                                                              selectedRadion === item.id ?
-                                                                  <View style={{
-                                                                      height: 7,
-                                                                      width: 7,
-                                                                      borderRadius: 6,
-                                                                      backgroundColor: Colors.sky,
-                                                                  }} />
-                                                                  : null
-                                                          }
-                                                      </View>
-                                                  </View>
-                                                  <Text style={[styles.sText, { color: selectedRadion === item.id ? Colors.sky : Colors.fontNormal, fontSize: 13, marginHorizontal: 5 }]}>{item.reason}</Text>
-                                              </TouchableOpacity>
-                                              <View style={{ height: 1, width: '100%', backgroundColor: '#ddd', marginTop: 15, }} />
-                                          </View>
-                                      )
-                                  }} />
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <View>
+                                        <TouchableOpacity key={index} onPress={() => setSelectedRadio(item.id)} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 15 }}>
+                                            <View >
+                                                <View style={{
+                                                    height: 15,
+                                                    width: 15,
+                                                    borderRadius: 12,
+                                                    borderWidth: 2,
+                                                    borderColor: selectedRadion === item.id ? Colors.sky : Colors.fontNormal,
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    {
+                                                        selectedRadion === item.id ?
+                                                            <View style={{
+                                                                height: 7,
+                                                                width: 7,
+                                                                borderRadius: 6,
+                                                                backgroundColor: Colors.sky,
+                                                            }} />
+                                                            : null
+                                                    }
+                                                </View>
+                                            </View>
+                                            <Text style={[styles.sText, { color: selectedRadion === item.id ? Colors.sky : Colors.fontNormal, fontSize: 13, marginHorizontal: 5 }]}>{item.reason}</Text>
+                                        </TouchableOpacity>
+                                        <View style={{ height: 1, width: '100%', backgroundColor: '#ddd', marginTop: 15, }} />
+                                    </View>
+                                )
+                            }} />
 
-                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10 , marginVertical : 25 }}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10, marginVertical: 25 }}>
                             <BTN title={i18n.t('send')} onPress={() => { dispatch(cancelOrder(lang, token, selectedRadion, route.params.id)).then(() => { setShowModal(false); navigation.navigate('GoHome') }) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, height: 40 }} TextStyle={{ fontSize: 13 }} />
                             <View style={{ backgroundColor: '#ddd', width: 2, height: '100%', marginHorizontal: 30 }} />
                             <BTN title={i18n.t('cancelOrder')} onPress={() => { setShowModal(false) }} ContainerStyle={{ borderRadius: 50, width: 120, marginTop: 15, marginBottom: 15, backgroundColor: '#ddd', height: 40 }} TextStyle={{ fontSize: 13, color: Colors.IconBlack }} />
@@ -280,21 +289,19 @@ const styles = StyleSheet.create({
         borderRadius: 50
     },
     ImgModal: {
-        width: width * .14,
-        height: width * .14,
+        width: 70,
+        height: 70,
         borderRadius: 50
     },
     textCard: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
         fontSize: width * .03,
-        opacity: .8
     },
     textClock: {
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
         fontSize: 14,
-        opacity: .5,
         marginVertical: 3
     },
 

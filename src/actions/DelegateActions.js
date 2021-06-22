@@ -13,6 +13,9 @@ export const getDelegateOrders = (lang, token, status, latitude, longitude) => {
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             dispatch({ type: 'getDelegateOrders', payload: response.data });
+            if (!response.data.success) {
+                ToasterNative(response.data.message, 'danger', 'bottom')
+            }
         });
     }
 };

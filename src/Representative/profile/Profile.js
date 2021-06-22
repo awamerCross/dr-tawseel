@@ -61,7 +61,7 @@ function Profile({ navigation }) {
             activeColor={Colors.sky}
             inactiveColor={Colors.IconBlack}
             labelStyle={{
-                fontSize: width * 0.035,
+                fontSize: 14,
                 fontFamily: 'flatMedium',
             }}
             style={{ backgroundColor: Colors.bg }}

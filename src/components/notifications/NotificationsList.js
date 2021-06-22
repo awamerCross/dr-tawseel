@@ -28,6 +28,8 @@ function NotificationsList({ navigation }) {
     })
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user != null ? state.Auth.user.data.token : null);
+    const user = useSelector(state => state.Auth.user != null ? state.Auth.user.data : null);
+
     const notifications = useSelector(state => state.notifications.notifications);
     const notificationsLoader = useSelector(state => state.notifications.loader);
     const dispatch = useDispatch();
@@ -48,17 +50,11 @@ function NotificationsList({ navigation }) {
     }
 
     function renderConfirm() {
-        if (isSubmitted) {
-            return (
-                <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: 20 }]}>
-                    <ActivityIndicator size="large" color={Colors.sky} style={{ alignSelf: 'center' }} />
-                </View>
-            )
-        }
+
 
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-                <BTN title={i18n.t('accept')} onPress={() => acceptOfferAction(orderData.offerID, orderData.order_id)} ContainerStyle={{ borderRadius: 20, width: '35%', marginTop: 0, }} TextStyle={{ fontSize: 12, color: Colors.IconBlack }} />
+                <BTN title={i18n.t('accept')} spinner={isSubmitted} onPress={() => acceptOfferAction(orderData.offerID, orderData.order_id)} ContainerStyle={{ borderRadius: 20, width: '35%', marginTop: 0, }} TextStyle={{ fontSize: 12, color: Colors.IconBlack }} />
             </View>
 
         );
@@ -66,8 +62,7 @@ function NotificationsList({ navigation }) {
 
     function acceptOfferAction(id, orderID) {
         setIsSubmitted(true)
-        setShowModal(false)
-        dispatch(acceptOffer(lang, token, id, orderID, navigation)).then(() => setIsSubmitted(false))
+        dispatch(acceptOffer(lang, token, id, orderID, navigation, user)).then(() => { setShowModal(false); setIsSubmitted(false); })
     }
 
     function notificationNavigation(type) {

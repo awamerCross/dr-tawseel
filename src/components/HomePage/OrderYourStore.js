@@ -16,12 +16,12 @@ const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 
 function OrderYourStore({ navigation, route }) {
-    const { placeId, mapRegion }    = route.params;
-    const lang                      = useSelector(state => state.lang.lang);
-    const place                     = useSelector(state => state.categories.placeDetails);
-    const dispatch                  = useDispatch();
-    const [spinner, setSpinner]     = useState(true);
-    const isFocused                 = useIsFocused();
+    const { placeId, mapRegion } = route.params;
+    const lang = useSelector(state => state.lang.lang);
+    const place = useSelector(state => state.categories.placeDetails);
+    const dispatch = useDispatch();
+    const [spinner, setSpinner] = useState(true);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         if (isFocused) {
@@ -36,30 +36,31 @@ function OrderYourStore({ navigation, route }) {
         <View style={{ flex: 1 }}>
             <Header navigation={navigation} />
             <Container loading={spinner}>
-                <ScrollView style={{ flex: 1 }}>
+                <ScrollView style={{ flex: 1, backgroundColor: Colors.bg, }}>
                     {
                         place ?
                             <View style={styles.container}>
                                 <View style={styles.ImgText}>
-                                    <Image source={{ uri: place.icon }} style={styles.ResImgNm} />
-                                </View>
-                                <View style={[styles.rowDirect, { paddingRight: 15 }]}>
-                                    <Text style={[styles.sText, {   textAlign: 'right'  }]}>{place.name}</Text>
-                                </View>
-
-                                <View style={[styles.rowDirect, { marginTop: 10 }]}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <StarRating
-                                            disabled={false}
-                                            maxStars={5}
-                                            rating={place.rating}
-                                            fullStarColor={'#fec104'}
-                                            starSize={13}
-                                            starStyle={{ marginHorizontal: 1 }}
-                                        />
-                                        <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 12, textAlign: 'right' }}>({place.reviews})</Text>
+                                    <Image source={{ uri: place.icon }} style={styles.ResImgNm} resizeMode='contain' />
+                                    <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                        <Text style={[styles.sText,]}>{place.name}</Text>
+                                        <View style={[styles.rowDirect,]}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <StarRating
+                                                    disabled={false}
+                                                    maxStars={5}
+                                                    rating={place.rating}
+                                                    fullStarColor={'#fec104'}
+                                                    starSize={13}
+                                                    starStyle={{ marginHorizontal: 1 }}
+                                                />
+                                                <Text style={{ color: Colors.fontNormal, fontFamily: 'flatRegular', fontSize: 12, textAlign: 'right' }}>({place.reviews})</Text>
+                                            </View>
+                                        </View>
                                     </View>
                                 </View>
+
+
                                 <View style={styles.dotted} />
 
                                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
@@ -73,17 +74,14 @@ function OrderYourStore({ navigation, route }) {
                                         <Image source={require('../../../assets/images/pinblue.png')} style={[styles.iconImg, { marginVertical: 0 }]} resizeMode='contain' />
                                         <Text style={[styles.yText, { marginTop: 0 }]}> {place.opening_hours ? i18n.t('open') : i18n.t('close')}</Text>
                                     </View>
-                                    {/*<Text style={{ fontFamily: 'flatMedium', color: Colors.fontNormal, fontSize: 12,}}>{i18n.t('showTimes')}</Text>*/}
                                 </View>
 
-                                <View style={{ justifyContent: 'space-between', paddingRight: 15, marginTop: 10 }}>
-                                    {
-                                        place.hours ?
-                                            place.hours.map((hour, i) => (
-                                                <Text key={i} style={{ fontFamily: 'flatMedium', color: Colors.fontNormal, fontSize: 13, alignSelf: 'flex-start', marginBottom: 5 }}>{hour}</Text>
-                                            )) : null
-                                    }
-                                </View>
+                                {
+                                    place.hours ?
+                                        place.hours.map((hour, i) => (
+                                            <Text key={i} style={{ fontFamily: 'flatMedium', color: Colors.fontNormal, fontSize: 13, alignSelf: 'flex-start', margin: 10 }}>{hour}</Text>
+                                        )) : null
+                                }
 
                                 <View style={styles.dotted} />
                             </View> : null
@@ -117,7 +115,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
-        fontSize : 16
+        fontSize: 14
 
     },
     BText: {
@@ -132,8 +130,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     container: {
-        padding: 15,
-        marginTop: width * .07
+        marginTop: 20,
+        marginStart: 5
     },
     ImgText: {
         flexDirection: 'row',
@@ -147,7 +145,6 @@ const styles = StyleSheet.create({
     rowDirect: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
     },
     starImg: {
         width: width * .03,

@@ -1,19 +1,26 @@
 {
   "expo": {
-    "name": "د.توصيل",
+    "name": "دكتور توصيل DR.tawsel",
     "slug": "DRTawseel",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "5.0.4",
+    "version": "7.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
+    },
+    "notification": {
+      "icon": "./assets/icon.png",
+      "androidMode": "default",
+      "iosDisplayInForeground": true,
+      "androidCollapsedTitle": "دكتور توصيل DR.tawsel",
+      "color": "#FCFCFC"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -36,7 +43,7 @@
       "package": "shabaka.drtawsel.com",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 103,
+      "versionCode": 104,
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
@@ -59,4 +66,3 @@
     }
   }
 }
-

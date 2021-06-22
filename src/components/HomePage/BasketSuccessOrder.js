@@ -17,8 +17,8 @@ function BasketSuccessOrder({ navigation, route }) {
         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 150 }}>
             <Image source={require('../../../assets/images/vector.png')} style={styles.orderImg} resizeMode='contain' />
             <Text style={styles.tText}>{i18n.t('orderSentSucc')}</Text>
-            <BTN title={i18n.t('followOrder')} onPress={() => navigation.navigate('OrderDetailes', { orderId })} ContainerStyle={{ marginTop: 50, borderRadius: 15, padding: 30 }} TextStyle={{ fontSize: 13, padding: 35, bottom: 5 }} />
-            <BTN title={i18n.t('backHome')} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, borderRadius: 15, padding: 30, }} TextStyle={{ fontSize: 13, padding: 35, bottom: 5 }} />
+            <BTN title={i18n.t('followOrder')} onPress={() => navigation.navigate('OrderDetailes', { orderId })} ContainerStyle={{ marginTop: 50, borderRadius: 15, }} TextStyle={{ fontSize: 13, }} />
+            <BTN title={i18n.t('backHome')} onPress={() => navigation.navigate('GoHome')} ContainerStyle={{ marginTop: 10, borderRadius: 15, }} TextStyle={{ fontSize: 13, }} />
         </View>
 
 
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     tText: {
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: width * .06,
+        fontSize: 14,
         marginVertical: width * .03
     }
 })

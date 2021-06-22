@@ -15,14 +15,12 @@ import TextImg from '../../common/TextImg'
 import { getAppInfo, LogoutUser } from '../../actions';
 import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../components/locale/i18n";
-import UserContext from "../../routes/UserContext";
 import axios from "axios";
 import CONST from "../../consts";
 
 const { width, height } = Dimensions.get('window')
 
 function DrawerMenueRepresent({ navigation }) {
-    const { setLogout, } = useContext(UserContext);
     const token = useSelector(state => state.Auth.user != null ? state.Auth.user.data.token : null)
     const lang = useSelector(state => state.lang.lang);
     const appInfo = useSelector(state => state.appInfo.appInfo);
@@ -41,13 +39,13 @@ function DrawerMenueRepresent({ navigation }) {
 
 
 
-    function navigateTo(name){
+    function navigateTo(name) {
         navigation.navigate(name)
         axios({
             url: CONST.url + 'update-availability',
             method: 'POST',
             params: { lang },
-            data: { available : 1},
+            data: { available: 1 },
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
 

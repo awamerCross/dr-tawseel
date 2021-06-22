@@ -22,38 +22,29 @@ import { GetBasketLength } from '../../actions/BasketLength';
 
 const { width } = Dimensions.get('window');
 const { height } = Dimensions.get('window');
-
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
 function HomeScreen({ navigation }) {
+
     const lang = useSelector(state => state.lang.lang);
     const categories = useSelector(state => state.categories.categories);
     const providers = useSelector(state => state.providers.providers);
     const banners = useSelector(state => state.banners.banners);
     const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
     const BasketLength = useSelector(state => state.BasketLength.BasketLength?.count);
-
-    console.log('BasketLength' + BasketLength);
-    const dispatch = useDispatch();
-    let loadingAnimated = [];
-
-
-    const [spinner, setSpinner] = useState(true);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
-
-
+    const dispatch = useDispatch();
     const isFocused = useIsFocused();
-    // let mapRef = useRef('');
 
+    let loadingAnimated = [];
+    const [spinner, setSpinner] = useState(true);
     const [mapRegion, setMapRegion] = useState({
         latitude: null,
         longitude: null,
         latitudeDelta,
         longitudeDelta
     });
-
-    const [city, setCity] = useState('');
     const [loadingImage, setloadingImage] = useState(false);
 
     const onLoadImg = (e) => {
@@ -131,24 +122,6 @@ function HomeScreen({ navigation }) {
 
         }
 
-
-        // let { status } = await Location.requestPermissionsAsync();
-        // if (status === 'granted') {
-        //     const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-        //     let userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-        //     setMapRegion({ latitude: userLocation.latitude, longitude: userLocation.longitude, latitudeDelta, longitudeDelta });
-        //     // setMapRegion(userLocation);
-        //     // mapRef.current.animateToRegion(userLocation, 500)
-
-
-
-        // } else {
-        //     ToasterNative('لا تمتلك صلاحيه تحدي  موقعك الحالي')
-
-        // }
-
-
-
     }
 
 
@@ -161,16 +134,10 @@ function HomeScreen({ navigation }) {
         dispatch(GetBasketLength(lang, token))
         dispatch(getCategories(lang)).then(() => setSpinner(false))
 
-
-
-
     }, [isFocused]);
 
 
-
     useEffect(() => {
-
-
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
             let notification = res.notification;
 
@@ -221,7 +188,7 @@ function HomeScreen({ navigation }) {
                     {
                         banners.map((img, i) => {
                             return (
-                                <TouchableOpacity style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} onPress={img.id == 1 ? () => { } : () => navigation.navigate('RestaurantDepartment', { Resid: img.id })}>
+                                <TouchableOpacity style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} onPress={img.id == 1 ? () => { } : () => navigation.navigate('RestaurantDepartment', { Resid: img.id, mapRegion })}>
                                     <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={Platform.isPad ? 'stretch' : 'contain'} />
                                 </TouchableOpacity>
                             )
@@ -239,7 +206,6 @@ function HomeScreen({ navigation }) {
                         <View style={styles.WrabCard}>
 
                             <TouchableOpacity style={styles.IMGCard} onPress={() => token ? navigation.navigate('SpecialOrder') : navigation.navigate('Login')}>
-
                                 <Image source={require('../../../assets/images/deliver.jpg')} style={styles.OdrerImg} resizeMode='contain' />
                             </TouchableOpacity>
 
@@ -249,17 +215,9 @@ function HomeScreen({ navigation }) {
 
                         </View>
                 }
-                <Text style={[styles.sText, { alignSelf: 'flex-start', fontSize: 20, marginStart: 10, marginVertical: 25 }]}>{i18n.t('categories')} </Text>
+                <Text style={[styles.sText, { alignSelf: 'flex-start', fontSize: 16, marginStart: 15, marginVertical: 25 }]}>{i18n.t('categories')} </Text>
 
                 <ScrollView horizontal style={styles.scroll} showsHorizontalScrollIndicator={false} >
-
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('AllDepartments', { mapRegion: mapRegion, pathName: 'allDep' })} style={{ marginStart: 10, marginBottom: 10 }}>
-                        <View style={styles.TextImg}>
-                            <Image source={require('../../../assets/images/all.jpg')} style={styles.allImg} />
-                            <Text style={styles.mText}>{i18n.t('all')}</Text>
-                            <View style={[styles.imgOverLay]} />
-                        </View>
-                    </TouchableOpacity> */}
 
 
                     {
@@ -269,9 +227,8 @@ function HomeScreen({ navigation }) {
                             :
                             categories &&
                             categories.map((category, i) => (
-                                <TouchableOpacity key={i} onPress={() => navigation.navigate('Department', { categoryId: category.id, mapRegion: mapRegion })} style={{ marginBottom: 10 }}>
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate('Department', { categoryId: category.id, mapRegion: mapRegion })} >
                                     <View style={styles.TextImg}>
-
                                         <Image
                                             onLoadStart={(e) => setloadingImage(true)}
                                             onLoad={onLoadImg}
@@ -286,7 +243,6 @@ function HomeScreen({ navigation }) {
                                 </TouchableOpacity>
                             ))
                     }
-
 
 
                 </ScrollView>
@@ -378,16 +334,14 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         borderRadius: 25,
         marginStart: 5,
-        width: '50%',
+        width: '49%',
         alignItems: 'center'
-
-
 
     },
     WrabCard: {
         flexDirection: 'row',
-        marginTop: 25,
-        marginHorizontal: 20,
+        marginTop: 10,
+        paddingHorizontal: 15,
         alignItems: 'center',
     },
     LeftImg: {
@@ -395,41 +349,13 @@ const styles = StyleSheet.create({
         height: 25,
         padding: 5
     },
-    cover: {
-        width: width * .9,
-        marginHorizontal: 20,
-        height: height * .2,
-        borderRadius: 30,
-        marginTop: 20
-    },
+
     OdrerImg: {
         height: 180,
         width: 160,
-        borderRadius: 25
     },
 
-    CardWrap: {
-        marginVertical: 15,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 20,
-        marginTop: 0,
-        backgroundColor: Colors.bg,
-        elevation: 3,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        paddingHorizontal: 15,
-        paddingVertical: 20,
-        overflow: 'hidden',
-        height: '100%',
 
-    },
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.fontNormal,
@@ -450,13 +376,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 25,
         borderTopStartRadius: 0,
-        marginHorizontal: 5,
+        marginHorizontal: 10,
         alignItems: 'center',
         overflow: 'hidden',
-        flex: 1
+        flex: 1,
+        marginBottom: 10
     },
     allImg: {
-        width: 160,
+        width: 180,
         height: 200,
     },
     mText: {

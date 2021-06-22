@@ -16,7 +16,6 @@ import {
 } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import { CheckBox } from 'native-base';
-
 import Colors from '../../consts/Colors';
 import Constants from "expo-constants";
 import BTN from '../../common/BTN';
@@ -25,7 +24,6 @@ import i18n from "../locale/i18n";
 import { useDispatch, useSelector } from 'react-redux';
 import Container from '../../common/Container';
 import { ProductDetailesRest, AddTOCart } from '../../actions';
-import LoadingBtn from '../../common/Loadbtn';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import { _renderRows } from '../../common/LoaderImage';
 
@@ -172,7 +170,6 @@ function ProductDetailes({ navigation, route }) {
         }
     }
 
-    console.log(ProductDetailes)
     return (
 
 
@@ -357,9 +354,7 @@ function ProductDetailes({ navigation, route }) {
 
 
                 }
-                <LoadingBtn loading={loader} >
-                    <BTN title={i18n.t('orderNow')} onPress={AddProductToCarts} ContainerStyle={{ marginVertical: 0, marginBottom: 20, marginTop: 0, borderRadius: 20, backgroundColor: Colors.fontBold }} TextStyle={{ fontSize: 13 }} />
-                </LoadingBtn>
+                <BTN title={i18n.t('orderNow')} spinner={loader} onPress={AddProductToCarts} ContainerStyle={{ marginBottom: 20, marginTop: 0, borderRadius: 10, backgroundColor: Colors.fontBold }} TextStyle={{ fontSize: 13 }} />
             </ScrollView>
 
         </Container>

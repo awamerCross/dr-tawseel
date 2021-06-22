@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, Platform, I18nManager } from 'react-native'
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, Platform, I18nManager, ImageBackground } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 
 
@@ -15,13 +15,11 @@ function Header({ label, navigation, image, onPress }) {
     return (
 
         <View style={styles.container}>
-            <Image source={require('../../assets/images/bluBack.png')} style={[styles.BigImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], }]} resizeMode='contain' />
-            <View style={styles.wrap}>
+            <ImageBackground source={require('../../assets/images/bluBack.png')} style={[styles.BigImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], }]} resizeMode='contain' >
                 <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} style={{ alignSelf: 'center' }}>
-                    <Image source={require('../../assets/images/menue.png')} style={[styles.MenueImg, { padding: 10, marginBottom: 15, transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
+                    <Image source={require('../../assets/images/menue.png')} style={[styles.MenueImg, { padding: 10, transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
                 </TouchableOpacity>
-            </View>
-
+            </ImageBackground>
             <Text style={styles.Text}> {label}</Text>
 
             <View style={{ flexDirection: 'row', }}>
@@ -43,27 +41,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: Colors.bg,
-        marginTop: isIOS ? 25 : 10
+        marginTop: isIOS ? 15 : 10
     },
     BigImg: {
         left: -13,
-        top: -10,
+        top: 0,
         height: 90,
-        width: 90,
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     MenueImg: {
         width: 20,
         height: 20,
     },
-    wrap: {
-        position: 'absolute',
-        marginHorizontal: 25,
-        bottom: width * .04,
-    },
+
     Text: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: width * .03,
+        fontSize: 12,
         textAlign: 'center',
         top: 40
     },

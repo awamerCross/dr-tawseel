@@ -19,8 +19,9 @@ export const ClearـCaSh = 'ClearـCaSh'
 
 export const SignIn = (phone, password, device_id, lang, navigation) => {
 
-    return async (dispatch) => {
-
+    return async (dispatch, getState) => {
+        let usertype = getState().lang.usertype;
+        console.log('usertypeسسسس' + usertype);
         await axios({
             method: 'POST',
             url: consts.url + 'sign-in',
@@ -29,10 +30,26 @@ export const SignIn = (phone, password, device_id, lang, navigation) => {
         })
 
             .then(res => {
-                handelLogin(dispatch, res.data, navigation)
+                if (res.data.data.user_type == 2 && usertype == 3) {
+                    ToasterNative('يجب ان يكون اختيارك كعميل', 'danger', 'bottom')
+
+                }
+
+                // else if (res.data.data.user_type == 3 && usertype == 2) {
+                //     navigation.navigate('GoHome')
+                // }
+
+                else {
+                    handelLogin(dispatch, res.data, navigation)
+
+                }
+
+
+
             }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
 
         dispatch({ type: Sign_In })
+
     }
 }
 
@@ -63,7 +80,16 @@ const loginSuccess = (dispatch, data, navigation) => {
 
     }
 
-
+    // Toast.show({
+    //     text: data.message,
+    //     type: data.success ? "success" : "danger",
+    //     duration: 3000,
+    //     textStyle: {
+    //         color: "white",
+    //         fontFamily: 'flatMedium',
+    //         textAlign: 'center'
+    //     }
+    // });
 
 };
 
@@ -189,30 +215,18 @@ export const ActivationCode = (code, token, lang, navigation, route) => {
             params: { lang },
             headers: {
                 Authorization: 'Bearer ' + token,
-
             }
-
         }
         ).then(res => {
             if (res.data.success) {
                 dispatch({ type: Activate_Code, data: res.data })
-
                 if (route?.pathname == 'MyProfile') {
                     navigation.navigate('Profile')
-
                 }
-
             }
-            Toast.show({
-                text: res.data.message,
-                type: res.data.success ? "success" : "danger",
-                duration: 3000,
-                textStyle: {
-                    color: "white",
-                    fontFamily: 'flatMedium',
-                    textAlign: 'center'
-                }
-            })
+
+            ToasterNative(res.data.message, res.data.success ? "success" : "danger", 'bottom')
+
         }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
     }
 

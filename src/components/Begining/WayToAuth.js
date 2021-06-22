@@ -1,82 +1,75 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity, ActivityIndicator, Platform, AsyncStorage } from 'react-native';
 import i18n from "../locale/i18n";
 import Colors from '../../consts/Colors';
-import style from '../../../assets/styles';
 import { useSelector, useDispatch } from 'react-redux';
-import { getIntro } from '../../actions';
+import { getIntro, SwiperBegines } from '../../actions';
+import ChooseLang from './ChooseLang';
 
-const { height } = Dimensions.get('window');
 const { width } = Dimensions.get('window');
-const isIOS = Platform.OS === 'ios';
 
-
-function WayToAuth({ navigation }) {
+function WayToAuth() {
 
 	const lang = useSelector(state => state.lang.lang);
 	const intro = useSelector(state => state.intro.intro);
-	const loader = useSelector(state => state.intro.loader);
-
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-
-		AsyncStorage.getItem("Inro", (err, res) => {
-			if (res === "true") {
-				navigation.navigate("Login");
-			}
-		});
-
-
 		dispatch(getIntro(lang))
-	}, [loader]);
+	}, []);
 
-	const Begin = async () => {
-		await AsyncStorage.setItem('Inro', 'true').then(() => navigation.navigate('Login'))
-
-	}
+	const Begin = () => dispatch(SwiperBegines('start'))
 
 	return (
-		<View style={styles.container}>
-			<SwiperFlatList
-				index={0}
-				showPagination
-				paginationActiveColor={Colors.sky}
-				paginationStyle={styles.DotContainer}
-				paginationStyleItem={{ width: 8, height: 8 }}
-			>
 
-				{
-					intro.map((intr, i) => (
-						<View key={i} style={styles.child}>
-							<Image source={{ uri: intr.image }} style={styles.images} resizeMode='contain' />
-							<View style={styles.wrapText}>
-								<Text style={styles.sText}>{intr.title}</Text>
-								<Text numberOfLines={3} style={styles.lText}> {intr.details} </Text>
-							</View>
+		<Fragment>
+			{
+				!lang ?
+					<ChooseLang />
+					:
+					< View style={styles.container}>
+						<SwiperFlatList
+							index={0}
+							showPagination
+							paginationActiveColor={Colors.sky}
+							paginationStyle={styles.DotContainer}
+							paginationStyleItem={{ width: 8, height: 8 }}
+						>
+
 							{
-								intro.length == i + 1 ?
-									<TouchableOpacity style={styles.Button} onPress={Begin}>
-										<Text style={styles.textBtn}>
-											{i18n.t('start')}
-										</Text>
-									</TouchableOpacity> : null
+								intro.map((intr, i) => (
+									<View key={i} style={styles.child}>
+										<Image source={{ uri: intr.image }} style={styles.images} resizeMode='contain' />
+										<View style={styles.wrapText}>
+											<Text style={styles.sText}>{intr.title}</Text>
+											<Text style={styles.lText}> {intr.details} </Text>
+										</View>
+										{
+											intro.length == i + 1 ?
+												<TouchableOpacity style={styles.Button} onPress={Begin}>
+													<Text style={styles.textBtn}>
+														{i18n.t('start')}
+													</Text>
+												</TouchableOpacity> : null
+										}
+									</View>
+								))
 							}
-						</View>
-					))
-				}
-			</SwiperFlatList>
-		</View>
+						</SwiperFlatList>
+					</View>
+			}
+		</Fragment>
+
 	)
 }
 
 
 const styles = StyleSheet.create({
 	container: { flex: 1 },
-	wrapText: { flexDirection: 'column', bottom: 100, position: 'absolute', width: '100%' },
-	sText: { textAlign: 'center', fontSize: 20, fontFamily: 'flatMedium', color: Colors.fontBold },
-	lText: { marginTop: 20, paddingHorizontal: 15, fontFamily: 'flatLight', lineHeight: 20, color: Colors.fontNormal, textAlign: 'center' },
+	wrapText: { flexDirection: 'column', bottom: 80, position: 'absolute', width: '100%' },
+	sText: { textAlign: 'center', fontSize: 14, fontFamily: 'flatMedium', color: Colors.fontBold },
+	lText: { marginTop: 10, paddingHorizontal: 15, fontFamily: 'flatLight', color: Colors.fontNormal, textAlign: 'center', marginBottom: 10 },
 	DotContainer: { marginVertical: width * .2 },
 	child: { width, },
 	images: { width, height: '100%' },

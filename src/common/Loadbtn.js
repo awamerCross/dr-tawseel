@@ -22,7 +22,6 @@ const LoadingBtn = ({ loading, children, styleCount }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignSelf: 'center',
-                marginTop: 100
 
             }, styleCount]}>
                 <Image source={require('../../assets/images/load.gif')} style={{ width: 40, height: 40 }} resizeMode='contain' />

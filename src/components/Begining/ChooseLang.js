@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image, TouchableOpacity, AsyncStorage } from 'react-native'
-import { Content } from 'native-base';
 import i18n from "../locale/i18n";
 import Colors from '../../consts/Colors';
 import { useDispatch } from 'react-redux';
@@ -23,14 +22,6 @@ function ChooseLang({ navigation }) {
             dispatch(chooseLang(lang));
         }
     }
-
-    useEffect(() => {
-        AsyncStorage.getItem("lang").then((lang) => {
-            if (lang) {
-                navigation.navigate("Home");
-            }
-        })
-    }, [])
 
     return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>

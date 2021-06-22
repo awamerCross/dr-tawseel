@@ -20,13 +20,13 @@ import Header from '../../common/Header';
 import BTN from "../../common/BTN";
 import Colors from '../../consts/Colors';
 import { useDispatch, useSelector } from "react-redux";
-import {sendOffer, removeOffer, getAllOffers} from '../../actions';
+import { sendOffer, removeOffer, getAllOffers } from '../../actions';
 import Modal from "react-native-modal";
 import { Toast } from "native-base";
 import * as Notifications from "expo-notifications";
 
 
-const latitudeDelta  = 0.00922;
+const latitudeDelta = 0.00922;
 const longitudeDelta = 0.00421;
 const isIOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window')
@@ -34,17 +34,17 @@ const { width, height } = Dimensions.get('window')
 function SetOffer({ navigation, route }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
-    const user          = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
+    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
 
-    const lang                      = useSelector(state => state.lang.lang);
-    let pathName                    = route.params ? route.params.pathName : null;
-    let type                        = route.params ? route.params.type : null;
-    const { orderDetails }          = route.params;
-    const dispatch                  = useDispatch();
-    let mapRef                      = useRef(null);
-    const [city, setCity]           = useState('');
-    const [cost, setCost]           = useState('');
-    const [spinner, setSpinner]     = useState(false);
+    const lang = useSelector(state => state.lang.lang);
+    let pathName = route.params ? route.params.pathName : null;
+    let type = route.params ? route.params.type : null;
+    const { orderDetails } = route.params;
+    const dispatch = useDispatch();
+    let mapRef = useRef(null);
+    const [city, setCity] = useState('');
+    const [cost, setCost] = useState('');
+    const [spinner, setSpinner] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [mapRegion, setMapRegion] = useState({
         latitude: 24.774265,
@@ -81,7 +81,7 @@ function SetOffer({ navigation, route }) {
 
     function handleNotification(notification) {
         if (notification && notification.origin !== 'received') {
-            let { type, room }            = notification.request.content.data;
+            let { type, room } = notification.request.content.data;
 
             if (type === 'chat' && room) {
                 setShowModal(false)
@@ -168,7 +168,7 @@ function SetOffer({ navigation, route }) {
                                 <Image source={require('../../../assets/images/driver_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
                                 <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
                                     <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('receiptPoint')}</Text>
-                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', marginVertical: 5, lineHeight: 20 }]}>{(orderDetails.address.address_to).substr(0, 50) + '...' }</Text>
+                                    <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr', marginVertical: 5, lineHeight: 20 }]}>{(orderDetails.address.address_to).substr(0, 50) + '...'}</Text>
                                     <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> يبعد عنك : {orderDetails.address.distance_to} </Text>
                                 </View>
                             </TouchableOpacity>
@@ -184,7 +184,7 @@ function SetOffer({ navigation, route }) {
 
                         </View>
 
-                        <Text style={[styles.sText, { color: Colors.IconBlack, fontSize: 16, textAlign: 'center', marginTop: 10 }]}>{i18n.t('deliveryCost')}</Text>
+                        <Text style={[styles.sText, { color: Colors.IconBlack, fontSize: 16, textAlign: 'center', marginTop: 30 }]}>{i18n.t('deliveryCost')}</Text>
 
                         <View style={[styles.containerTableTextOverInput, { height: 40, marginTop: 15, width: '60%', marginHorizontal: 9, flexDirection: 'row', alignSelf: 'center', left: -15 }]}>
                             <Image source={require('../../../assets/images/money.png')} style={{ width: 25, height: 25, right: -35, top: 10, zIndex: 999 }} resizeMode={'contain'} />
@@ -204,7 +204,7 @@ function SetOffer({ navigation, route }) {
                                 <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: 30, marginBottom: 30 }]}>
                                     <ActivityIndicator size="large" color={Colors.sky} style={{ alignSelf: 'center' }} />
                                 </View>
-                            :
+                                :
                                 <TouchableOpacity onPress={() => setNewOffer()} style={{ width: '90%', alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.sky, alignSelf: 'center', height: 40, marginVertical: 20 }}>
                                     <Text style={[styles.sText, { color: '#fff' }]}>{i18n.t('confirm')}</Text>
                                 </TouchableOpacity>
@@ -227,9 +227,8 @@ function SetOffer({ navigation, route }) {
                             <Text style={[styles.sText, { color: Colors.IconBlack, textAlign: 'center', marginTop: 10, fontSize: 16, width: '80%', lineHeight: 20 }]}>{i18n.t('sendOfferToUser')}</Text>
                             <View style={{ width: '100%' }}>
                                 <View style={{ marginTop: 10, alignItems: 'flex-start', flexDirection: 'row', paddingHorizontal: 20, justifyContent: 'space-between' }}>
-                                    <BTN onPress={() => { navigation.navigate('RebHome'); setShowModal(false) }} title={i18n.t('home')} ContainerStyle={{ width: '45%', borderRadius: 20, marginEnd: 5 }} TextStyle={{ fontSize: 13 }} />
-
-                                    <BTN onPress={() => { dispatch(removeOffer(lang, token, orderDetails.order_id)).then(() => navigation.navigate('RebHome')); setShowModal(false) }} title={i18n.t('cancelOffer')} ContainerStyle={{ width: '45%', borderRadius: 20, backgroundColor: '#999' }} TextStyle={{ fontSize: 13, }} />
+                                    <BTN onPress={() => { navigation.navigate('RebHome'); setShowModal(false) }} title={i18n.t('home')} ContainerStyle={{ width: '43%', borderRadius: 10, marginEnd: 5 }} TextStyle={{ fontSize: 13 }} />
+                                    <BTN onPress={() => { dispatch(removeOffer(lang, token, orderDetails.order_id)).then(() => navigation.navigate('RebHome')); setShowModal(false) }} title={i18n.t('cancelOffer')} ContainerStyle={{ width: '43%', borderRadius: 20, backgroundColor: '#999' }} TextStyle={{ fontSize: 13, }} />
                                 </View>
                             </View>
                         </View>

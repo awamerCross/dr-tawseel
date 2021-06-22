@@ -4,9 +4,7 @@ import Colors from '../../consts/Colors';
 import Header from '../../common/Header';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCategories, getPlacesType } from '../../actions';
-import style from "../../../assets/styles";
 import i18n from "../locale/i18n";
-import Container from '../../common/Container';
 import { _renderRows } from '../../common/LoaderImage';
 
 

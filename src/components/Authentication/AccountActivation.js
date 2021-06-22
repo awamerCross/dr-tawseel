@@ -71,7 +71,7 @@ function AccountActivation({ navigation, route }) {
     return (
         <ScrollView style={styles.container}>
             <LogoLogin navigation={navigation} />
-            <View style={{ marginBottom: width * .3, }} >
+            <View style={{ marginTop: 30 }} >
                 <Text style={styles.sText}>{i18n.t("activateAcc")}</Text>
 
                 {
@@ -98,7 +98,7 @@ function AccountActivation({ navigation, route }) {
                         </TouchableOpacity>
                 }
 
-                <View style={{ marginTop: width * .1, }}>
+                <View style={{ marginTop: 20 }}>
                     <InputIcon
                         label={i18n.t("activationCode")}
                         onChangeText={(e) => setcode(e)}
@@ -106,19 +106,14 @@ function AccountActivation({ navigation, route }) {
                         LabelStyle={{ paddingHorizontal: 10 }}
                         keyboardType='numeric'
                     />
-                    <LoadingBtn loading={spinner}>
 
-                        <BTN title={i18n.t("confirm")} onPress={SubmitLoginHandler} ContainerStyle={{ marginTop: 20 }} />
-                    </LoadingBtn>
-
+                    <BTN title={i18n.t("confirm")} onPress={SubmitLoginHandler} ContainerStyle={{ marginTop: 20 }} spinner={spinner} />
                 </View>
                 <View style={[styles.WrapText, { marginTop: 30 }]}>
                     <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
                     <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
                 </View>
-
             </View>
-            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </ScrollView>
 
     )

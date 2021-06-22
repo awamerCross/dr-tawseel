@@ -318,11 +318,7 @@ function OrderChatting({ navigation, route }) {
                 });
             }
         });
-        // dispatch(delegateUpdateOrder(lang, token, orderDetails.order_id)).then(() => {
-        //
-        //
-        //
-        // })
+
     }
     function renderConfirm() {
 
@@ -390,10 +386,10 @@ function OrderChatting({ navigation, route }) {
         if (message.sender) {
             return (
                 <View key={i} style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <View style={{ flexBasis: '16%', alignItems: 'center', marginTop: 5 }}>
+                    <View style={{ flexBasis: '13%', alignItems: 'center', marginTop: 5 }}>
                         <Image source={{ uri: message.img }} style={{ width: 40, height: 40, borderRadius: 50, }} />
                     </View>
-                    <View style={{ flexBasis: '82%', paddingHorizontal: 5 }}>
+                    <View style={{ flexBasis: '82%', }}>
                         <View style={{ backgroundColor: message.type === 'image' ? 'transparent' : Colors.sky, borderRadius: 15, overflow: 'hidden', flexDirection: "row", alignSelf: 'flex-start', alignItems: "center", justifyContent: 'center', flexWrap: 'wrap' }}>
                             {
                                 message.type === 'image' ?
@@ -405,10 +401,7 @@ function OrderChatting({ navigation, route }) {
                                     message.type === 'bill' ?
                                         <View style={{ flexDirection: 'row', backgroundColor: Colors.bg, alignItems: 'center', padding: 10 }}>
                                             <View style={{ flex: 1 }}>
-                                                {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>*/}
-                                                {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 100, alignSelf: 'flex-start }]}>{JSON.parse(message.message).tax_number_text} :</Text>*/}
-                                                {/*    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).tax_number}</Text>*/}
-                                                {/*</View>*/}
+
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} </Text>
@@ -420,10 +413,6 @@ function OrderChatting({ navigation, route }) {
                                                     <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
                                                 </View>
 
-                                                {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>*/}
-                                                {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>*/}
-                                                {/*    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>*/}
-                                                {/*</View>*/}
 
                                                 <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                     <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
@@ -457,7 +446,7 @@ function OrderChatting({ navigation, route }) {
 
         return (
             <View key={i} style={{ flexDirection: 'row-reverse', marginTop: 10 }}>
-                <View style={{ flexBasis: '16%', alignItems: 'center', marginTop: 5 }}>
+                <View style={{ flexBasis: '12%', alignItems: 'center', marginTop: 5 }}>
                     <Image source={{ uri: message.img }} style={{ width: 40, height: 40, borderRadius: 50, }} />
                 </View>
                 <View style={{ flexBasis: '80%', paddingHorizontal: 5 }}>
@@ -471,10 +460,6 @@ function OrderChatting({ navigation, route }) {
                                 message.type === 'bill' ?
                                     <View style={{ flexDirection: 'row', backgroundColor: Colors.bg, alignItems: 'center', padding: 10, borderRadius: 15 }}>
                                         <View style={{ flex: 1 }}>
-                                            {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>*/}
-                                            {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 100 }]}>{JSON.parse(message.message).tax_number_text} :</Text>*/}
-                                            {/*    <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).tax_number}</Text>*/}
-                                            {/*</View>*/}
 
                                             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).sum_text} </Text>
@@ -486,10 +471,6 @@ function OrderChatting({ navigation, route }) {
                                                 <Text style={[styles.sText, { color: Colors.sky, fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).delivery}</Text>
                                             </View>
 
-                                            {/*<View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 3 }}>*/}
-                                            {/*    <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).vat_text} :</Text>*/}
-                                            {/*    <Text style={[styles.sText, { color: Colors.sky,  fontFamily: 'flatMedium', }]}>{JSON.parse(message.message).vat}</Text>*/}
-                                            {/*</View>*/}
 
                                             <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd', padding: 4 }}>
                                                 <Text style={[styles.sText, { color: Colors.fontBold, width: 130, textAlign: I18nManager.isRTL ? 'left' : 'right' }]}>{JSON.parse(message.message).discount_txt}  </Text>
@@ -756,21 +737,19 @@ function OrderChatting({ navigation, route }) {
                             {
                                 user && user.user_type === 2 ?
                                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
-                                        <Image source={require('../../../assets/images/more_gray.png')} style={{ width: 6 }} resizeMode='contain' />
+                                        <Image source={require('../../../assets/images/more_gray.png')} style={{ width: 10 }} resizeMode='contain' />
                                     </TouchableOpacity>
                                     : null
                             }
 
 
-                            <View style={[styles.containerTableTextOverInput, { height: 40, marginTop: width * .03, width: '80%', marginHorizontal: 9 }]}>
-                                <TextInput
-                                    style={[styles.textInput, { borderColor: Colors.fontNormal }, { borderRadius: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }]}
-                                    value={msg}
-                                    onChangeText={setMsg}
-                                    onFocus={() => ScrollViewRef.current.scrollToEnd({ animated: true })}
-                                    placeholder={i18n.t('writeUrMsg')}
-                                />
-                            </View>
+                            <TextInput
+                                style={[styles.textInput, { borderColor: Colors.fontNormal }, { borderRadius: 10, backgroundColor: '#eaeaea', borderColor: '#eaeaea', padding: 10, marginHorizontal: 5 }]}
+                                value={msg}
+                                onChangeText={setMsg}
+                                onFocus={() => ScrollViewRef.current.scrollToEnd({ animated: true })}
+                                placeholder={i18n.t('writeUrMsg')}
+                            />
 
                             <TouchableOpacity onPress={() => onSendMsg()}>
                                 <Image source={require('../../../assets/images/sendmassege.png')} style={[styles.SendIcon, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} resizeMode='contain' />
@@ -992,7 +971,6 @@ const styles = StyleSheet.create({
         fontFamily: 'flatLight',
         color: Colors.fontNormal,
         fontSize: 14,
-        marginHorizontal: 10,
         alignSelf: 'center'
     },
     starImg: {
@@ -1021,7 +999,7 @@ const styles = StyleSheet.create({
         marginLeft: 65
     },
     SendIcon: {
-        width: width * .1,
+        width: 45,
     },
     centeredView: {
         flex: 1,

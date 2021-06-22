@@ -461,5 +461,8 @@ const en = {
   farFrom: 'Far from',
   waitOffers: 'Your Request Has Been Sent And Is Waiting For Offers ...',
   Totalprice: 'Total price of extras',
+  Client: 'Client',
+  Captin: 'Delgate',
+  DrPolicy: 'By using the Dr Tawseel app, you agree to the privacy policy and terms of conditions'
 };
 export default en;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Dimensions, StyleSheet, ScrollView, Image, Linking } from 'react-native'
+import { View, Text, Dimensions, StyleSheet, ScrollView, Image, Linking, KeyboardAvoidingView, Platform } from 'react-native'
 import Constants from "expo-constants";
 
 
@@ -72,56 +72,48 @@ function PassVerfication({ navigation, route }) {
 
 
     return (
-
-        <ScrollView style={styles.container}>
-            <LogoLogin navigation={navigation} />
-            <View style={{ marginBottom: width * .45, }} >
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <LogoLogin navigation={navigation} />
                 <Text style={styles.sText}>{i18n.t("passRecovery")}</Text>
-                <View style={{ marginTop: width * .1, }}>
-                    <InputIcon
-                        label={i18n.t("code")}
-                        onChangeText={(e) => setcode(e)}
-                        value={code}
-                        LabelStyle={{ paddingHorizontal: 10 }}
-                        keyboardType='numeric' />
+                <InputIcon
+                    label={i18n.t("code")}
+                    onChangeText={(e) => setcode(e)}
+                    value={code}
+                    LabelStyle={{ paddingHorizontal: 10 }}
+                    keyboardType='numeric'
+                    styleCont={{ marginTop: 25 }}
+                />
 
-                    <InputIcon
-                        label={i18n.t("newpass")}
-                        onChangeText={(e) => setPassword(e)}
-                        value={password}
-                        secureTextEntry={!showPass}
-                        LabelStyle={{ paddingHorizontal: 10 }}
-                        styleCont={{ marginTop: 15 }}
-                        image={require('../../../assets/images/view.png')}
-                        onPress={() => setShowPass(!showPass)}
-                    />
+                <InputIcon
+                    label={i18n.t("newpass")}
+                    onChangeText={(e) => setPassword(e)}
+                    value={password}
+                    secureTextEntry={!showPass}
+                    LabelStyle={{ paddingHorizontal: 10 }}
+                    styleCont={{ marginTop: 15 }}
+                    image={require('../../../assets/images/view.png')}
+                    onPress={() => setShowPass(!showPass)}
+                />
 
-                    <InputIcon
-                        label={i18n.t("confirmPass")}
-                        onChangeText={(e) => setnPassword(e)}
-                        value={nPassword}
-                        secureTextEntry={!showConPass}
-                        LabelStyle={{ paddingHorizontal: 10 }}
-                        styleCont={{ marginTop: 15 }}
-                        image={require('../../../assets/images/view.png')}
-                        onPress={() => setShowConPass(!showConPass)}
-                    />
-                </View>
-
-
-                <LoadingBtn loading={spinner}>
-
-                    <BTN title={i18n.t("send")} onPress={SubmitLoginHandler} />
-                </LoadingBtn>
+                <InputIcon
+                    label={i18n.t("confirmPass")}
+                    onChangeText={(e) => setnPassword(e)}
+                    value={nPassword}
+                    secureTextEntry={!showConPass}
+                    LabelStyle={{ paddingHorizontal: 10 }}
+                    styleCont={{ marginTop: 15 }}
+                    image={require('../../../assets/images/view.png')}
+                    onPress={() => setShowConPass(!showConPass)}
+                />
+                <BTN title={i18n.t("send")} onPress={SubmitLoginHandler} spinner={spinner} />
 
                 <View style={[styles.WrapText, { marginTop: 30 }]}>
                     <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
                     <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
                 </View>
-
-            </View>
-            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     )
 }
 const styles = StyleSheet.create({
@@ -141,8 +133,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: 18,
-        marginTop: 20
+        fontSize: 14,
+        marginTop: 30
     },
     building: {
         width,

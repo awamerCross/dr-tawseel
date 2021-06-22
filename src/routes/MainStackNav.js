@@ -78,6 +78,7 @@ import chooseSavedPlaces from '../components/HomePage/chooseSavedPlaces';
 import BankDataTransfer from '../components/AboutApp/BankDataTransfer';
 import CompleteDelegate from '../components/HomePage/CompleteDelegate';
 import RegisterDelegate from "../components/Authentication/RegisterDelegate";
+import ChooseUser from '../components/Begining/ChooseUser';
 
 const Stack = createStackNavigator();
 
@@ -88,9 +89,8 @@ function MainStackNav() {
     return (
 
         // <NavigationContainer>
-        <Stack.Navigator initialRouteName="ChooseLang" headerMode='none'>
-            <Stack.Screen name="ChooseLang" component={ChooseLang} />
-            <Stack.Screen name="Home" component={WayToAuth} />
+        <Stack.Navigator initialRouteName="ChooseUser" headerMode='none'>
+            <Stack.Screen name="ChooseUser" component={ChooseUser} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="PassRecover" component={PasswordRecovery} />
             <Stack.Screen name="PassVerify" component={PassVerfication} />
@@ -116,7 +116,6 @@ const Drawer = createDrawerNavigator();
 
 export function DrawerNav() {
     return (
-        // <NavigationContainer  >
         <Drawer.Navigator drawerContent={(props) => <CustomDrawerMenue {...props} initialRouteName='GoHome' />}>
             <Drawer.Screen name="GoHome" component={HomeScreen} />
             <Drawer.Screen name="Profile" component={MyProfile} />
@@ -171,7 +170,6 @@ export function DrawerNav() {
             <Drawer.Screen name="AccountActivation" component={AccountActivation} />
 
         </Drawer.Navigator>
-        // </NavigationContainer>
     );
 }
 
@@ -180,7 +178,6 @@ const StackTwo = createStackNavigator()
 
 export function DrawerNavRebresentative() {
     return (
-        // <NavigationContainer>
         <DrawerTwo.Navigator drawerContent={(props) => <DrawerMenueRepresent {...props} />}>
             <StackTwo.Screen name="RebHome" component={HomePage} />
             <StackTwo.Screen name="OrderDetailes" component={OrderDetailes} />
@@ -214,6 +211,5 @@ export function DrawerNavRebresentative() {
             <Drawer.Screen name="SuccessEvaluation" component={SuccessEvaluation} />
 
         </DrawerTwo.Navigator>
-        // </NavigationContainer>
     )
 }

@@ -1,32 +1,37 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native'
 import Colors from '../consts/Colors'
 
 function BTN({
     title,
     onPress,
     TextStyle,
-    ContainerStyle, disable
+    ContainerStyle,
+    disable,
+    spinner
 }) {
     return (
         <TouchableOpacity disabled={disable} style={[styles.container, ContainerStyle]} onPress={onPress}>
-            <Text style={[styles.sText, TextStyle]}>
-                {title}
-            </Text>
+            {
+                spinner ?
+                    <ActivityIndicator color={Colors.bg} size={'large'} />
+                    :
+                    <Text style={[styles.sText, TextStyle]}>
+                        {title}
+                    </Text>
+            }
         </TouchableOpacity>
     )
 }
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.sky,
-        width: '85%',
+        width: '90%',
         alignSelf: 'center',
-       // marginTop: 30,
-        height: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1,
-        padding: 15
+        padding: 13,
+        marginTop: 15
     },
     sText: {
         fontFamily: 'flatMedium',

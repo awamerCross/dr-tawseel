@@ -104,13 +104,11 @@ function DepartmentsDetailes({ navigation, route }) {
 
     function changePlaceType(i, category) {
         setNextPageToken(null);
-        // alert(category.key)
         setAllPlaces([])
         fetchGooglePlaces(category.key, mapRegion.latitude, mapRegion.longitude, null);
         setactive(i);
     }
 
-    console.log("StoreKey ____++", allPlaces);
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.bg, }}>
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
     sText: {
         fontFamily: 'flatMedium',
         color: Colors.IconBlack,
-        fontSize: 14,
+        fontSize: 12,
 
     },
     iconImg: {
@@ -226,7 +224,7 @@ const styles = StyleSheet.create({
     },
     ImgCard: {
         width: '20%',
-        height: 80,
+        height: 60,
         borderRadius: 5
     }
 })

@@ -26,3 +26,20 @@ const setLang = async lang => {
         Updates.reloadAsync()
     });
 };
+
+
+export const SwiperBegines = type => {
+    return async (dispatch) => {
+        await dispatch({ type: 'SwiperBegines', data: type });
+
+    }
+}
+
+
+
+export const ChooseUserCaptain = type => {
+    return async (dispatch) => {
+        await dispatch({ type: 'ChooseUserCaptain', data: type });
+
+    }
+}

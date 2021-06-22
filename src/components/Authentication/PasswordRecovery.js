@@ -48,25 +48,17 @@ function PasswordRecovery({ navigation }) {
 
         <ScrollView style={styles.container}>
             <LogoLogin navigation={navigation} />
-            <View style={{ marginBottom: width * .45, }} >
-                <Text style={styles.sText}>{i18n.t("passRecovery")}</Text>
-                <View style={{ marginTop: width * .1, }}>
-                    <InputIcon
-                        label={i18n.t("phone")}
-                        onChangeText={(e) => setPhone(e)}
-                        value={phone}
-                        // inputStyle={{ borderColor: Colors.sky }}
-                        // LabelStyle={{ color: Colors.sky, paddingHorizontal: 10 }}
-                        keyboardType='numeric'
-                    />
-                    <LoadingBtn loading={spinner}>
+            <Text style={styles.sText}>{i18n.t("passRecovery")}</Text>
+            <InputIcon
+                label={i18n.t("phone")}
+                onChangeText={(e) => setPhone(e)}
+                value={phone}
+                styleCont={{ marginTop: 30 }}
+                keyboardType='numeric'
+            />
 
-                        <BTN title={i18n.t("confirm")} onPress={SubmitLoginHandler} />
-                    </LoadingBtn>
+            <BTN title={i18n.t("confirm")} onPress={SubmitLoginHandler} spinner={spinner} />
 
-                </View>
-            </View>
-            {/* <Image source={require('../../../assets/images/building.png')} style={styles.building} resizeMode='cover' /> */}
         </ScrollView>
 
     )
@@ -81,7 +73,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'flatMedium',
         color: Colors.sky,
-        fontSize: 18,
+        fontSize: 14,
         marginTop: 20
     },
     building: {

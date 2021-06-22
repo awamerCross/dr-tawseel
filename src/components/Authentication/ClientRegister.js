@@ -21,8 +21,6 @@ import { CheckBox } from 'native-base';
 import i18n from "../locale/i18n";
 import { useDispatch, useSelector } from 'react-redux';
 import { UserRegister } from '../../actions/AuthAction';
-import Container from '../../common/Container';
-import LoadingBtn from '../../common/Loadbtn';
 import { ToasterNative } from '../../common/ToasterNatrive';
 
 const { width } = Dimensions.get('window')
@@ -38,7 +36,6 @@ function ClientRegister({ navigation, route }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [spinner, setSpinner] = useState(false);
-
     const [isSelected, setSelection] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
@@ -69,25 +66,21 @@ function ClientRegister({ navigation, route }) {
     }
 
 
-
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
 
             <ScrollView style={styles.container}>
                 <LogoLogin navigation={navigation} />
-                <Text style={[styles.sText, { marginBottom: 50 }]}>{i18n.t("createAcc")}</Text>
-                <View style={{ marginTop: width * .01, }}>
+                <Text style={[styles.sText,]}>{i18n.t("createAcc")}</Text>
+                <View style={{ marginTop: 30 }}>
                     <InputIcon
                         label={i18n.t("username")}
-
                         onChangeText={(e) => setName(e)}
-                        // placeholder='الرجاء ادخال اسم المستخدم'
                         value={name}
                         LabelStyle={{ paddingHorizontal: 10 }}
                     />
                     <InputIcon
                         label={i18n.t('phone')}
-                        // placeholder='الرجاء ادخال رقم الجوال'
                         onChangeText={(e) => setPhone(e)}
                         value={phone}
                         keyboardType='phone-pad'
@@ -97,7 +90,6 @@ function ClientRegister({ navigation, route }) {
                     />
                     <InputIcon
                         label={i18n.t('email')}
-                        // placeholder='الرجاء ادخال البريد الاكتروني'
                         onChangeText={(e) => setemail(e)}
                         value={email}
                         keyboardType='email-address'
@@ -107,7 +99,6 @@ function ClientRegister({ navigation, route }) {
 
                     <InputIcon
                         label={i18n.t('password')}
-                        // placeholder={'ارجاء ادخال كلمه المرور'}
                         onChangeText={(e) => setPassword(e)}
                         value={password}
                         secureTextEntry={!showPass}
@@ -119,7 +110,6 @@ function ClientRegister({ navigation, route }) {
 
                     <InputIcon
                         label={i18n.t('confirmPass')}
-                        // placeholder={'ارجاء ادخال كلمه المرور'}
                         onChangeText={(e) => setConfirmPassword(e)}
                         value={confirmPassword}
                         secureTextEntry={!showConfirmPass}
@@ -130,20 +120,12 @@ function ClientRegister({ navigation, route }) {
                     />
                 </View>
 
-
-
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15, marginLeft: 10 }}>
-
+                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
                     <CheckBox checked={isSelected} color={isSelected ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: isSelected ? Colors.sky : '#DBDBDB', width: 17, height: 17, paddingBottom: 15, marginHorizontal: 10 }} onPress={() => setSelection(!isSelected)} />
-
                     <SText title={i18n.t("policy")} style={{ paddingVertical: 10, color: Colors.sky, marginLeft: 5, marginHorizontal: 10 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
                 </View>
-                <LoadingBtn loading={spinner}>
 
-                    <BTN title={i18n.t('createAcc')} onPress={SubmitLoginHandler} />
-                </LoadingBtn>
-
-
+                <BTN title={i18n.t('createAcc')} onPress={SubmitLoginHandler} spinner={spinner} />
 
                 <View style={styles.WrapText}>
                     <Text style={styles.Text}>{i18n.t("haveAcc")}</Text>

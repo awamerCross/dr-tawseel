@@ -201,9 +201,7 @@ function PaymentDetailes({ navigation, route }) {
                         }} />
                 </View>
 
-                <LoadingBtn loading={loading} styleCount={{ marginTop: 230, }}>
-                    <BTN title={i18n.t('confirm')} onPress={SendConfirmaationOrders} ContainerStyle={{ margin: 20, borderRadius: 20, paddingVertical: 10 }} TextStyle={{ fontSize: 18 }} />
-                </LoadingBtn>
+                <BTN title={i18n.t('confirm')} spinner={loading} onPress={SendConfirmaationOrders} ContainerStyle={{ margin: 20, borderRadius: 10, }} TextStyle={{ fontSize: 18 }} />
 
             </ScrollView>
         </Container>

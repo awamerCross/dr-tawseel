@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, I18nManager } from 'react-native'
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
@@ -9,8 +9,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { Button, Textarea } from "native-base";
 import { ToasterNative } from '../../common/ToasterNatrive';
-import {getPlaceDetails} from "../../actions";
-import {useIsFocused} from "@react-navigation/native";
+import { getPlaceDetails } from "../../actions";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const { width } = Dimensions.get('window')
@@ -19,10 +19,10 @@ let base64 = [];
 
 function YourOrder({ navigation, route }) {
 
-    const [photos, setPhotos]   = useState([]);
-    const { place }             = route.params;
-    const [desc, setDesc]       = useState('');
-    const isFocused             = useIsFocused();
+    const [photos, setPhotos] = useState([]);
+    const { place } = route.params;
+    const [desc, setDesc] = useState('');
+    const isFocused = useIsFocused();
 
     function confirmDelete(i) {
         photos.splice(i, 1);
@@ -106,8 +106,8 @@ function YourOrder({ navigation, route }) {
             <ScrollView style={{ flex: 1 }}>
                 <View style={styles.container}>
                     <View style={styles.ImgText}>
-                        <Image source={{ uri: place.icon }} style={styles.ResImgNm} />
-                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'  }]}>{place.name}</Text>
+                        <Image source={{ uri: place.icon }} style={styles.ResImgNm} resizeMode='contain' />
+                        <Text style={[styles.sText, { alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}>{place.name}</Text>
                     </View>
 
                     <View style={{ marginTop: 20 }}>
