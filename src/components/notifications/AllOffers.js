@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
-    ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ActivityIndicator, FlatList, RefreshControl
+    ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ActivityIndicator, FlatList, RefreshControl, AppState
 } from 'react-native'
-import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
 import Header from '../../common/Header';
@@ -12,14 +11,13 @@ import { getAllOffers, acceptOffer, logout, cancelOrder, getCancelReasons } from
 import StarRating from "react-native-star-rating";
 import * as Notifications from "expo-notifications";
 import Modal from "react-native-modal";
-import { Button } from 'native-base'
 
 
 const { width, height } = Dimensions.get('window')
 
 function AllOffers({ navigation, route }) {
 
-    const id = route.params.id;
+    const id = route.params?.id;
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null);
@@ -32,12 +30,46 @@ function AllOffers({ navigation, route }) {
     const [selectedRadion, setSelectedRadio] = useState(0)
     const [refreshing, setRefreshing] = useState(false);
 
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
     function fetchData() {
         setSpinner(true)
         dispatch(getAllOffers(lang, token, id)).then(() => setSpinner(false))
         dispatch(getCancelReasons(lang))
     }
+    console.log(id);
+
+    useEffect(() => {
+        AppState.addEventListener('change', _handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', _handleAppStateChange);
+        };
+    }, []);
+
+    const _handleAppStateChange = (nextAppState) => {
+        if (
+            appState.current.match(/inactive|background/) &&
+            nextAppState === 'active'
+        ) {
+            console.log('App has come to the foreground!');
+        }
+
+        appState.current = nextAppState;
+
+        setAppStateVisible(appState.current);
+        if (appState.current === 'active') {
+            setSpinner(true)
+            dispatch(getAllOffers(lang, token, route.params?.id)).then(() => setSpinner(false))
+        } else {
+
+            setSpinner(true)
+            dispatch(getAllOffers(lang, token, route.params?.id)).then(() => setSpinner(false))
+        }
+
+    };
+
 
     useEffect(() => {
         fetchData()
@@ -52,6 +84,7 @@ function AllOffers({ navigation, route }) {
             let { type, order_id } = notification.request.content.data;
 
             if (type === 'order_offer') {
+                setSpinner(true)
                 dispatch(getAllOffers(lang, token, order_id)).then(() => setSpinner(false))
             }
         }

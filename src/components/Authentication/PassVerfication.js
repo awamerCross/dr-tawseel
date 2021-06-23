@@ -108,10 +108,10 @@ function PassVerfication({ navigation, route }) {
                 />
                 <BTN title={i18n.t("send")} onPress={SubmitLoginHandler} spinner={spinner} />
 
-                <View style={[styles.WrapText, { marginTop: 30 }]}>
+                {/* <View style={[styles.WrapText, { marginTop: 30 }]}>
                     <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
                     <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
-                </View>
+                </View> */}
             </ScrollView>
         </KeyboardAvoidingView>
     )

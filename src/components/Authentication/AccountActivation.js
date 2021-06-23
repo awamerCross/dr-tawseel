@@ -109,10 +109,10 @@ function AccountActivation({ navigation, route }) {
 
                     <BTN title={i18n.t("confirm")} onPress={SubmitLoginHandler} ContainerStyle={{ marginTop: 20 }} spinner={spinner} />
                 </View>
-                <View style={[styles.WrapText, { marginTop: 30 }]}>
+                {/* <View style={[styles.WrapText, { marginTop: 30 }]}>
                     <Image source={require('../../../assets/images/whatsapp.png')} style={{ width: 20, height: 20 }} resizeMode='contain' />
                     <SText title={i18n.t("broblem")} style={{ paddingTop: 0, color: Colors.IconBlack, fontFamily: 'flatLight', marginLeft: 5 }} onPress={() => Linking.openURL(`https://api.whatsapp.com/send?phone=${appInfo.whatapp}`)} />
-                </View>
+                </View> */}
             </View>
         </ScrollView>
 
