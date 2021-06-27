@@ -127,7 +127,6 @@ function Login({ navigation }) {
             setSpinner(false)
             ToasterNative(_validate(), 'danger', 'bottom')
         }
-
     }
 
     console.log('UserType' + UserType);

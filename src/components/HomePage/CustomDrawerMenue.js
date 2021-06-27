@@ -45,7 +45,7 @@ function CustomDrawerMenue({ navigation }) {
         <View style={{ flex: 1 }}>
             <View style={styles.ImgsContainer}>
                 <ImageBackground source={require('../../../assets/images/bgmenue.png')} style={styles.BgImg} />
-                <Image source={user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={user ? 'cover' : 'contain'} />
+                <Image source={user?.user_type == 2 ? require('../../../assets/images/profile.png') : user ? { uri: user.avatar } : require('../../../assets/images/profile.png')} style={styles.images} resizeMode={'contain'} />
                 <View style={{ position: 'absolute', bottom: '30%' }}>
                     <Text style={styles.text}>{user ? user.name : i18n.t('guest')}</Text>
                 </View>
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
         fontFamily: 'flatMedium',
         color: Colors.bg,
         fontSize: 14,
-        top: 25
     },
     DrText: {
         textAlign: 'center',

@@ -137,7 +137,7 @@ function HomePage({ navigation }) {
             let OrderId = notification.request.content.data.order_id;
 
             if (type === 'special_order' && OrderId) {
-                dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
+                FetchLocations().then(() => setSpinner(false))
             }
         });
 
@@ -153,7 +153,7 @@ function HomePage({ navigation }) {
             let OrderId = notification.request.content.data.order_id
             let room = notification.request.content.data.room
 
-
+            console.log("OrderId");
             if (type === 'block') {
                 dispatch(logout(token))
             }

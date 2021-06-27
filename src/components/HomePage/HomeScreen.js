@@ -188,9 +188,9 @@ function HomeScreen({ navigation }) {
                     {
                         banners.map((img, i) => {
                             return (
-                                <TouchableOpacity style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} onPress={img.id == 1 ? () => { } : () => navigation.navigate('RestaurantDepartment', { Resid: img.id, mapRegion })}>
+                                <View style={[style.Width_100, { padding: 15, borderRadius: 10, overflow: 'hidden' }]} key={'_' + i} >
                                     <Image source={{ uri: img.image }} style={{ height: 120, width: '100%', borderRadius: 5 }} resizeMode={Platform.isPad ? 'stretch' : 'contain'} />
-                                </TouchableOpacity>
+                                </View>
                             )
                         })
                     }

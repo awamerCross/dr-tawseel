@@ -61,9 +61,9 @@ function DepartmentsDetailes({ navigation, route }) {
         })
         return unsubscribe
     }, [navigation, route]);
+    console.log(categories)
 
     function fetchGooglePlaces(key, latitude, longitude, nextPage) {
-        console.log('last locations__|||__', allPlaces, nextPageToken)
 
 
         if (nextPageToken !== 'last_page') {
@@ -102,7 +102,7 @@ function DepartmentsDetailes({ navigation, route }) {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
     };
 
-    function changePlaceType(i, category) {
+    const changePlaceType = (i, category) => {
         setNextPageToken(null);
         setAllPlaces([])
         fetchGooglePlaces(category.key, mapRegion.latitude, mapRegion.longitude, null);

@@ -154,7 +154,7 @@ function MyProfile({ navigation }) {
                     {user && modalVisible ?
                         <>
 
-                            <View style={styles.ImgsContainer}>
+                            {/* <View style={styles.ImgsContainer}>
                                 <View style={{ width: 70, height: 70, borderRadius: 50, backgroundColor: '#ffffff42', padding: 5, marginBottom: 5 }}>
                                     <Image source={{ uri: userImage }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode='cover' />
                                     <TouchableOpacity onPress={_pickImage} style={{ position: 'absolute', bottom: 0, zIndex: 1, right: 0 }}>
@@ -162,7 +162,7 @@ function MyProfile({ navigation }) {
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={styles.stext}>{name}</Text>
-                            </View>
+                            </View> */}
 
                             <View style={{ width: '100%' }}>
                                 <InputIcon
