@@ -21,8 +21,11 @@ function DepartmentsDetailes({ navigation, route }) {
     const { key } = route.params;
     const lang = useSelector(state => state.lang.lang);
     const categories = useSelector(state => state.categories.placesTypes);
-    let allCategories = categories;
-    let places = [];
+    const AllPlacess = useSelector(state => state.categories.googlePlaces);
+    const nextPageTokens = useSelector(state => state.categories.nextPage);
+
+
+
     const dispatch = useDispatch();
     const [spinner, setSpinner] = useState(true);
     const [loading, setloading] = useState(true);
@@ -49,7 +52,6 @@ function DepartmentsDetailes({ navigation, route }) {
             setStoreKey('supermarket')
 
             let { status } = await Location.requestPermissionsAsync();
-            let userLocation = {};
             if (status !== 'granted') {
                 alert('صلاحيات تحديد موقعك الحالي ملغاه');
             } else {
@@ -61,16 +63,15 @@ function DepartmentsDetailes({ navigation, route }) {
         })
         return unsubscribe
     }, [navigation, route]);
-    console.log(categories)
 
     function fetchGooglePlaces(key, latitude, longitude, nextPage) {
 
 
         if (nextPageToken !== 'last_page') {
-            if (StoreKey != key) {
-                setAllPlaces([])
-                setNextPageToken(null)
-            }
+            // if (StoreKey != key) {
+            //     setAllPlaces([])
+            //     setNextPageToken(null)
+            // }
 
             setStoreKey(key)
             setloading(true)
@@ -90,8 +91,8 @@ function DepartmentsDetailes({ navigation, route }) {
 
     function placeSearch() {
         setloading(true)
-        setAllPlaces([]);
-        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, null)
+        // setAllPlaces([]);
+        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, null,)
     }
 
     function fetchMoreListItems() {
@@ -129,6 +130,7 @@ function DepartmentsDetailes({ navigation, route }) {
                     onChangeText={(search) => setSearch(search)}
                     value={search}
                     onSubmitEditing={() => placeSearch()}
+                    onPress={() => placeSearch()}
                 />
 
                 <View style={{ height: 45, backgroundColor: '#fff' }}>

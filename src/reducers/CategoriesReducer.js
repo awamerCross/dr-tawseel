@@ -6,7 +6,7 @@ export default (state = INITIAL_STATE, action) => {
 			return { ...state, categories: action.payload.data, loader: action.payload.success };
 		case 'placesType':
 			return { ...state, placesTypes: action.payload.data, loader: action.payload.success };
-		case 'getGooglePlaces':{
+		case 'getGooglePlaces': {
 
 			return { ...state, googlePlaces: action.payload.data, nextPage: action.payload.extra };
 		}

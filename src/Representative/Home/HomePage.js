@@ -11,7 +11,8 @@ import {
     I18nManager,
     Switch,
     Platform,
-    AppState
+    AppState,
+    FlatList
 } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import Colors from '../../consts/Colors';
@@ -217,43 +218,44 @@ function HomePage({ navigation }) {
                 <Text style={{ color: Colors.fontBold, fontFamily: 'flatMedium', textAlign: 'center' }}>{i18n.t('seeClosestOrders')}</Text>
             </View>
 
-            <ScrollView style={[styles.container,]}
 
-                contentContainerStyle={styles.scrollView}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                showsVerticalScrollIndicator={false}>
+            {
 
-                {
-
-                    spinner ?
-                        _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
-                        :
-                        myOrders &&
-                        myOrders.map((order, i) => (
-                            <TouchableOpacity key={i} onPress={() => navigation.navigate('OrderDetailes', { orderId: order.order_id, latitude: mapRegion.latitude, longitude: mapRegion.longitude })}
-                                style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
-                                <View style={styles.card}>
-                                    <Image source={{ uri: order.provider.avatar }} style={styles.ImgCard} />
-                                    <View style={{ flexDirection: 'column', width: '60%' }}>
-                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{order.provider.name} {order.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
-                                        <View style={{ flexDirection: 'row', paddingStart: 5 }}>
-                                            <Text style={styles.yText}> {order.date}</Text>
+                spinner ?
+                    _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
+                    :
+                    myOrders &&
+                    <FlatList
+                        data={myOrders}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        keyExtractor={(item, index) => (index).toString()}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity key={index} onPress={() => navigation.navigate('OrderDetailes', { orderId: item.order_id, latitude: mapRegion.latitude, longitude: mapRegion.longitude })}
+                                    style={{ marginVertical: 5, width: '90%', alignSelf: 'center' }}>
+                                    <View style={styles.card}>
+                                        <Image source={{ uri: item.provider.avatar }} style={styles.ImgCard} />
+                                        <View style={{ flexDirection: 'column', width: '60%' }}>
+                                            <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{item.provider.name} {item.type === 'special' ? ' ( ' + i18n.t('special') + ' ) ' : null}</Text>
+                                            <View style={{ flexDirection: 'row', paddingStart: 5 }}>
+                                                <Text style={styles.yText}> {item.date}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', paddingStart: 5 }}>
+                                                <Text style={styles.yText}> {i18n.t('farFrom')} : {item.distance}</Text>
+                                            </View>
                                         </View>
-                                        <View style={{ flexDirection: 'row', paddingStart: 5 }}>
-                                            <Text style={styles.yText}> {i18n.t('farFrom')} : {order.distance}</Text>
+                                        <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
+                                        <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
+                                            <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
+                                            <Text style={[styles.sText, { marginVertical: 5 }]}>{item.order_id}</Text>
                                         </View>
                                     </View>
-                                    <View style={{ height: height * .08, width: 1, backgroundColor: '#e5e0e0', }} />
-                                    <View style={{ flexDirection: 'column', width: '20%', alignItems: 'center' }}>
-                                        <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
-                                        <Text style={[styles.sText, { marginVertical: 5 }]}>{order.order_id}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))
-                }
+                                </TouchableOpacity>
+                            )
+                        }} />
 
-            </ScrollView>
+            }
+
         </View >
     )
 }
