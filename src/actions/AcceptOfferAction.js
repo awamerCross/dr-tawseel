@@ -29,7 +29,7 @@ export const acceptOffer = (lang, token, id, orderID, navigation, user) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 

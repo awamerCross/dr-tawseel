@@ -78,7 +78,6 @@ function Department({ navigation, route }) {
 
                             :
                             ProviderDetaile.map((item, i) => {
-                                console.log(item);
                                 return (
 
 

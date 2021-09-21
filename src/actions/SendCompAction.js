@@ -28,7 +28,7 @@ export const sendComp = (lang, token, username, email, subject, description, nav
                     textAlign: 'center'
                 }
             })
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 

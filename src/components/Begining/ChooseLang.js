@@ -13,7 +13,6 @@ function ChooseLang({ navigation }) {
     const [lan, setLang] = useState('ar')
 
     const language = useSelector(state => state.lang);
-    console.log("language", language.lang)
 
     const dispatch = useDispatch()
 

@@ -96,8 +96,7 @@ function SendComplaiment({ navigation }) {
                 }
 
                 setPhotos([...tempPhotos]);
-                console.log('tempPhotos', photos, 'PhotosNew', tempPhotos)
-                console.log('base64', base64)
+
             }
 
         }

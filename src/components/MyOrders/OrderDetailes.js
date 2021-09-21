@@ -34,14 +34,13 @@ function OrderDetailes({ navigation, route }) {
     const [clickImg, setClickImg] = useState(false)
     const [openedImg, setOpenedImg] = useState('')
     const [ModelProduct, setModelProduct] = useState([])
-
     const [counterID, setCounterID] = useState(1);
 
     function fetchData() {
         setSpinner(true)
         dispatch(getOrderDetails(lang, token, orderId, latitude, longitude)).then(() => setSpinner(false))
     }
-
+ 
     function getLocation() {
         Location.watchPositionAsync({
             enableHighAccuracy: true,
@@ -134,19 +133,17 @@ function OrderDetailes({ navigation, route }) {
         }
     }
 
-    function navigateToMap(lat, lng) {
-        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+    function navigateToMap(lat, lng, address) {
+        // const scheme = Platform.select({ ios: 'maps:0,0?=', android: 'google.navigation:q=' });
         const latLng = `${lat},${lng}`;
-        const label = 'Custom Label';
-        const url = Platform.select({
-            ios: `${scheme}${label}@${latLng}`,
-            android: `${scheme}${latLng}(${label})`
-        });
-
-
-        Linking.openURL(url);
+        // const label = `${address}`;
+        // const url = Platform.select({
+        //     ios: `${scheme}${label}@${latLng}`,
+        //     android: `${scheme}(${label}})`
+        // });
+        const uri = `http://maps.google.com/maps?&daddr=${latLng}`;
+        Linking.openURL(uri);
     }
-    console.log(orderDetails);
     return (
         <Container loading={spinner}>
             {
@@ -341,7 +338,7 @@ function OrderDetailes({ navigation, route }) {
                                                 style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_provider).substr(0, 25)}...</Text>
 
                                             <TouchableOpacity
-                                                onPress={() => navigateToMap(orderDetails.address.latitude_provider, orderDetails.address.longitude_provider)}>
+                                                onPress={() => navigateToMap(orderDetails.address.latitude_provider, orderDetails.address.longitude_provider, orderDetails.address.address_provider)}>
                                                 <Text
                                                     style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
                                             </TouchableOpacity>
@@ -374,7 +371,7 @@ function OrderDetailes({ navigation, route }) {
                                                 style={[styles.nText, { fontSize: 13 }]}>{(orderDetails.address.address_to).substr(0, 25)}...</Text>
 
                                             <TouchableOpacity
-                                                onPress={() => navigateToMap(orderDetails.address.latitude_to, orderDetails.address.longitude_to)}>
+                                                onPress={() => navigateToMap(orderDetails.address.latitude_to, orderDetails.address.longitude_to, orderDetails.address.address_to)}>
                                                 <Text
                                                     style={[styles.nText, { color: Colors.sky }]}>( {i18n.t('seeLocation')} )</Text>
                                             </TouchableOpacity>

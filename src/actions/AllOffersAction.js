@@ -14,7 +14,7 @@ export const getAllOffers = (lang, token, id) => {
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             dispatch({ type: 'getAllOffers', payload: response.data });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 

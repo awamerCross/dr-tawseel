@@ -22,8 +22,8 @@ function Chatting({ navigation }) {
     const isFocused = useIsFocused();
 
     useEffect(() => {
+        setspiner(true)
         if (isFocused) {
-            setspiner(true)
             dispatch(getRooms(lang, token)).then(() => setspiner(false))
         }
     }, [isFocused]);
@@ -39,7 +39,7 @@ function Chatting({ navigation }) {
                     _renderRows(loadingAnimated, 10, '2rows', width * .89, 90, { flexDirection: 'column', }, { borderRadius: 5, })
 
                     :
-                    rooms && rooms.length > 0 ?
+                    rooms?.length > 0 ?
                         rooms.map((room, i) => (
                             <TouchableOpacity onPress={() => navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })} key={i} style={styles.card}>
                                 <Image source={{ uri: room.img }} style={styles.ImgCard} />

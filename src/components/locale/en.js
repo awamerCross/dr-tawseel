@@ -25,9 +25,11 @@ const en = {
   RecoverWallet: 'The amount will be recovered from the wallet',
   myProfile: 'My Profile',
   inbox: 'Inbox',
+  successPayment: 'Success Payment',
   Bankpicture: 'Bank transfer picture',
   AccName: 'Account Name',
   agreeTo: "By registering you will be agree to all terms and conditions",
+  error: 'Wrong Info',
   haveAcc: "Have an account?",
   loginNow: "Login now",
   EnsureSite: 'Cofirm Site',
@@ -463,6 +465,8 @@ const en = {
   Totalprice: 'Total price of extras',
   Client: 'Client',
   Captin: 'Delgate',
-  DrPolicy: 'By using the Dr Tawseel app, you agree to the privacy policy and terms of conditions'
+  DrPolicy: 'By using the Dr Tawseel app, you agree to the privacy policy and terms of conditions',
+  StcAcc: 'STC Account',
+  JoinTel: 'Join our telegram channel',
 };
 export default en;

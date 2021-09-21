@@ -45,7 +45,6 @@ function chooseSavedPlaces({ navigation }) {
 
         })
     }
-    console.log("Save" + SavedLocation);
     return (
         <Container loading={spinner}>
             <Header navigation={navigation} label={i18n.t('ChooseSavedPlaces')} />

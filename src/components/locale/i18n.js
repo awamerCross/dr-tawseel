@@ -1,5 +1,5 @@
 import I18n from 'ex-react-native-i18n';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ar from './ar';
 import en from './en';
 

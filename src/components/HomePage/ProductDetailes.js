@@ -97,7 +97,6 @@ function ProductDetailes({ navigation, route }) {
         } else {
             newArr.push(item)
         }
-        console.log('newArr', newArr)
 
         let Price = newArr.reduce((a, { price }) => a + price, 0)
 
@@ -308,16 +307,16 @@ function ProductDetailes({ navigation, route }) {
                                             extraData={spinner}
                                             keyExtractor={(item) => item.id.toString()}
                                             renderItem={({ item, index }) =>
-                                                (
-                                                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, marginTop: 10 }} onPress={() => toggleChecked(item)}  >
-                                                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                                                            <CheckBox checked={ExtraArr.indexOf(item) !== -1} color={ExtraArr.indexOf(item) !== -1 ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: ExtraArr.indexOf(item) !== -1 ? Colors.sky : Colors.bg, width: 20, height: 20, alignItems: 'center' }} onPress={() => toggleChecked(item,)} />
+                                            (
+                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, marginTop: 10 }} onPress={() => toggleChecked(item)}  >
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                                        <CheckBox checked={ExtraArr.indexOf(item) !== -1} color={ExtraArr.indexOf(item) !== -1 ? Colors.sky : '#DBDBDB'} style={{ backgroundColor: ExtraArr.indexOf(item) !== -1 ? Colors.sky : Colors.bg, width: 20, height: 20, alignItems: 'center' }} onPress={() => toggleChecked(item,)} />
 
-                                                            <Text style={[styles.Text, { fontSize: 14, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
-                                                        </View>
-                                                        <Text style={[styles.Text, { color: Colors.sky, fontSize: 14 }]}>{item.price} {i18n.t('RS')}</Text>
-                                                    </TouchableOpacity>
-                                                )}
+                                                        <Text style={[styles.Text, { fontSize: 14, marginHorizontal: 15, color: ExtraArr.indexOf(item) !== -1 ? Colors.fontBold : Colors.fontNormal }]}>{item.name}</Text>
+                                                    </View>
+                                                    <Text style={[styles.Text, { color: Colors.sky, fontSize: 14 }]}>{item.price} {i18n.t('RS')}</Text>
+                                                </TouchableOpacity>
+                                            )}
                                         />
                                     </>
                                     : null

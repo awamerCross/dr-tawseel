@@ -11,7 +11,7 @@ export const getAboutApp = lang => {
 			method: 'GET',
 		}).then(response => {
 			dispatch({ type: 'getAboutApp', payload: response.data });
-		}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+		}).catch(err => onsole.log(err))
 	}
 };
 
@@ -23,6 +23,6 @@ export const getPolicy = lang => {
 			method: 'GET',
 		}).then(response => {
 			dispatch({ type: 'getPolicy', payload: response.data });
-		}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+		}).catch(err => onsole.log(err))
 	}
 };

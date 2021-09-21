@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, I18nManager, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, I18nManager, } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import AppLoading from 'expo-app-loading'
@@ -11,6 +11,7 @@ import { store, persistedStore } from './src/store';
 import './ReactotronConfig';
 import * as Notifications from 'expo-notifications';
 import { Asset } from 'expo-asset';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
 

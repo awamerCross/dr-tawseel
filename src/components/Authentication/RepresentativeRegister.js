@@ -146,11 +146,6 @@ function RepresentativeRegister({ navigation, route }) {
         // }
     }
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    };
 
     useEffect(() => {
         setSpinner(true)
@@ -163,7 +158,6 @@ function RepresentativeRegister({ navigation, route }) {
 
     const _pickImage = async (type) => {
 
-        askPermissionsAsync();
 
 
         let result = await ImagePicker.launchImageLibraryAsync({

@@ -27,7 +27,6 @@ function MyOrders({ navigation }) {
     const [loading, setLoading] = useState(false);
     let loadingAnimated = []
 
-    console.log(myOrders);
 
 
 
@@ -47,9 +46,9 @@ function MyOrders({ navigation }) {
         { key: 'second', title: i18n.t('underimplement') },
         { key: 'third', title: i18n.t('CompletedOrder') },
     ] : [
-            { key: 'second', title: i18n.t('underimplement') },
-            { key: 'third', title: i18n.t('CompletedOrder') },
-        ]);
+        { key: 'second', title: i18n.t('underimplement') },
+        { key: 'third', title: i18n.t('CompletedOrder') },
+    ]);
 
 
     console.log(status);
@@ -97,26 +96,26 @@ function MyOrders({ navigation }) {
 
                     keyExtractor={(item) => (item.order_id).toString()}
                     renderItem={({ item, index }) =>
-                        (<TouchableOpacity onPress={() => navigation.navigate('OrderDetailes', { orderId: item.order_id })}>
-                            <View style={styles.card}>
-                                <View style={{ flexDirection: 'row', flex: .75 }}>
-                                    <View style={{ width: 60, height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                        <Image source={{ uri: item.provider.avatar }} style={styles.ImgCard} resizeMode={'cover'} />
-                                    </View>
-                                    <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-                                        <Text style={styles.sText}>{(item.provider.name).substr(0, 25)}</Text>
-                                        <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12 }]}> {item.date}</Text>
-                                    </View>
+                    (<TouchableOpacity onPress={() => navigation.navigate('OrderDetailes', { orderId: item.order_id })}>
+                        <View style={styles.card}>
+                            <View style={{ flexDirection: 'row', flex: .75 }}>
+                                <View style={{ width: 60, height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image source={{ uri: item.provider.avatar }} style={styles.ImgCard} resizeMode={'cover'} />
                                 </View>
-
-                                <View style={[styles.sLine]} />
-                                <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: .25 }}>
-                                    <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
-                                    <Text style={[styles.sText, { marginVertical: 5 }]}>{item.order_id}</Text>
+                                <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+                                    <Text style={styles.sText}>{(item.provider.name).substr(0, 25)}</Text>
+                                    <Text style={[styles.yText, { alignSelf: 'flex-start', fontSize: 12 }]}> {item.date}</Text>
                                 </View>
                             </View>
-                        </TouchableOpacity>
-                        )}
+
+                            <View style={[styles.sLine]} />
+                            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: .25 }}>
+                                <Text style={[styles.sText, { color: Colors.sky, marginHorizontal: 0 }]}>{i18n.t('orderNum')}</Text>
+                                <Text style={[styles.sText, { marginVertical: 5 }]}>{item.order_id}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    )}
                 />
 
 

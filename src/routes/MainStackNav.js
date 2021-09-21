@@ -197,6 +197,7 @@ export function DrawerNavRebresentative() {
             <StackTwo.Screen name="Wallet" component={Wallet} />
             <StackTwo.Screen name="About" component={AboutApp} />
             <Drawer.Screen name="ReCallBalance" component={ReCallBalance} />
+            <Drawer.Screen name="Followrepresentative" component={Followrepresentative} />
 
             <StackTwo.Screen name="NotificationsList" component={NotificationsList} />
             <StackTwo.Screen name="Rescharge" component={ReshargeWallet} />

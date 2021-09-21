@@ -54,7 +54,6 @@ function RestaurantDepartment({ navigation, route }) {
         return unsubscribe
     }, [navigation, route])
 
-    console.log(RestDetailes);
     const SHowProduct = (id) => {
 
         setloading(true)

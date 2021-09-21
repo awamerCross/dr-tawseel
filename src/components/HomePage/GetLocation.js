@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Image, TouchableOpacity, Switch, ScrollView, Dimensions, StyleSheet } from "react-native";
-import { Container, Content, Form, Input, Icon } from 'native-base'
+import { View, Text, Image, TouchableOpacity, Switch, ScrollView, Dimensions, StyleSheet, Platform } from "react-native";
+import { Icon } from 'native-base'
 import i18n from "../locale/i18n";
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import axios from "axios";
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import Header from '../../common/Header';
 import BTN from "../../common/BTN";
 import Colors from '../../consts/Colors';
@@ -14,10 +13,9 @@ import { GetDliveryCost } from "../../actions/BsketDetailesAction";
 import { InputIcon } from "../../common/InputText";
 import { I18nManager } from "react-native-web";
 
-const latitudeDelta = 0.00422;
-const longitudeDelta = 0.00221;
 
-const isIOS = Platform.OS === 'ios';
+
+const IS_IOS = Platform.OS === "ios";
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
 
@@ -26,14 +24,17 @@ function GetLocation({ navigation, route }) {
     const lang = useSelector(state => state.lang.lang);
     const MinPriceCoast = useSelector(state => state.BasketDetailes.DeliverCoast)
     const [spinner, setSpinner] = useState(false);
+    let latitudeDelta = 0.00422;
+    let longitudeDelta = 0.00221;
+
 
     const [search, setSearch] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [currentLocation, setCurrentLocation] = useState({
         latitude: null,
         longitude: null,
-        latitudeDelta,
-        longitudeDelta
+        latitudeDelta: latitudeDelta,
+        longitudeDelta: longitudeDelta
     });
     const [selectedLocation, setLocation] = useState(null);
     const [searchHeight, setSearchHeight] = useState(70);
@@ -48,8 +49,8 @@ function GetLocation({ navigation, route }) {
     const [mapRegion, setMapRegion] = useState({
         latitude: null,
         longitude: null,
-        latitudeDelta,
-        longitudeDelta
+        latitudeDelta: latitudeDelta,
+        longitudeDelta: longitudeDelta
     });
 
     const [zoom, setZoom] = useState(''); //initiates variable zoom
@@ -66,18 +67,28 @@ function GetLocation({ navigation, route }) {
         if (status !== 'granted') {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
         } else {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            // const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            await Location.getCurrentPositionAsync({
+                accuracy: IS_IOS
+                    ? Location.Accuracy.Lowest
+                    : Location.Accuracy.High,
+            }).then(({ coords }) => {
+                console.log(coords);
+                if (coords) {
+                    if (route.params && route.params.latitude) {
+                        userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
+                    } else {
+                        userLocation = { latitude: coords.latitude, longitude: coords.longitude, latitudeDelta, longitudeDelta };
+                    }
+                }
+            })
 
-            if (route.params && route.params.latitude) {
-                userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
-            } else {
-                userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-            }
+
             setSpinner(false)
             setInitMap(false);
             setCurrentLocation(userLocation)
             setMapRegion(userLocation);
-            mapRef.current.animateToRegion(userLocation, 100);
+            mapRef?.current?.animateToRegion(userLocation, 100);
         }
 
         let getCity = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
@@ -110,7 +121,6 @@ function GetLocation({ navigation, route }) {
         getCity += mapCoordinate.latitude + ',' + mapCoordinate.longitude;
         getCity += '&key=AIzaSyCJTSwkdcdRpIXp2yG7DfSRKFWxKhQdYhQ&language=ar&sensor=true';
 
-        console.log('locations data', mapCoordinate);
 
 
         try {
@@ -126,7 +136,7 @@ function GetLocation({ navigation, route }) {
 
     async function getCurrentLocation() {
         setMapRegion(currentLocation);
-        mapRef.current.animateToRegion(currentLocation, 500)
+        mapRef?.current?.animateToRegion(currentLocation, 500)
     }
 
     function getLoc() {
@@ -188,7 +198,7 @@ function GetLocation({ navigation, route }) {
         setMapRegion(newLocation)
 
 
-        mapRef.current.animateToRegion(newLocation, 500);
+        mapRef?.current?.animateToRegion(newLocation, 500);
     }
 
     function newLocat() {
@@ -256,11 +266,17 @@ function GetLocation({ navigation, route }) {
                         mapRegion.latitude != null ? (
                             <>
                                 <MapView
+                                    // provider={PROVIDER_GOOGLE}
                                     userInterfaceStyle={'dark'}
                                     ref={mapRef}
                                     onRegionChangeComplete={(e) => _handleMapRegionChange(e)}
                                     style={{ width: '100%', height: '100%', flex: 1, }}
                                     initialRegion={mapRegion}
+                                    style={styles.mapStyle}
+                                // showsUserLocation
+
+
+
                                 // onRegionChange={() => { getZoom(); }}
                                 >
                                     <MapView.Marker
@@ -332,6 +348,10 @@ const styles = StyleSheet.create({
         fontFamily: 'flatMedium',
         color: Colors.fontBold,
         fontSize: width * .036,
+    },
+    mapStyle: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
     },
 })
 

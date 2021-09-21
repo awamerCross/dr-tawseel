@@ -12,7 +12,6 @@ const { height } = Dimensions.get('window')
 
 function SuccessEvaluation({ navigation }) {
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
-    console.log(user);
     return (
         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'space-between', marginHorizontal: 30 }}>
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1, width: '100%', }}>

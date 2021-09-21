@@ -12,6 +12,6 @@ export const getAppInfo = lang => {
             params: { lang },
         }).then(response => {
             dispatch({ type: 'getAppInfo', payload: response.data });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };

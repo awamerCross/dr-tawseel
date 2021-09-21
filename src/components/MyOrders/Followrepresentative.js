@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ScrollView, View, AsyncStorage, Image, StyleSheet, Dimensions, Text, Animated } from 'react-native'
+import { ScrollView, View, Image, StyleSheet, Dimensions, Text, Animated } from 'react-native'
 import { DrawerActions } from '@react-navigation/native';
 import MapView, {
     Marker,
@@ -7,6 +7,7 @@ import MapView, {
     Polyline,
     PROVIDER_GOOGLE
 } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Colors from '../../consts/Colors';
 import Header from '../../common/Header';
@@ -17,6 +18,7 @@ window.navigator.userAgent = 'react-native';
 import SocketIOClient from 'socket.io-client';
 import { getAppInfo } from "../../actions";
 import axios from "axios";
+import { Icon } from 'native-base';
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -38,17 +40,8 @@ function Followrepresentative({ navigation, route }) {
         longitudeDelta: 0.00421
     });
 
-    const [markers, setMarkers] = useState([{
-        title: '',
-        coordinates: {
-            latitude: address.latitude_to,
-            longitude: address.longitude_to,
-            latitudeDelta: 0.00922,
-            longitudeDelta: 0.00421
-        },
-    }]);
 
-    const [currentLocation, setCurrentLocation]   = useState({
+    const [currentLocation, setCurrentLocation] = useState({
         latitude: 24.7135517,
         longitude: 46.6752957,
         latitudeDelta,
@@ -104,10 +97,10 @@ function Followrepresentative({ navigation, route }) {
         } else {
             const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
 
-            if (route.params && route.params.latitude){
-                userLocation = { latitude: route.params.latitude, longitude:route.params.longitude , latitudeDelta , longitudeDelta};
+            if (route.params && route.params.latitude) {
+                userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
             } else {
-                userLocation = { latitude, longitude , latitudeDelta , longitudeDelta};
+                userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
             }
 
             setCurrentLocation(userLocation)
@@ -157,7 +150,8 @@ function Followrepresentative({ navigation, route }) {
                                     longitudeDelta: 0.005
                                 }}
                             >
-                                <Image source={require('../../../assets/images/home_location.png')} style={{ height: 45, width: 45 }} resizeMode={'contain'} />
+                                <Image source={require('../../../assets/images/car_pin.png')} style={{ height: 50, width: 50 }} resizeMode={'contain'} />
+
                             </MapView.Marker>
 
                             {/*start point -- provider -- */}
@@ -170,14 +164,16 @@ function Followrepresentative({ navigation, route }) {
                                     longitudeDelta: 0.005
                                 }}
                             >
-                                <Image source={require('../../../assets/images/car_pin.png')} style={{ height: 50, width: 50 }} resizeMode={'contain'} />
+                                <View style={{ width: 40, height: 40, borderRadius: 25, backgroundColor: Colors.sky, padding: 5, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon type={'MaterialCommunityIcons'} name={'store'} style={{ color: Colors.bg, fontSize: 25, }} />
+                                </View>
                             </MapView.Marker>
 
                             <MapView.Marker
                                 title={i18n.t('currentLocation')}
                                 coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}
                             >
-                                <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 45, height: 44 }}/>
+                                <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 45, height: 44 }} />
 
                             </MapView.Marker>
 

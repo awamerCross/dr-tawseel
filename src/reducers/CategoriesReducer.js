@@ -3,15 +3,14 @@ const INITIAL_STATE = { categories: [], loader: false, placeDetails: [], placesT
 export default (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case 'categories':
-			return { ...state, categories: action.payload.data, loader: action.payload.success };
+			return { ...state, categories: action.payload.data, };
 		case 'placesType':
-			return { ...state, placesTypes: action.payload.data, loader: action.payload.success };
+			return { ...state, placesTypes: action.payload.data, };
 		case 'getGooglePlaces': {
 
-			return { ...state, googlePlaces: action.payload.data, nextPage: action.payload.extra };
+			return { ...state, googlePlaces: action.payload, nextPage: action.nextPage };
 		}
 		case 'placeDetails': {
-			console.log('action.payload.data', action.data)
 			return { ...state, placeDetails: action.data.data };
 		}
 		case 'Providerdetailes':
@@ -24,7 +23,7 @@ export default (state = INITIAL_STATE, action) => {
 			return { ...state, ProdDetailes: action.data.data }
 
 		case 'BasketStore':
-			return { BasketStore: action.data.data }
+			return { ...state, BasketStore: action.data.data }
 
 		default:
 			return state;

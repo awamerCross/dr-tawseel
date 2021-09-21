@@ -18,6 +18,7 @@ import i18n from "../locale/i18n";
 import { editPlace } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../common/Header";
+import { InputTouchable } from '../../common/InputTouchable';
 
 
 const { width } = Dimensions.get('window')
@@ -125,19 +126,17 @@ function EditAddress({ navigation, route }) {
                 LabelStyle={{ bottom: 60, backgroundColor: 0, left: 0 }}
             />
 
-            <TouchableOpacity onPress={() => navigation.navigate('getLocation', { pathName: 'EditAddress', latitude: mapRegion.latitude, longitude: mapRegion.longitude })}>
-                <InputIcon
-                    label={i18n.t('deliveryLocation')}
-                    placeholder={i18n.t('selectLocation')}
-                    inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                    styleCont={{ height: 40, marginTop: 50 }}
-                    LabelStyle={{ bottom: 60, backgroundColor: 0, left: 0 }}
-                    image={require('../../../assets/images/pingray.png')}
-                    onPress={() => navigation.navigate('getLocation', { pathName: 'EditAddress', latitude: mapRegion.latitude, longitude: mapRegion.longitude })}
-                    editable={false}
-                    value={cityName ? cityName : ''}
-                />
-            </TouchableOpacity>
+            <InputTouchable
+                label={i18n.t('deliveryLocation')}
+                placeholder={i18n.t('selectLocation')}
+                LabelStyle={{ bottom: 60, backgroundColor: 0, left: 0 }}
+                styleCont={{ height: 40, marginTop: 50 }}
+                image={require('../../../assets/images/pingray.png')}
+                onPress={() => navigation.navigate('getLocation', { pathName: 'EditAddress', latitude: mapRegion.latitude, longitude: mapRegion.longitude })}
+                value={cityName ? cityName : ''}
+            />
+
+
 
             {renderConfirm()}
 

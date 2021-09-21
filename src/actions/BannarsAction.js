@@ -12,6 +12,6 @@ export const getBanners = (lang) => {
 			params: { lang },
 		}).then(response => {
 			dispatch({ type: 'getBanners', payload: response.data });
-		}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+		}).catch(err => onsole.log(err))
 	}
 };

@@ -18,14 +18,13 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import StarRating from "react-native-star-rating";
 import { useDispatch, useSelector } from "react-redux";
-import ActionSheet from 'react-native-actionsheet'
 
 import RNModal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from 'expo-camera';
 
 import Modal from "react-native-modal";
-import { Textarea, Toast } from "native-base";
+import { Icon, Textarea, Toast } from "native-base";
 import { useIsFocused } from '@react-navigation/native';
 import SocketIOClient from 'socket.io-client';
 import { _renderRows } from '../../common/LoaderImage';
@@ -35,6 +34,8 @@ import * as Location from "expo-location";
 import axios from "axios";
 import CONST from "../../consts";
 import * as Notifications from "expo-notifications";
+import { PayWithWallet } from '../../actions/Wallet';
+import { WebView } from "react-native-webview";
 
 
 window.navigator.userAgent = 'react-native';
@@ -60,14 +61,14 @@ function OrderChatting({ navigation, route }) {
     const [rateMsg, setRateMsg] = useState('');
     const [spinner, setSpinner] = useState(false);
     const isFocused = useIsFocused();
-
+    const [PaymentFinished, setPaymentFinished] = useState(false)
     const [showBillModal, setShowBillModal] = useState(false);
     const [zoomBillModal, setZoomBillModal] = useState(false);
     const [cost, setCost] = useState(0);
     const ScrollViewRef = useRef();
     let total = Number(orderDetails.shipping) + Number(cost);
-
-    const [selected, setisSelected] = useState(false);
+    const [top, setTop] = useState(0);
+    console.log(top);
     const [EditMaodVisible, setEditMaodVisible] = useState(false)
     const [photo, setPhoto] = useState('');
     const [base64, setBase64] = useState('');
@@ -79,8 +80,25 @@ function OrderChatting({ navigation, route }) {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [billImage, setBillImage] = useState('');
     const [billSpinner, setBillSpinner] = useState(false);
+    const [ShowPay, setShowPay] = useState(false);
+    const [GetPayment, setGetPayment] = useState('');
+    const [WebViews, setWebViews] = useState(false);
+    const [spinnerPayment, setSpinnerPayment] = useState(false);
 
 
+
+    let PayWay = [
+        {
+            id: 1,
+            name: 'mada',
+            image: require('../../../assets/images/mda.png')
+        },
+        {
+            id: 2,
+            name: 'master',
+            image: require('../../../assets/images/mster.png')
+        }
+    ]
 
 
     function fetchData() {
@@ -118,6 +136,7 @@ function OrderChatting({ navigation, route }) {
     }
 
     const _pickImage = async (i) => {
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
@@ -129,12 +148,13 @@ function OrderChatting({ navigation, route }) {
         if (!result.cancelled) {
             setPhoto(result.uri);
             setBase64(result.base64);
+            setTop(0)
 
         }
         setTimeout(() => {
             setShowBillModal(true)
 
-        }, 200);
+        }, 1000);
     };
 
     const _pickImageFrpmCamera = async () => {
@@ -152,11 +172,12 @@ function OrderChatting({ navigation, route }) {
             if (!result.cancelled) {
                 setPhoto(result.uri);
                 setBase64(result.base64);
+                setTop(0)
             }
             setTimeout(() => {
                 setShowBillModal(true)
 
-            }, 200);
+            }, 1000);
         }
         else {
             ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
@@ -185,7 +206,6 @@ function OrderChatting({ navigation, route }) {
     }
 
 
-    console.log(orderDetails);
     useEffect(() => {
 
         const unsubscribe = navigation.addListener('focus', () => {
@@ -225,12 +245,10 @@ function OrderChatting({ navigation, route }) {
                 //     ScrollViewRef.current.scrollToEnd({ animated: true })
                 // }, 1000)
 
-                console.log('******')
                 if (res.request.content.data.room.order.status == 'DELIVERED') {
                     setShowRateModal(true)
 
                 }
-                console.log('******')
             }
 
         });
@@ -283,15 +301,14 @@ function OrderChatting({ navigation, route }) {
 
     }
     function navigateToMap(lat, lng) {
-        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+        // const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
         const latLng = `${lat},${lng}`;
-        const label = 'Custom Label';
-        const url = Platform.select({
-            ios: `${scheme}${label}@${latLng}`,
-            android: `${scheme}${latLng}(${label})`
-        });
-
-
+        // const label = 'Custom Label';
+        // const url = Platform.select({
+        //     ios: `${scheme}${label}@${latLng}`,
+        //     android: `${scheme}${latLng}(${label})`
+        // });
+        const url = `http://maps.google.com/maps?&daddr=${latLng}`;
         Linking.openURL(url);
     }
 
@@ -384,7 +401,6 @@ function OrderChatting({ navigation, route }) {
         socket.emit('delegate_Updated', data);
     }
 
-
     function sendRateMsg() {
         setIsSubmitted(true)
         dispatch(sendRate(lang, token, order.delegate_id, starCount, rateMsg)).then(() => { setIsSubmitted(false); navigation.navigate('SuccessEvaluation'); setShowRateModal(false) })
@@ -392,6 +408,58 @@ function OrderChatting({ navigation, route }) {
         setStarCount(0);
     }
     let loadingAnimated = []
+
+
+
+    function onSendsMsg() {
+        setMsg('')
+        dispatch(sendNewMessage(lang, token, 'لقد قمت بتحويل المبلغ', orderDetails.order_id)).then(() => {
+            //   fetchData()
+            emitMsg();
+            Keyboard.dismiss()
+            // ScrollViewRef.current.scrollToEnd({ animated: true })
+            // ScrollViewRef.current.scrollToEnd({ animated: true })
+        })
+    }
+
+    const PayForWallet = () => dispatch(PayWithWallet(token, order?.order_id, lang, onSendsMsg));
+
+    function _onLoad(state, navigation) {
+        if (!PaymentFinished) {
+            if (state.url.indexOf('?status=') != -1) {
+                let status = state.url.split("status=")[1].split('&')[0];
+                if (status == '1') {
+
+                    Toast.show({
+                        text: i18n.t('successPayment'),
+                        type: "success",
+                        duration: 3000
+                    });
+                    onSendsMsg()
+
+                } else {
+
+                    Toast.show({
+                        text: i18n.t('error'),
+                        type: "danger",
+                        duration: 3000
+                    });
+                    setWebViews(false)
+
+                }
+                setPaymentFinished(true)
+                return setWebViews(false)
+            }
+            // else {
+            //     return setWebViews(false)
+            // }
+            console.log(state);
+        }
+
+    }
+
+
+
 
     function renderMessage(message, i) {
         if (message.sender) {
@@ -555,6 +623,7 @@ function OrderChatting({ navigation, route }) {
 
                                         {
                                             user && user.user_type === 2 ?
+
                                                 <TouchableOpacity onPress={() => navigation.navigate('Followrepresentative', { address: orderDetails.address, orderDetails })}>
                                                     <Image source={require('../../../assets/images/mapchat.png')} style={[styles.ResImgNm]} />
                                                 </TouchableOpacity>
@@ -589,16 +658,42 @@ function OrderChatting({ navigation, route }) {
                 {
                     order && user && user.user_type == 3 && button && order.status !== 'DELIVERED' ?
                         <View style={{ backgroundColor: Colors.sky, width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, justifyContent: 'space-between' }}>
-                            <Text style={[styles.sText, { color: '#fff' }]}>{button.button_text}</Text>
-                            <TouchableOpacity onPress={() => updateOrder()} style={{ backgroundColor: '#fff', height: 35, alignItems: 'center', padding: 3, borderRadius: 5, width: 70, justifyContent: 'center' }}>
-                                <Text style={[styles.sText, { color: Colors.sky }]}>{i18n.t('confirm')}</Text>
-                            </TouchableOpacity>
-                        </View> : null
+                            <Text style={[styles.sText, { color: '#fff', fontFamily: 'flatMedium' }]}>{button.button_text}</Text>
+                            {
+                                order?.payment_type != 'cash' && order.status == 'ARRIVED' ?
+
+                                    null
+                                    :
+                                    <TouchableOpacity onPress={() => updateOrder()} style={{ backgroundColor: '#fff', height: 35, alignItems: 'center', padding: 3, borderRadius: 5, width: 70, justifyContent: 'center' }}>
+                                        <Text style={[styles.sText, { color: Colors.sky }]}>{i18n.t('confirm')}</Text>
+                                    </TouchableOpacity>
+                            }
+
+                        </View>
+                        :
+                        user && user?.user_type == 2 && order?.payment_type != 'cash' && order?.payment_status == 0 && order?.bill_created == 1 ?
+                            <View style={{ backgroundColor: Colors.sky, width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, justifyContent: 'space-between' }}>
+                                <Text style={[styles.sText, { color: '#fff' }]}>{'تآكيد الدفع'}</Text>
+                                <TouchableOpacity onPress={order.payment_type == 'wallet' ? PayForWallet : () => setShowPay(true)} style={{ backgroundColor: '#fff', height: 35, alignItems: 'center', padding: 3, borderRadius: 5, width: 70, justifyContent: 'center' }}>
+                                    {
+                                        order.payment_type == 'wallet' ?
+                                            <Image source={require('../../../assets/images/Wallt.png')} style={[styles.ResImgNm, { marginTop: 0 }]} resizeMode={'contain'} />
+                                            :
+                                            <Image source={require('../../../assets/images/visa.png')} style={[styles.ResImgNm, { marginTop: 0, borderRadius: 5 }]} resizeMode={'contain'} />
+
+                                    }
+                                </TouchableOpacity>
+                            </View>
+                            :
+                            null
                 }
+
+
+
+
 
                 <ScrollView style={{ flex: 1, }} ref={ScrollViewRef} keyboardShouldPersistTaps='handled'>
                     {/* Chat */}
-
 
 
                     {
@@ -661,7 +756,7 @@ function OrderChatting({ navigation, route }) {
                                 <Text style={[{ fontFamily: 'flatMedium', color: Colors.IconBlack, fontSize: 14 }]}>{i18n.t('chooseReason')}</Text>
                             </View>
                             <FlatList data={cancelReasons}
-                                keyExtractor={(item) => item.id}
+                                keyExtractor={(item, index) => index.id}
                                 renderItem={({ item, index }) => {
                                     return (
                                         <View>
@@ -805,8 +900,9 @@ function OrderChatting({ navigation, route }) {
                         <View style={{ width: '100%' }}>
                             <View>
                                 <TouchableOpacity onPress={() => {
-                                    // setShowBillModal(!showBillModal);
-                                    setEditMaodVisible(true)
+                                    setTop(0);
+                                    setShowBillModal(!showBillModal);
+                                    setTimeout(() => setEditMaodVisible(true), 2000)
                                 }}>
                                     <Image source={photo === '' ? require('../../../assets/images/fileupload.png') : { uri: photo }}
                                         style={{ width: '100%', height: photo === '' ? 80 : 200, marginTop: 20, borderRadius: 15 }}
@@ -898,36 +994,35 @@ function OrderChatting({ navigation, route }) {
                     </View>
                 </View>
 
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    style={{ bottom: -18, }}
-                    visible={EditMaodVisible} >
-
-                    <TouchableOpacity style={styles.centeredView2} onPress={() => setEditMaodVisible(false)}>
-
-                        <View style={styles.modalView2}>
-                            <View style={{ margin: 20, backgroundColor: Colors.bg }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                                    <TouchableOpacity onPress={() => { _pickImageFrpmCamera().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
-                                        <Image source={require('../../../assets/images/camer.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                                        <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}>{i18n.t('pickImg')} </Text>
-
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => { _pickImage().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
-                                        <Image source={require('../../../assets/images/gallery.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
-                                        <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}> {i18n.t('pickCamera')}</Text>
-
-                                    </TouchableOpacity>
-                                </View>
-
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                </Modal>
-
             </RNModal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                style={{ bottom: -18, }}
+                visible={EditMaodVisible} >
 
+                <TouchableOpacity style={styles.centeredView2} onPress={() => setEditMaodVisible(false)}>
+
+                    <View style={[styles.modalView2, { top: top }]}>
+                        <View style={{ margin: 20, backgroundColor: Colors.bg }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                <TouchableOpacity onPress={() => { setTop(10000); _pickImageFrpmCamera().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                    <Image source={require('../../../assets/images/camer.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                    <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}>{i18n.t('pickImg')} </Text>
+
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => { setTop(10000); _pickImage().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                    <Image source={require('../../../assets/images/gallery.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
+                                    <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}> {i18n.t('pickCamera')}</Text>
+
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                    </View>
+
+                </TouchableOpacity>
+            </Modal>
 
             <RNModal
                 onBackdropPress={() => setZoomBillModal(!zoomBillModal)}
@@ -950,6 +1045,92 @@ function OrderChatting({ navigation, route }) {
                     </View>
                 </View>
             </RNModal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                style={{ bottom: -18, }}
+                isVisible={ShowPay} >
+
+                <View style={styles.centeredView2} >
+
+                    <View style={[styles.modalView2, { height: height * .35 }]}>
+                        <View style={{ margin: 20, backgroundColor: Colors.bg, }}>
+
+                            <FlatList
+                                data={PayWay}
+                                horizontal
+                                keyExtractor={(item) => item.id.toString()}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <View >
+                                            <TouchableOpacity key={index} onPress={() => setGetPayment(item.name)} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 15 }}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{
+                                                        height: 15,
+                                                        width: 15,
+                                                        borderRadius: 12,
+                                                        borderWidth: 2,
+                                                        borderColor: GetPayment === item.name ? Colors.sky : Colors.fontNormal,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                    }}>
+                                                        {
+                                                            GetPayment === item.name ?
+                                                                <View style={{
+                                                                    height: 7,
+                                                                    width: 7,
+                                                                    borderRadius: 6,
+                                                                    backgroundColor: Colors.sky,
+                                                                }} />
+                                                                : null
+                                                        }
+                                                    </View>
+                                                </View>
+                                                <Image source={item.image} resizeMode='contain' style={{ width: 100, height: 100 }} />
+                                            </TouchableOpacity>
+                                            <View style={{ height: 1, width: '100%', backgroundColor: '#ddd', marginTop: 15, }} />
+                                        </View>
+                                    )
+                                }} />
+                            <BTN title={i18n.t('confirm')} onPress={() => { setShowPay(false); setSpinnerPayment(true); setTimeout(() => setWebViews(true), 1000) }} disable={GetPayment == ''} />
+
+                        </View>
+
+                    </View>
+
+                </View>
+            </Modal>
+
+            <Modal
+                onBackdropPress={() => setWebViews(false)}
+                onBackButtonPress={() => setWebViews(false)}
+                isVisible={WebViews}
+                style={{ marginBottom: 0, flex: 1, width, marginRight: 0, marginLeft: 0, marginTop: 0 }}
+
+            >
+                <View style={{ flex: 1 }}>
+                    <WebView
+                        source={{ uri: `https://drtawsel.aait-sa.com/payment/${order?.order_id}/${GetPayment}?fbclid=IwAR10qp1PR5Zc-FauPUzm0IGv8gHFvZAdUtZ6mgpdG57zPtJ5M2_zmEuIRz4` }}
+                        domStorageEnabled={true}
+                        startInLoadingState={true}
+                        scalesPageToFit={false}
+                        style={{ height: 1000, marginTop: 20 }}
+                        scrollEnabled={true}
+                        javaScriptEnabled={true}
+                        onLoad={() => setSpinnerPayment(false)}
+                        onNavigationStateChange={(state) => _onLoad(state, navigation)}
+                    />
+                    {
+                        spinnerPayment && (
+                            <ActivityIndicator
+                                style={{ position: "absolute", top: height / 2, left: width / 2 }}
+                                size="large"
+                            />
+                        )}
+                </View>
+
+            </Modal>
 
         </View>
     )
@@ -995,8 +1176,8 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     ResImgNm: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius: 50,
         marginTop: height * .026,
         marginHorizontal: 5,

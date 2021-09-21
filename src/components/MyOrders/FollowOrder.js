@@ -39,7 +39,8 @@ function FollowOrder({ navigation }) {
                     onRegionChangeComplete={region => setRegion(region)}
                     customMapStyle={mapStyle}
                     onLayout={onMapLayout}
-                    provider={PROVIDER_GOOGLE} >
+                // provider={PROVIDER_GOOGLE}
+                >
                     <Marker
                         coordinate={{ latitude: 52.5200066, longitude: 13.404954 }}
                         draggable />

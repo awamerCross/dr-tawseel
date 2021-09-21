@@ -1,7 +1,6 @@
 import axios from "axios";
 import CONST from "../consts";
-import { Toast } from 'native-base'
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToasterNative } from "../common/ToasterNatrive";
 
 
@@ -14,7 +13,7 @@ export const getCategories = lang => {
 			params: { lang }
 		}).then(response => {
 			dispatch({ type: 'categories', payload: response.data });
-		}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+		}).catch(err => console.log(err))
 	}
 };
 
@@ -28,23 +27,61 @@ export const getPlacesType = lang => {
 				// data: {device_id: deviceId },
 			}).then(response => {
 				dispatch({ type: 'placesType', payload: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 };
 
 export const getGooglePlaces = (lang, category, keyword, latitude, longitude, next_page_token) => {
 	return async (dispatch) => {
-		await AsyncStorage.getItem('deviceID').then(async deviceId => {
-			await axios({
-				url: CONST.url + 'google/places',
-				method: 'POST',
-				data: { type: category, keyword, latitude, longitude, next_page_token, device_id: deviceId },
-				params: { lang }
-			}).then(response => {
-				dispatch({ type: 'getGooglePlaces', payload: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
-		})
+		try {
+			await AsyncStorage.getItem('deviceID').then(async deviceId => {
+				await axios({
+					url: CONST.url + 'google/places',
+					method: 'POST',
+					data: { type: category, keyword, latitude, longitude, next_page_token, device_id: deviceId },
+					params: { lang }
+				}).then(response => {
+					dispatch({ type: 'getGooglePlaces', payload: response.data.data, nextPage: response.data.extra.next_page_token });
+				}).catch(err => console.log(err.message))
+			})
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
+};
+
+export const FetchMoreGooglePlaces = (setloading, lang, category, keyword, latitude, longitude,) => {
+	return async (dispatch, getState) => {
+		let { nextPage, googlePlaces } = getState().categories;
+
+		if (nextPage !== 'last_page') {
+			setloading(true)
+			await AsyncStorage.getItem('deviceID').then(async deviceId => {
+				await axios({
+					url: CONST.url + 'google/places',
+					method: 'POST',
+					data: { type: category, keyword, latitude, longitude, next_page_token: nextPage, device_id: deviceId },
+					params: { lang }
+				}).then(response => {
+					if (response?.data?.data !== 0 && response.data.extra.next_page_token !== 'last_page') {
+						dispatch({ type: 'getGooglePlaces', payload: [...googlePlaces, ...response?.data?.data], nextPage: response.data.extra.next_page_token });
+						setloading(false)
+					}
+					else {
+						dispatch({ type: 'getGooglePlaces', payload: googlePlaces, nextPage: 'last_page' });
+						setloading(false)
+					}
+
+				}).catch(err => {
+					setloading(false)
+				})
+			})
+		}
+		else {
+			setloading(false)
+		}
 	}
 };
 
@@ -58,7 +95,7 @@ export const getPlaceDetails = (lang, place_id, latitude, longitude) => {
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'placeDetails', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -74,7 +111,7 @@ export const Providerdetailes = (lang, category_id, name, latitude, longitude) =
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'Providerdetailes', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -89,7 +126,7 @@ export const ResturantDetailes = (id, lang, latitude, longitude) => {
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'RestDetailes', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -105,7 +142,7 @@ export const Products = (provider_id, lang, menu_id,) => {
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'Products', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -122,7 +159,7 @@ export const ProductDetailesRest = (id, lang) => {
 				data: { device_id: deviceId },
 			}).then(response => {
 				dispatch({ type: 'ProductsDetailes', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -144,7 +181,7 @@ export const AddTOCart = (product_id, size_id, quantity, extras, kilos, price, l
 				}
 				ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'bottom')
 
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => console.log(err))
 		})
 	}
 }
@@ -161,7 +198,7 @@ export const BasketStore = (token, lang, name) => {
 				params: { lang }
 			}).then(response => {
 				dispatch({ type: 'BasketStore', data: response.data });
-			}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+			}).catch(err => { console.log(err) })
 		})
 	}
 }

@@ -23,7 +23,7 @@ function VisaBank({ navigation }) {
     const [accountNAme, setAcoountname] = useState("");
     const [accountnum, setAccountnum] = useState('');
     const [money, setMoney] = useState('')
-    const token = useSelector(state => state.Auth.user ?state.Auth.user.data.token : null)
+    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const lang = useSelector(state => state.lang.lang);
     const BankAccount = useSelector(state => state.wallet.Banks);
     const [base64, setBase64] = useState('');
@@ -61,36 +61,36 @@ function VisaBank({ navigation }) {
 
                     <View style={{ marginTop: 20, marginHorizontal: 20, }}>
                         {
-                            !BankAccount ? null :
-                                BankAccount.map((acc, i) => {
-                                    return (
-                                        <TouchableOpacity style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' , marginBottom:20 , borderWidth:1 , borderColor:'#ccc' }} onPress={() => navigation.navigate('BankDataTransfer', { BankId: acc.id })} >
-                                            <ImageBackground source={{ uri: acc.image }} style={styles.BAImage}>
-                                                <View  style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 0, backgroundColor: '#00000082' }} />
-                                                <View style={{ marginTop: 10, marginLeft: 25 }}>
-                                                    <View style={{ flexDirection: 'row', }}>
-                                                        <Text style={styles.textB}>{i18n.t('AccName')} :</Text>
-                                                        <Text style={styles.textB}>{acc.account_name}</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', }}>
-                                                        <Text style={styles.textB}>{i18n.t('bankname')}:   </Text>
-                                                        <Text style={styles.textB}>{acc.bank_name}</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', }}>
-                                                        <Text style={styles.textB}>{i18n.t('Accnum')}:  </Text>
-                                                        <Text style={styles.textB}>{acc.account_number}</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', }}>
-                                                        <Text style={styles.textB}>{ i18n.t('iban') } : </Text>
-                                                        <Text style={styles.textB}>{acc.iban_number}</Text>
-                                                    </View>
-
+                            BankAccount &&
+                            BankAccount.map((acc, i) => {
+                                return (
+                                    <TouchableOpacity key={i} style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#ccc' }} onPress={() => navigation.navigate('BankDataTransfer', { BankId: acc.id })} >
+                                        <ImageBackground source={{ uri: acc.image }} style={styles.BAImage}>
+                                            <View style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 0, backgroundColor: '#00000082' }} />
+                                            <View style={{ marginTop: 10, marginLeft: 25 }}>
+                                                <View style={{ flexDirection: 'row', }}>
+                                                    <Text style={styles.textB}>{i18n.t('AccName')} :</Text>
+                                                    <Text style={styles.textB}>{acc.account_name}</Text>
                                                 </View>
-                                            </ImageBackground>
-                                        </TouchableOpacity>
+                                                <View style={{ flexDirection: 'row', }}>
+                                                    <Text style={styles.textB}>{i18n.t('bankname')}:   </Text>
+                                                    <Text style={styles.textB}>{acc.bank_name}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', }}>
+                                                    <Text style={styles.textB}>{i18n.t('Accnum')}:  </Text>
+                                                    <Text style={styles.textB}>{acc.account_number}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', }}>
+                                                    <Text style={styles.textB}>{i18n.t('iban')} : </Text>
+                                                    <Text style={styles.textB}>{acc.iban_number}</Text>
+                                                </View>
 
-                                    )
-                                })
+                                            </View>
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+
+                                )
+                            })
                         }
 
 

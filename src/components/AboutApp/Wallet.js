@@ -16,10 +16,10 @@ const { height } = Dimensions.get('window')
 function Wallet({ navigation }) {
 
     const [spinner, setSpinner] = useState(true);
-    const WalletTotal           = useSelector(state => state.wallet.wallet);
-    const token                 = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
-    const lang                  = useSelector(state => state.lang.lang);
-    const user                  = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
+    const WalletTotal = useSelector(state => state.wallet.wallet);
+    const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
+    const lang = useSelector(state => state.lang.lang);
+    const user = useSelector(state => state.Auth ? state.Auth.user ? state.Auth.user.data : null : null)
 
 
     const dispatch = useDispatch()
@@ -49,21 +49,16 @@ function Wallet({ navigation }) {
                         }
 
 
-
-
-
                     </View>
 
-                    <View  style={{marginTop : 20}}>
+                    <View style={{ marginTop: 20 }}>
                         {
                             !WalletTotal ? null :
                                 WalletTotal.amount < 0 ?
-                                <Text style={[styles.TPrice, { color:   'red'     , fontSize : 18} ]}> {i18n.t('haveDebit')}</Text>
-                                    :null
+                                    <Text style={[styles.TPrice, { color: 'red', fontSize: 18 }]}> {i18n.t('haveDebit')}</Text>
+                                    : null
 
                         }
-
-
 
                     </View>
                 </View>

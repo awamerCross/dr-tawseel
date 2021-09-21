@@ -38,7 +38,6 @@ function AllOffers({ navigation, route }) {
         dispatch(getAllOffers(lang, token, id)).then(() => setSpinner(false))
         dispatch(getCancelReasons(lang))
     }
-    console.log(id);
 
     useEffect(() => {
         AppState.addEventListener('change', _handleAppStateChange);

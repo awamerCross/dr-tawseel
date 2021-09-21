@@ -42,7 +42,7 @@ function ChooseUser({ navigation }) {
                             </TouchableOpacity>
 
                         </View>
-                        <SText title={i18n.t("DrPolicy")} style={{ paddingVertical: 10, color: Colors.IconBlack, marginLeft: 5, marginHorizontal: 10, fontSize: 12 }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
+                        <SText title={i18n.t("DrPolicy")} style={{ paddingVertical: 10, color: Colors.IconBlack, marginLeft: 5, marginHorizontal: 10, fontSize: 12, lineHeight: 22, marginBottom: 10, }} onPress={() => navigation.navigate('politics', { typeName: 'Register' })} />
 
                     </View>
             }

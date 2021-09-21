@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
         color: '#BCBCBC',
         fontFamily: "flatMedium",
         textAlign: 'center',
-        paddingTop: 15
+        paddingTop: 15,
+
     },
 });

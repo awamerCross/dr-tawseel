@@ -24,7 +24,7 @@ export const cancelOrder = (lang, token, cancel_order_reason_id, id) => {
                     textAlign: 'center'
                 }
             })
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 

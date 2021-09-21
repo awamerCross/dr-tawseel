@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Alert } from 'react-native'
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
-import { InputIcon } from '../../common/InputText';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { BasketStoreDetailes, GetDliveryCost, CofirmOrder } from '../../actions/BsketDetailesAction';
 import { useSelector, useDispatch } from 'react-redux';
 import Container from '../../common/Container';
 import { SText } from '../../common/SText';
-import { Toast } from "native-base";
 import { ToasterNative } from '../../common/ToasterNatrive';
-import LoadingBtn from '../../common/Loadbtn';
+import { InputTouchable } from '../../common/InputTouchable';
 
 
 const { width } = Dimensions.get('window')
-const { height } = Dimensions.get('window')
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
@@ -49,7 +46,6 @@ function PaymentDetailes({ navigation, route }) {
         // { id: 5, title: i18n.t('byApple') }
     ]);
 
-    console.log(cityName);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -120,20 +116,15 @@ function PaymentDetailes({ navigation, route }) {
                 <View style={{ marginTop: 50 }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                        <TouchableOpacity style={{ width: '100%', marginHorizontal: 10 }} onPress={() => { navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' }) }}>
-                            <InputIcon
-                                label={i18n.t('deliveryLocation')}
-                                placeholder={i18n.t('selectLocation')}
-                                inputStyle={{ borderRadius: 0, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                                styleCont={{ height: 40, marginTop: 20 }}
-                                LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 0 }}
-                                image={require('../../../assets/images/pingray.png')}
-                                onPress={() => navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' })}
-                                editable={false}
-                                value={cityName ? cityName : ''}
-                            />
+                        <InputTouchable
+                            label={i18n.t('deliveryLocation')}
+                            placeholder={i18n.t('selectLocation')}
+                            styleCont={{ height: 40, marginTop: 20, width: '95%', borderRadius: 0 }}
+                            LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 0 }}
+                            image={require('../../../assets/images/pingray.png')}
+                            onPress={() => navigation.navigate('getLocation', { providerID, pathName: 'PaymentDetailes' })}
+                            value={cityName ? cityName : ''} />
 
-                        </TouchableOpacity>
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <SText title={`+ ${i18n.t('ChooseSavedPlaces')}`} style={{ color: Colors.sky, fontSize: 14, alignSelf: 'flex-start', paddingHorizontal: 20, }} onPress={() => navigation.navigate('chooseSavedPlaces')} />

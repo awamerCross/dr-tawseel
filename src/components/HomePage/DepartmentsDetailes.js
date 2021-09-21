@@ -1,176 +1,146 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, AsyncStorage } from 'react-native'
-import { DrawerActions } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback, Fragment, useMemo } from 'react'
+import { View, StyleSheet, Dimensions, Text, FlatList, ActivityIndicator, RefreshControl } from 'react-native'
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
-import { getGooglePlaces, getPlacesType } from '../../actions';
-import * as Location from 'expo-location';
-import Container from '../../common/Container';
-import LoadingBtn from '../../common/Loadbtn';
+import { FetchMoreGooglePlaces, getGooglePlaces, getPlacesType } from '../../actions';
 import { _renderRows } from '../../common/LoaderImage';
-import axios from "axios";
-import CONST from "../../consts";
-import { ToasterNative } from "../../common/ToasterNatrive";
+import { Icon } from 'native-base';
+import StroeDetailes from '../../common/StroeDetailes';
+import * as Location from 'expo-location';
+import SelectCats from '../../common/SelectCats';
+import { useIsFocused } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window')
 
 function DepartmentsDetailes({ navigation, route }) {
-    const { key } = route.params;
+
+    const MapsRegion = route?.params
     const lang = useSelector(state => state.lang.lang);
-    const categories = useSelector(state => state.categories.placesTypes);
     const AllPlacess = useSelector(state => state.categories.googlePlaces);
-    const nextPageTokens = useSelector(state => state.categories.nextPage);
 
 
+    const [loadMore, setloadingMore] = useState(false);
+    const [mapRegion, setmapRegion] = useState({});
 
     const dispatch = useDispatch();
-    const [spinner, setSpinner] = useState(true);
     const [loading, setloading] = useState(true);
-    const [StoreKey, setStoreKey] = useState('supermarket')
-    const [active, setactive] = useState(0);
-    const [loadMore, setLoadMore] = useState(false);
+    const [StoreKey, setStoreKey] = useState('')
     const [search, setSearch] = useState(null);
-    const [nextPageToken, setNextPageToken] = useState(null);
     let loadingAnimated = [];
-    let [allPlaces, setAllPlaces] = useState([]);
-    const [mapRegion, setMapRegion] = useState({
-        latitude: 24.7135517,
-        longitude: 46.6752957,
-    });
 
+    const focused = useIsFocused()
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', async () => {
-            setSpinner(true)
-            setloading(true)
-            setNextPageToken(null)
-            setactive(0)
-            setAllPlaces([])
-            setStoreKey('supermarket')
-
-            let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                alert('صلاحيات تحديد موقعك الحالي ملغاه');
-            } else {
-                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-                setMapRegion({ latitude, longitude })
-                dispatch(getPlacesType(lang)).then(() => setSpinner(false)).then(() => setloading(false))
-                fetchGooglePlaces(null, latitude, longitude, null)
-            }
-        })
-        return unsubscribe
-    }, [navigation, route]);
-
-    function fetchGooglePlaces(key, latitude, longitude, nextPage) {
-
-
-        if (nextPageToken !== 'last_page') {
-            // if (StoreKey != key) {
-            //     setAllPlaces([])
-            //     setNextPageToken(null)
-            // }
-
-            setStoreKey(key)
-            setloading(true)
-            axios({
-                url: CONST.url + 'google/places',
-                method: 'POST',
-                data: { type: key, keyword: search, latitude, longitude, next_page_token: nextPage },
-                params: { lang }
-            }).then(response => {
-                setNextPageToken(response.data.extra.next_page_token)
-                setAllPlaces(nextPage ? [...allPlaces, ...response.data.data] : response.data.data)
-                setloading(false)
-                setSearch(null)
-            }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        if (focused) {
+            setSearch('')
         }
-    }
-
-    function placeSearch() {
         setloading(true)
-        // setAllPlaces([]);
-        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, null,)
+        if (!MapsRegion?.mapRegion?.latitude) {
+            (async () => {
+                setStoreKey('')
+                let { status } = await Location.requestPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('صلاحيات تحديد موقعك الحالي ملغاه');
+
+                } else {
+                    const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+                    dispatch(getGooglePlaces(lang, null, search, latitude, longitude, null)).then(() => setloading(false))
+                    setmapRegion({ latitude, longitude })
+                }
+            })()
+        }
+        else {
+            setmapRegion(MapsRegion?.mapRegion)
+            dispatch(getGooglePlaces(lang, null, search, MapsRegion?.mapRegion?.latitude, MapsRegion?.mapRegion?.longitude, null)).then(() => setloading(false))
+
+        }
+    }, [focused]);
+
+
+
+    const onEndReached = () => dispatch(FetchMoreGooglePlaces(setloadingMore, lang, StoreKey, search, mapRegion.latitude, mapRegion.longitude))
+
+    const placeSearch = (e) => {
+        setloading(true)
+        setSearch(e)
+        if (e == '') {
+            dispatch(getGooglePlaces(lang, StoreKey, null, mapRegion.latitude, mapRegion.longitude, null)).then(() => setloading(false))
+        }
+        setTimeout(() => {
+            dispatch(getGooglePlaces(lang, StoreKey, e, mapRegion.latitude, mapRegion.longitude, null)).then(() => setloading(false))
+
+        }, 3000);
     }
 
-    function fetchMoreListItems() {
-        fetchGooglePlaces(StoreKey, mapRegion.latitude, mapRegion.longitude, nextPageToken)
+    const changePlaceType = (category) => {
+        setStoreKey(category);
+        setloading(true);
+        dispatch(getGooglePlaces(lang, category, search, mapRegion.latitude, mapRegion.longitude, null)).then(() => setloading(false))
+        setloadingMore(false)
+
     }
 
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
+
+
+    const renderFooter = () => {
+        if (!loadMore) return null;
+        else return <ActivityIndicator size={20} color={Colors.sky} />;
     };
 
-    const changePlaceType = (i, category) => {
-        setNextPageToken(null);
-        setAllPlaces([])
-        fetchGooglePlaces(category.key, mapRegion.latitude, mapRegion.longitude, null);
-        setactive(i);
+
+    const RenderList = () => {
+        return (
+            loading ?
+                _renderRows(loadingAnimated, 10, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
+                :
+                <FlatList
+                    data={AllPlacess}
+                    showsVerticalScrollIndicator={false}
+                    style={{ marginTop: 5 }}
+                    // extraData={loading}
+                    keyExtractor={(item, index) => index.toString()}
+                    // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    ListFooterComponent={renderFooter}
+                    onMomentumScrollBegin={() => setloadingMore(true)}
+                    onEndReached={() => onEndReached()}
+                    onEndReachedThreshold={0.9}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <StroeDetailes item={item} key={index} mapRegion={mapRegion} />
+                        )
+                    }}
+                    ListEmptyComponent={
+                        <View style={styles.Container}>
+                            <Icon type={'MaterialCommunityIcons'} name={'cancel'} style={styles.Icon} />
+                            <Text style={styles.Title}>{'NO RESULTS'}</Text>
+                        </View>
+                    }
+                />
+        )
     }
 
     return (
 
         <View style={{ flex: 1, backgroundColor: Colors.bg, }}>
             <Header navigation={navigation} />
+            <InputIcon
+                placeholder={i18n.t('search')}
+                inputStyle={{ borderRadius: 30, backgroundColor: Colors.bg, borderColor: '#eaeaea' }}
+                styleCont={{ height: 45 }}
+                image={require('../../../assets/images/search.png')}
+                LabelStyle={{ backgroundColor: 'transparent' }}
+                onChangeText={(e) => placeSearch(e)}
+                value={search}
+                onSubmitEditing={() => placeSearch(search)}
+            />
 
-            <ScrollView onScroll={({ nativeEvent }) => {
-                if (isCloseToBottom(nativeEvent) && !loadMore) {
-                    fetchMoreListItems();
-                }
-            }} style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <SelectCats changePlaceType={(e) => changePlaceType(e)} />
 
-                <InputIcon
-                    placeholder={i18n.t('search')}
-                    inputStyle={{ borderRadius: 30, backgroundColor: Colors.bg, borderColor: '#eaeaea' }}
-                    styleCont={{ height: 45 }}
-                    image={require('../../../assets/images/search.png')}
-                    LabelStyle={{ backgroundColor: 'transparent' }}
-                    onChangeText={(search) => setSearch(search)}
-                    value={search}
-                    onSubmitEditing={() => placeSearch()}
-                    onPress={() => placeSearch()}
-                />
 
-                <View style={{ height: 45, backgroundColor: '#fff' }}>
-                    <ScrollView horizontal style={{ borderWidth: 1, borderColor: '#ddd', alignSelf: 'flex-start', flexDirection: 'row' }} showsHorizontalScrollIndicator={false}>
-                        {
-                            spinner ?
-                                _renderRows(loadingAnimated, 20, '2rows', width, 120, { flexDirection: 'column', }, { borderRadius: 0, })
-                                :
-                                categories ?
-                                    categories.map((category, i) => (
-                                        <TouchableOpacity style={[{ height: '100%', width: width * 33.33333333 / 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderLeftWidth: 2, borderRightWidth: 2, borderWidth: 2, borderLeftColor: active === i ? Colors.sky : '#fff', borderRadius: 25, marginHorizontal: 5, borderColor: active === i ? Colors.sky : '#fff', }]} key={i} onPress={() => changePlaceType(i, category)}>
-                                            <Image source={{ uri: category.img }} style={{ width: 25, height: 25, marginHorizontal: 5 }} resizeMode='contain' />
-                                            <Text style={styles.sText}>{category.name}</Text>
-                                        </TouchableOpacity>
-                                    )) : null
-                        }
-                    </ScrollView>
-                </View>
-
-                {
-                    loading ?
-                        _renderRows(loadingAnimated, 10, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
-                        :
-                        allPlaces.map((place, i) => (
-                            <TouchableOpacity onPress={() => navigation.navigate('OrderFromYourStore', { placeId: place.place_id, mapRegion })} key={i}>
-                                <View style={styles.card}>
-                                    <Image source={{ uri: place.icon }} style={styles.ImgCard} resizeMode='contain' />
-                                    <View style={{ flexDirection: 'column', justifyContent: 'space-evenly', marginStart: 5 }}>
-                                        <Text style={[styles.sText, { alignSelf: 'flex-start' }]}>{place.name.length > 30 ? (place.name).substr(0, 30) + '...' : place.name} </Text>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
-                                            <Text style={styles.yText}> {place.distance}</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))
-                }
-
-            </ScrollView>
+            {RenderList()}
         </View>
     )
 }
@@ -196,6 +166,23 @@ const styles = StyleSheet.create({
         color: Colors.IconBlack,
         fontSize: 12,
 
+    },
+    Container: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignContent: 'center',
+        flex: 1
+    },
+    Icon: {
+        fontSize: 200,
+        color: Colors.fontNormal,
+        marginTop: 120
+    },
+    Title: {
+        color: Colors.fontNormal,
+        fontFamily: 'flatMedium',
+        fontSize: 16,
+        alignSelf: 'center'
     },
     iconImg: {
         width: 12,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, Platform, I18nManager, ImageBackground } from 'react-native'
-import { DrawerActions } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 
 
 
@@ -11,7 +11,9 @@ import Colors from '../consts/Colors';
 const { width } = Dimensions.get('window')
 const isIOS = Platform.OS === 'ios';
 
-function Header({ label, navigation, image, onPress }) {
+function Header({ label, image, onPress }) {
+
+    const navigation = useNavigation()
     return (
 
         <View style={styles.container}>

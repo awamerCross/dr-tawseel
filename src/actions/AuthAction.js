@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { AsyncStorage } from 'react-native';
 import { Toast } from 'native-base';
 import consts from '../consts';
 import CONST from "../consts";
 import { ToasterNative } from '../common/ToasterNatrive';
 import i18n from '../components/locale/i18n';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -21,7 +21,6 @@ export const SignIn = (phone, password, device_id, lang, navigation) => {
 
     return async (dispatch, getState) => {
         let usertype = getState().lang.usertype;
-        console.log('usertypeسسسس' + usertype);
         await axios({
             method: 'POST',
             url: consts.url + 'sign-in',
@@ -46,7 +45,7 @@ export const SignIn = (phone, password, device_id, lang, navigation) => {
 
 
 
-            }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+            }).catch(err => onsole.log(err))
 
         dispatch({ type: Sign_In })
 
@@ -133,7 +132,7 @@ export const resendCode = (lang, token) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 }
 
@@ -164,7 +163,7 @@ export const UserRegister = (name, phone, password, email, user_type, lang, navi
                         }
                     });
                 }
-            }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+            }).catch(err => onsole.log(err))
         })
 
     }
@@ -199,7 +198,7 @@ export const DelegateRegister = (name, phone, password, email, user_type, identi
                     }
                 });
             }
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
 
     }
 
@@ -227,7 +226,7 @@ export const ActivationCode = (code, token, lang, navigation, route) => {
 
             ToasterNative(res.data.message, res.data.success ? "success" : "danger", 'bottom')
 
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 
 }
@@ -313,7 +312,7 @@ export const LogoutUser = (token) => {
                 dispatch({ type: logout })
 
             })
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
 
     }
 }
@@ -323,7 +322,6 @@ export const LogoutUser = (token) => {
 export const ClearCaSh = (navigation) => {
     return async (dispatch, getState) => {
         const { token } = getState().Auth
-        console.log('tokentokentokentoken', token);
         await dispatch({ type: ClearـCaSh })
         navigation.navigate('AccountActivation', { token })
 

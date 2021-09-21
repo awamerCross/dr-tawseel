@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
-import { View, Text, Dimensions, StyleSheet, ScrollView, ActivityIndicator, Image, ImageBackground, Alert, AsyncStorage, Platform, Button, Linking, Vibration } from 'react-native'
+import { View, Text, Dimensions, StyleSheet, ScrollView, ActivityIndicator, Image, ImageBackground, Alert, Platform, Button, Linking, Vibration } from 'react-native'
 import { validatePhone, validatePassword, } from "../../common/Validation";
 
 import LogoLogin from '../../common/LogoLogin'
@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SignIn } from '../../actions/AuthAction';
 import { ToasterNative } from '../../common/ToasterNatrive';
 import { getAppInfo } from '../../actions';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const { width } = Dimensions.get('window')
@@ -129,7 +130,6 @@ function Login({ navigation }) {
         }
     }
 
-    console.log('UserType' + UserType);
 
     return (
 

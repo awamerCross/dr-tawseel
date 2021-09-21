@@ -24,6 +24,7 @@ import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPlace, specialOrder } from '../../actions'
 import { ValdiateCoupon } from '../../actions/BsketDetailesAction';
+import { InputTouchable } from '../../common/InputTouchable';
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -77,7 +78,12 @@ function SpecialOrder({ navigation, route }) {
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             base64 = []
-
+            setIsSpin(false);
+            setPhotos([]);
+            setCityName('');
+            setDeliverCityName('');
+            setDesc('');
+            setOrderTime(i18n.t('_1h'))
             if (route.params?.cityName) {
                 setCityName(route.params.cityName.substr(0, 25))
                 setMapRegion(route.params.mapRegion)
@@ -122,7 +128,10 @@ function SpecialOrder({ navigation, route }) {
 
     const HandleChangeCuboun = (e) => {
         setCuboun(e)
-        dispatch(ValdiateCoupon(token, e))
+        setTimeout(() => {
+            dispatch(ValdiateCoupon(token, e))
+
+        }, 5000);
     }
 
 
@@ -186,12 +195,9 @@ function SpecialOrder({ navigation, route }) {
 
         dispatch(specialOrder(lang, token, mapRegion.latitude, mapRegion.longitude, cityName, deliverMapRegion.latitude, deliverMapRegion.longitude, deliverCityName, orderTime, desc, photos, paymentType, icon, null, null, null, Cuboun, navigation)).then(
             () => {
-                setIsSpin(false);
-                setPhotos([]);
-                setCityName('');
-                setDeliverCityName('');
-                setDesc('');
-                setOrderTime('_2h')
+                setCuboun('')
+                setIsSpin(false)
+
             }
         ).catch(() => setIsSpin(false))
     }
@@ -219,10 +225,9 @@ function SpecialOrder({ navigation, route }) {
             <Header navigation={navigation} label={i18n.t('specialOrder')} />
 
             <ScrollView style={{ flex: 1 }}>
-                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row', alignItems: 'center', width: '100%' }} onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'deliveryLocation' })}>
-                    <InputIcon
+                <View style={{ marginTop: 60, flexDirection: 'row', alignItems: 'center', width: '100%' }} >
+                    <InputTouchable
                         label={i18n.t('delPoint')}
-                        inputStyle={{ borderRadius: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
                         styleCont={{ width: '75%' }}
                         LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
                         image={require('../../../assets/images/locationgray.png')}
@@ -235,40 +240,31 @@ function SpecialOrder({ navigation, route }) {
                             <Image source={activeAddress == '' ? require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
                         </View>
                     </TouchableOpacity>
-                </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity style={{ marginTop: 60, flexDirection: 'row', alignItems: 'center', width: '100%' }} onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })}>
-                    <InputIcon
+                <View style={{ marginTop: 60, flexDirection: 'row', alignItems: 'center', width: '100%' }} onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })}>
+
+                    <InputTouchable
                         label={i18n.t('deliveryLocation')}
-                        inputStyle={{ borderRadius: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                        styleCont={{ width: '75%' }}
                         LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                        styleCont={{ width: '75%', marginTop: 0 }}
                         image={require('../../../assets/images/locationgray.png')}
-                        onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })}
-                        editable={false}
+                        onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })} editable={false}
                         value={deliverCityName ? deliverCityName : ''}
                     />
                     <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true); setPointType('delPoint') }} style={{ backgroundColor: '#eaeaea', width: 45, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                         <Image source={activeDeliverAddress == '' ? require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
                     </TouchableOpacity>
-                </TouchableOpacity>
+                </View>
 
-
-
-                <TouchableOpacity onPress={() => { setModalVisible(true); }} style={{ marginTop: 40, flexDirection: 'row', alignItems: 'center' }}>
-                    <InputIcon
-                        label={i18n.t('orderTime')}
-                        placeholder={i18n.t('selectOrderTime')}
-                        inputStyle={{ borderRadius: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                        styleCont={{ width: '90%', }}
-                        LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5 }}
-                        editable={false}
-                        value={orderTime}
-                        image={require('../../../assets/images/clock_gray.png')}
-                        onPress={() => setModalVisible(true)}
-                    />
-
-                </TouchableOpacity>
+                <InputTouchable
+                    label={i18n.t('orderTime')}
+                    LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                    styleCont={{ width: '90%', marginTop: 50 }}
+                    image={require('../../../assets/images/clock_gray.png')}
+                    onPress={() => setModalVisible(true)}
+                    value={orderTime}
+                />
 
                 <View style={{ marginTop: 15 }}>
                     <Text style={[styles.labelText, { color: Colors.IconBlack, paddingHorizontal: 10, fontSize: 13, top: 10 },]}  >

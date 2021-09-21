@@ -1,6 +1,7 @@
-import { I18nManager, AsyncStorage } from "react-native";
+import { I18nManager, } from "react-native";
 import i18n from "../../locale/i18n";
-import Expo, { Updates } from "expo";
+import * as Updates from 'expo-updates';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const chooseLang = "choose_Lang";
 

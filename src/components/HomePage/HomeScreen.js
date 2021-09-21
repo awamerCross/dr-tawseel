@@ -25,6 +25,9 @@ const { height } = Dimensions.get('window');
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
+
+export const IS_IOS = Platform.OS === "ios";
+
 function HomeScreen({ navigation }) {
 
     const lang = useSelector(state => state.lang.lang);
@@ -100,41 +103,29 @@ function HomeScreen({ navigation }) {
 
     const fetchData = async () => {
         let { status } = await Location.requestPermissionsAsync();
-
         if (status === 'granted') {
-            let gpsServiceStatus = await Location.hasServicesEnabledAsync();
-            if (gpsServiceStatus) {
-                console.log("sss" + gpsServiceStatus);
-                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-
-                setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
-
-            } else {
-                const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-                setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
-
-                ToasterNative("Enable Location services", 'danger', 'bottom'); //or any code to handle if location service is disabled otherwise
-            }
+            await Location.getCurrentPositionAsync({
+                accuracy: IS_IOS
+                    ? Location.Accuracy.High
+                    : Location.Accuracy.Lowest,
+            }).then(({ coords }) => {
+                if (coords) {
+                    setMapRegion({ latitude: coords.latitude, longitude: coords.longitude, latitudeDelta, longitudeDelta });
+                }
+            })
         }
-        else {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({});
-            setMapRegion({ latitude, longitude, latitudeDelta, longitudeDelta });
-
-        }
-
     }
 
 
     useEffect(() => {
-        if (isFocused)
-            setSpinner(true)
+        setSpinner(true)
         fetchData()
         dispatch(getLatestProviders());
         dispatch(getBanners(lang))
         dispatch(GetBasketLength(lang, token))
-        dispatch(getCategories(lang)).then(() => setSpinner(false))
-
-    }, [isFocused]);
+        dispatch(getCategories(lang))
+        setSpinner(false)
+    }, []);
 
 
     useEffect(() => {
@@ -172,7 +163,7 @@ function HomeScreen({ navigation }) {
         <View style={{ flex: 1, backgroundColor: Colors.bg }}>
             <HeaderHome navigation={navigation} count={BasketLength} />
 
-            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
 
                 <Swiper
                     removeClippedSubviews={false}

@@ -8,7 +8,7 @@ import I18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAppInfo, contactUs, getLatestProviders, getBanners, getCategories } from '../../actions';
 import style from "../../../assets/styles";
-import { Textarea, Toast } from "native-base";
+import { Icon, Textarea, Toast } from "native-base";
 import Header from "../../common/Header";
 import { validateEmail } from '../../common/Validation';
 import i18n from "../locale/i18n";
@@ -63,6 +63,7 @@ function ContactUs({ navigation }) {
     }
 
     function sendMsg() {
+
         if (validateEmail(email) == null) {
             setIsSubmitted(true)
             dispatch(contactUs(lang, token, name, email, msg)).then(() => setIsSubmitted(false))
@@ -188,6 +189,10 @@ function ContactUs({ navigation }) {
                     </View>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity onPress={() => Linking.openURL(`https://telegram.me/${appInfo.telegram}`)} style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row', marginTop: 50, marginBottom: 10 }}>
+                <Icon type='MaterialCommunityIcons' name='tag-faces' style={{ fontSize: 22, color: Colors.sky }} />
+                <Text style={{ padding: 5, color: Colors.fontBold, fontFamily: 'flatMedium', }}>{i18n.t('JoinTel')}</Text>
+            </TouchableOpacity>
 
         </ScrollView>
     )

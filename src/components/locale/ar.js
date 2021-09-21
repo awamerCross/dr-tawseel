@@ -375,6 +375,8 @@ const ar = {
   waiting: 'معلق',
   productDet: 'تفاصيل المنتج',
   IWillDeliver: 'سأوصل هذا الطلب',
+  successPayment: 'تمت العمليه بنجاح',
+  error: 'المعلومات خاطئه',
   call: 'اتصال',
   deliverLocation: 'موقع الإستلام',
   seeLocation: 'مشاهده الموقع',
@@ -467,5 +469,7 @@ const ar = {
   Client: 'عميل',
   Captin: 'كابتن',
   DrPolicy: 'باستخدام تطبيق دكتور توصيل فانك توافق علي سياسة الخصوصيه وشروط الاحكام',
+  StcAcc: 'حساب STC',
+  JoinTel: 'انضم الي قناتنا ع التليجرام'
 };
 export default ar;

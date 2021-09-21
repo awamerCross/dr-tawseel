@@ -15,7 +15,7 @@ export const GetProfileAction = (token, lang) => {
             params: { lang }
         }).then(response => {
             dispatch({ type: 'GetProfileAction', data: response.data });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 
@@ -29,8 +29,6 @@ export const UpdateProfileAction = (token, name, phone, email, avatar, lang, id,
             headers: { Authorization: 'Bearer ' + token, },
             params: { lang }
         }).then(response => {
-            console.log(profile.data.phone);
-            console.log("PhoneService" + phone);
 
             if (response.data.success) {
 
@@ -44,7 +42,7 @@ export const UpdateProfileAction = (token, name, phone, email, avatar, lang, id,
             }
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'bottom')
 
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 
@@ -68,7 +66,7 @@ export const EditPasswordSettingsProfile = (token, old_password, current_passwor
             ToasterNative(res.data.message, res.data.success ? "success" : "danger", 'bottom')
 
         }
-        ).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        ).catch(err => onsole.log(err))
 
 
     }

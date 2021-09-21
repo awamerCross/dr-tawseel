@@ -23,7 +23,7 @@ export const sendRate = (lang, token, rated_id, rate, comment) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+        }).catch(err => onsole.log(err))
     }
 };
 

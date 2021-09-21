@@ -1,7 +1,6 @@
 import axios from "axios";
 import CONST from "../consts";
-import { AsyncStorage } from "react-native";
-import { ToasterNative } from "../common/ToasterNatrive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const getLatestProviders = () => {
@@ -11,6 +10,6 @@ export const getLatestProviders = () => {
 			method: 'GET',
 		}).then(response => {
 			dispatch({ type: 'latestProviders', payload: response.data });
-		}).catch(err => ToasterNative(err.message, 'danger', 'bottom'))
+		}).catch(err => onsole.log(err))
 	}
 };

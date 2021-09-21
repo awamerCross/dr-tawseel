@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, ImageBackground, ActivityIndicator } from 'react-native'
-import { DrawerActions } from '@react-navigation/native';
+import React, { useState, Fragment } from 'react'
+import { ScrollView, View, Image, TouchableOpacity, StyleSheet, Dimensions, Text, KeyboardAvoidingView, Platform } from 'react-native'
 
 
 import Colors from '../../consts/Colors';
@@ -9,8 +8,7 @@ import BTN from '../../common/BTN';
 import { useSelector, useDispatch } from 'react-redux';
 import { validateAccountNum, valdiateMoney, validateBankName, validateUserName } from '../../common/Validation';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import { Toaster } from '../../common/Toaster';
+
 import i18n from "../locale/i18n";
 import Header from '../../common/Header';
 import { SendTransferFromACc } from '../../actions/Wallet';
@@ -23,9 +21,14 @@ function BankDataTransfer({ navigation, route }) {
 
     const { BankId } = route.params
     const [Bankname, setName] = useState('');
+    const [STcAcc, setSTcAcc] = useState('');
+    const [iban, setiban] = useState('');
+
+
     const [accountNAme, setAcoountname] = useState("");
     const [accountnum, setAccountnum] = useState('');
-    const [money, setMoney] = useState('')
+    const [money, setMoney] = useState('');
+    const user = useSelector(state => state.Auth?.user?.data)
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const lang = useSelector(state => state.lang.lang);
     const [base64, setBase64] = useState('');
@@ -65,7 +68,7 @@ function BankDataTransfer({ navigation, route }) {
         const isVal = _validate();
         if (!isVal) {
             setSpinner(true)
-            dispatch(SendTransferFromACc(token, lang, BankId, base64, Bankname, accountNAme, accountnum, money, navigation)).then(() => setSpinner(false))
+            dispatch(SendTransferFromACc(token, lang, BankId, base64, Bankname, accountNAme, accountnum, money, iban, STcAcc, navigation)).then(() => setSpinner(false))
             setAccountnum('')
             setAcoountname('')
             setName('')
@@ -90,59 +93,88 @@ function BankDataTransfer({ navigation, route }) {
 
             <View style={{ flex: 1, backgroundColor: Colors.bg }}>
                 <Header navigation={navigation} label={i18n.t('Banktransfer')} />
-                <ScrollView style={{ flex: 1 }}>
-                    <TouchableOpacity onPress={_pickImage}>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
+                    <ScrollView style={{ flex: 1 }}>
+                        <TouchableOpacity onPress={_pickImage}>
+                            {
+                                userImage == null ?
+                                    <Image source={require('../../../assets/images/plus.png')} style={{ width: 50, height: 50, marginTop: 30, alignSelf: 'center', borderRadius: 50 }} resizeMode='contain' />
+                                    :
+                                    <Image source={{ uri: userImage }} style={{ width: 100, height: 100, marginTop: 30, alignSelf: 'center', borderRadius: 50 }} resizeMode='contain' />
+
+                            }
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: 14, color: Colors.IconBlack, fontFamily: 'flatMedium', textAlign: 'center', marginTop: 20 }}> {i18n.t('Bankpicture')}</Text>
+                        <InputIcon
+                            label={i18n.t("bankname")}
+                            placeholder={i18n.t("bankname")}
+                            value={Bankname}
+                            onChangeText={(e) => setName(e)}
+                            styleCont={{ marginTop: 20, }}
+                            inputStyle={{ borderRadius: 25 }}
+
+                        />
+
                         {
-                            userImage == null ?
-                                <Image source={require('../../../assets/images/plus.png')} style={{ width: 100, height: 100, marginTop: 30, alignSelf: 'center', borderRadius: 50 }} resizeMode='contain' />
-                                :
-                                <Image source={{ uri: userImage }} style={{ width: 100, height: 100, marginTop: 30, alignSelf: 'center', borderRadius: 50 }} resizeMode='contain' />
+                            user.user_type == 3 ?
+                                <Fragment>
+                                    <InputIcon
+                                        label={i18n.t("StcAcc")}
+                                        placeholder={i18n.t("StcAcc")}
+                                        value={STcAcc}
+                                        onChangeText={(e) => setSTcAcc(e)}
+                                        styleCont={{ marginTop: 20, }}
+                                        inputStyle={{ borderRadius: 25 }}
+                                    />
 
+                                    <InputIcon
+                                        label={i18n.t("iban")}
+                                        placeholder={i18n.t("iban")}
+                                        value={iban}
+                                        onChangeText={(e) => setiban(e)}
+                                        styleCont={{ marginTop: 10 }}
+                                        inputStyle={{ borderRadius: 25 }}
+                                        keyboardType='numeric'
+
+
+                                    />
+                                </Fragment>
+                                : null
                         }
-                    </TouchableOpacity>
-                    <Text style={{ fontSize: 14, color: Colors.IconBlack, fontFamily: 'flatMedium', textAlign: 'center', marginTop: 20 }}> {i18n.t('Bankpicture')}</Text>
-                    <InputIcon
-                        label={i18n.t("bankname")}
-                        placeholder={i18n.t("bankname")}
-                        value={Bankname}
-                        onChangeText={(e) => setName(e)}
-                        styleCont={{ marginTop: 20, }}
-                        inputStyle={{ borderRadius: 25 }}
 
-                    />
-                    <InputIcon
-                        label={i18n.t("AccountUser")}
-                        placeholder={i18n.t("AccountUser")}
-                        value={accountNAme}
-                        onChangeText={(e) => setAcoountname(e)}
-                        styleCont={{ marginTop: 10 }}
-                        inputStyle={{ borderRadius: 25 }}
+                        <InputIcon
+                            label={i18n.t("AccountUser")}
+                            placeholder={i18n.t("AccountUser")}
+                            value={accountNAme}
+                            onChangeText={(e) => setAcoountname(e)}
+                            styleCont={{ marginTop: 10 }}
+                            inputStyle={{ borderRadius: 25 }}
 
-                    />
+                        />
 
-                    <InputIcon
-                        label={i18n.t("Accnum")}
-                        placeholder={i18n.t("Accnum")}
-                        value={accountnum}
-                        onChangeText={(e) => setAccountnum(e)}
-                        styleCont={{ marginTop: 10 }}
-                        inputStyle={{ borderRadius: 25 }}
-                        keyboardType='numeric'
+                        <InputIcon
+                            label={i18n.t("Accnum")}
+                            placeholder={i18n.t("Accnum")}
+                            value={accountnum}
+                            onChangeText={(e) => setAccountnum(e)}
+                            styleCont={{ marginTop: 10 }}
+                            inputStyle={{ borderRadius: 25 }}
+                            keyboardType='numeric'
 
+                        />
+                        <InputIcon
+                            label={i18n.t("moneyPaied")}
+                            placeholder={i18n.t("moneyPaied")}
+                            value={money}
+                            onChangeText={(e) => setMoney(e)}
+                            styleCont={{ marginTop: 10 }}
+                            inputStyle={{ borderRadius: 25 }}
+                            keyboardType='numeric'
 
-                    />
-                    <InputIcon
-                        label={i18n.t("moneyPaied")}
-                        placeholder={i18n.t("moneyPaied")}
-                        value={money}
-                        onChangeText={(e) => setMoney(e)}
-                        styleCont={{ marginTop: 10 }}
-                        inputStyle={{ borderRadius: 25 }}
-                        keyboardType='numeric'
-
-                    />
-                    <BTN title={i18n.t("confirm")} onPress={SubmitHandler} ContainerStyle={{ marginVertical: width * .1, borderRadius: 5 }} TextStyle={{ fontSize: 16, }} />
-                </ScrollView>
+                        />
+                        <BTN title={i18n.t("confirm")} onPress={SubmitHandler} ContainerStyle={{ marginVertical: width * .1, borderRadius: 5 }} TextStyle={{ fontSize: 16, }} />
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         </Container>
 

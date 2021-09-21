@@ -31,6 +31,7 @@ const { width, height } = Dimensions.get('window')
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
+const IS_IOS = Platform.OS === "ios";
 
 function HomePage({ navigation }) {
     const [refreshing, setRefreshing] = React.useState(false);
@@ -40,13 +41,14 @@ function HomePage({ navigation }) {
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
     const myOrders = useSelector(state => state.delegate.orders);
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
+
     let loadingAnimated = []
     const dispatch = useDispatch();
     const [isEnabled, setIsEnabled] = useState(true);
 
     const [mapRegion, setMapRegion] = useState({
-        latitude: 24.7135517,
-        longitude: 46.6752957,
+        latitude: null,
+        longitude: null,
         latitudeDelta,
         longitudeDelta
     });
@@ -61,6 +63,9 @@ function HomePage({ navigation }) {
             AppState.removeEventListener('change', _handleAppStateChange);
         };
     }, []);
+
+
+
 
     const _handleAppStateChange = (nextAppState) => {
         if (
@@ -95,12 +100,51 @@ function HomePage({ navigation }) {
             });
         }
 
-        console.log('AppState', appState.current);
     };
-    const onRefresh = React.useCallback(() => {
+
+    const FetchLocations = async () => {
+        let location;
+        let locationSuccess = false;
+
+        while (!locationSuccess) {
+            try {
+                let { status } = await Location.requestPermissionsAsync();
+
+                if (status === 'granted') {
+                    location = await Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.Low,
+                        enableHighAccuracy: true
+                    })
+                    locationSuccess = true
+                    setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+                    dispatch(getDelegateOrders(lang, token, 'READY', location.coords.latitude, location.coords.longitude)).then(() => setSpinner(false))
+
+                } else {
+                    alert('صلاحيات تحديد موقعك الحالي ملغاه');
+                }
+            } catch (error) {
+                console.log(error);
+
+            }
+
+        }
+
+    }
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', async () => {
+            setSpinner(true)
+            await FetchLocations()
+
+        })
+        return unsubscribe
+    }, []);
+
+    const onRefresh = React.useCallback(async () => {
         setRefreshing(true);
-        setSpinner(true)
-        FetchLocations().then(() => setSpinner(false), setRefreshing(false))
+        await FetchLocations()
+        setRefreshing(false);
+
+
 
     }, []);
 
@@ -109,27 +153,11 @@ function HomePage({ navigation }) {
         dispatch(GetDeligate(lang, token))
     }
 
-    const FetchLocations = async () => {
-
-        let { status } = await Location.requestPermissionsAsync();
-        if (status === 'granted') {
-            const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-            const userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
-            setMapRegion(userLocation)
-            dispatch(getDelegateOrders(lang, token, 'READY', latitude, longitude))
-        } else {
-            alert('صلاحيات تحديد موقعك الحالي ملغاه');
-        }
-    }
 
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            setSpinner(true)
-            FetchLocations().then(() => setSpinner(false))
-        })
-        return unsubscribe
-    }, [navigation]);
+
+
+
 
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
@@ -138,7 +166,8 @@ function HomePage({ navigation }) {
             let OrderId = notification.request.content.data.order_id;
 
             if (type === 'special_order' && OrderId) {
-                FetchLocations().then(() => setSpinner(false))
+                FetchLocations()
+
             }
         });
 
@@ -147,14 +176,13 @@ function HomePage({ navigation }) {
 
     useEffect(() => {
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
-
+            console.log(res.notification);
             let notification = res.notification;
 
             let type = notification.request.content.data.type;
-            let OrderId = notification.request.content.data.order_id
-            let room = notification.request.content.data.room
+            let OrderId = notification.request.content.data.order_id;
+            let room = notification.request.content.data.room;
 
-            console.log("OrderId");
             if (type === 'block') {
                 dispatch(logout(token))
             }
@@ -167,7 +195,7 @@ function HomePage({ navigation }) {
             else if (type === 'order' && OrderId) {
                 navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
             } else if (type === 'special_order' && OrderId) {
-                navigation.navigate('OrderDetailes', { OrderId: notification.request.content.data.order_id, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
+                navigation.navigate('OrderDetailes', { orderId: OrderId, latitude: mapRegion.latitude, longitude: mapRegion.longitude })
             } else if (type === 'chat' && room) {
                 navigation.navigate('OrderChatting', { receiver: user.user_type == 2 ? room.order.delegate : room.order.user, sender: user.user_type == 2 ? room.order.user : room.order.delegate, orderDetails: room.order })
             }
@@ -177,6 +205,7 @@ function HomePage({ navigation }) {
         return () => subscription.remove();
 
     }, []);
+    console.log(mapRegion);
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.bg }}>
@@ -253,10 +282,8 @@ function HomePage({ navigation }) {
                                 </TouchableOpacity>
                             )
                         }} />
-
             }
-
-        </View >
+        </View>
     )
 }
 

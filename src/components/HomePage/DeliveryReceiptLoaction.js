@@ -13,6 +13,7 @@ import i18n from "../locale/i18n";
 import { Button } from "native-base";
 import { ValdiateCoupon } from '../../actions/BsketDetailesAction';
 import Modal from "react-native-modal";
+import { InputTouchable } from '../../common/InputTouchable';
 
 
 const { width, height } = Dimensions.get('window')
@@ -133,6 +134,7 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                         <View style={{ height: 200, width, marginTop: 20 }}>
 
                             <MapView
+                                // provider={PROVIDER_GOOGLE}
                                 style={{ width: '100%', height: '100%', flex: 1, }}
                                 region={region}
                                 onRegionChangeComplete={region => setRegion(region)}
@@ -173,16 +175,16 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                 </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30 }}>
-                    <InputIcon
+                    <InputTouchable
                         label={i18n.t('deliveryLocation')}
-                        inputStyle={{ borderRadius: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                        styleCont={{ width: '75%' }}
                         LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, }}
+                        styleCont={{ width: '75%' }}
                         image={require('../../../assets/images/locationgray.png')}
                         onPress={() => navigation.navigate('getLocation', { latitude: deliverMapRegion.latitude, longitude: deliverMapRegion.longitude, pathName: 'DeliveryReceiptLoaction' })}
-                        editable={false}
                         value={deliverCityName ? deliverCityName : ''}
                     />
+
+
                     <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true) }}>
                         <View style={{ backgroundColor: '#eaeaea', width: 45, paddingVertical: 10, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                             <Image source={activeDeliverAddress == '' ? require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
@@ -190,20 +192,14 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity onPress={() => { setModalVisible(true); }} style={{ flexDirection: 'row', marginTop: 30 }}>
-                    <InputIcon
-                        label={i18n.t('orderTime')}
-                        placeholder={i18n.t('selectOrderTime')}
-                        inputStyle={{ borderRadius: 30, height: 30, backgroundColor: '#eaeaea', borderColor: '#eaeaea' }}
-                        styleCont={{ height: 45, width: '90%', marginTop: 10 }}
-                        LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5 }}
-                        editable={false}
-                        value={orderTime}
-                        image={require('../../../assets/images/clock_gray.png')}
-                        onPress={() => { setModalVisible(true); }}
-                    />
-
-                </TouchableOpacity>
+                <InputTouchable
+                    label={i18n.t('orderTime')}
+                    LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
+                    styleCont={{ width: '90%', marginTop: 50 }}
+                    image={require('../../../assets/images/clock_gray.png')}
+                    onPress={() => setModalVisible(true)}
+                    value={orderTime}
+                />
 
                 <InputIcon
                     label={i18n.t('discountCode')}
@@ -294,42 +290,44 @@ function DeliveryReceiptLoaction({ navigation, route }) {
                 isVisible={modalVisible}
                 style={{ flex: 1, alignSelf: 'center', }}
             >
+                <View style={styles.centeredView}>
 
-                <View style={styles.modalView}>
-                    <View style={{ backgroundColor: '#FFA903', width: '100%', height: height * .08, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={[styles.sText, { color: Colors.bg }]}>{i18n.t('orderTime')}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', padding: 17 }}>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_1h'))} style={{ backgroundColor: orderTime === i18n.t('_1h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_1h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_1h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_2h'))} style={{ backgroundColor: orderTime === i18n.t('_2h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_2h') ? '#ffffff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_2h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_3h'))} style={{ backgroundColor: orderTime === i18n.t('_3h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_3h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_3h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_4h'))} style={{ backgroundColor: orderTime === i18n.t('_4h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_4h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_4h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_5h'))} style={{ backgroundColor: orderTime === i18n.t('_5h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_5h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_5h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_6h'))} style={{ backgroundColor: orderTime === i18n.t('_6h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_6h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_6h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_7h'))} style={{ backgroundColor: orderTime === i18n.t('_7h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_7h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_7h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_8h'))} style={{ backgroundColor: orderTime === i18n.t('_8h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_8h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_8h')}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setOrderTime(i18n.t('_9h'))} style={{ backgroundColor: orderTime === i18n.t('_9h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
-                            <Text style={[styles.sText, { color: orderTime === i18n.t('_9h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_9h')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <BTN title={i18n.t('done')} onPress={() => { setModalVisible(false); }} ContainerStyle={{ marginBottom: 20, borderRadius: 20, }} TextStyle={{ height: 30 }} />
+                    <View style={styles.modalView}>
+                        <View style={{ backgroundColor: '#FFA903', width: '100%', height: height * .08, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={[styles.sText, { color: Colors.bg }]}>{i18n.t('orderTime')}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', padding: 17 }}>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_1h'))} style={{ backgroundColor: orderTime === i18n.t('_1h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_1h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_1h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_2h'))} style={{ backgroundColor: orderTime === i18n.t('_2h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_2h') ? '#ffffff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_2h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_3h'))} style={{ backgroundColor: orderTime === i18n.t('_3h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_3h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_3h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_4h'))} style={{ backgroundColor: orderTime === i18n.t('_4h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_4h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_4h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_5h'))} style={{ backgroundColor: orderTime === i18n.t('_5h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_5h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_5h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_6h'))} style={{ backgroundColor: orderTime === i18n.t('_6h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_6h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_6h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_7h'))} style={{ backgroundColor: orderTime === i18n.t('_7h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_7h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_7h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_8h'))} style={{ backgroundColor: orderTime === i18n.t('_8h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_8h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_8h')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setOrderTime(i18n.t('_9h'))} style={{ backgroundColor: orderTime === i18n.t('_9h') ? Colors.sky : '#dcdada94', width: width * .25, height: 40, justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
+                                <Text style={[styles.sText, { color: orderTime === i18n.t('_9h') ? '#fff' : Colors.fontNormal, textAlign: 'center' }]}>{i18n.t('_9h')}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <BTN title={i18n.t('done')} onPress={() => { setModalVisible(false); }} ContainerStyle={{ marginBottom: 20, borderRadius: 20, }} TextStyle={{ height: 30 }} />
 
+                    </View>
                 </View>
             </Modal>
         </View>
@@ -450,15 +448,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#737373',
-        opacity: .9,
 
     },
+
     modalView: {
         backgroundColor: "white",
         borderRadius: 5,
         width: width * .9,
-        height: 300,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
