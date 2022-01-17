@@ -45,7 +45,7 @@ export const SignIn = (phone, password, device_id, lang, navigation) => {
 
 
 
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
 
         dispatch({ type: Sign_In })
 
@@ -132,7 +132,7 @@ export const resendCode = (lang, token) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }
 
@@ -163,7 +163,7 @@ export const UserRegister = (name, phone, password, email, user_type, lang, navi
                         }
                     });
                 }
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
         })
 
     }
@@ -198,7 +198,7 @@ export const DelegateRegister = (name, phone, password, email, user_type, identi
                     }
                 });
             }
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
 
     }
 
@@ -226,7 +226,7 @@ export const ActivationCode = (code, token, lang, navigation, route) => {
 
             ToasterNative(res.data.message, res.data.success ? "success" : "danger", 'bottom')
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 
 }
@@ -312,7 +312,7 @@ export const LogoutUser = (token) => {
                 dispatch({ type: logout })
 
             })
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
 
     }
 }

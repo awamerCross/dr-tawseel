@@ -1,11 +1,12 @@
 import React, { useEffect, Fragment } from 'react'
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity, ActivityIndicator, Platform, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Image, TouchableOpacity, ActivityIndicator, Platform,  } from 'react-native';
 import i18n from "../locale/i18n";
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import { getIntro, SwiperBegines } from '../../actions';
 import ChooseLang from './ChooseLang';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get('window');
 

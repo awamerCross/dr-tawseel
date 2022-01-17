@@ -29,7 +29,7 @@ export const acceptOffer = (lang, token, id, orderID, navigation, user) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 

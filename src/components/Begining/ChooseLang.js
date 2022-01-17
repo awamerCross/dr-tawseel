@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Image, TouchableOpacity, AsyncStorage } from 'react-native'
+import { View, Text, Image, TouchableOpacity,  } from 'react-native'
 import i18n from "../locale/i18n";
 import Colors from '../../consts/Colors';
 import { useDispatch } from 'react-redux';
 import { chooseLang } from '../../actions';
 import { useSelector } from "react-redux";
-import { set } from "react-native-reanimated";
 
 function ChooseLang({ navigation }) {
 

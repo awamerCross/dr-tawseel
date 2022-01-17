@@ -62,7 +62,7 @@ function GetLocation({ navigation, route }) {
 
     const fetchData = async () => {
         setSpinner(true)
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
         let userLocation = {};
         if (status !== 'granted') {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
@@ -73,7 +73,7 @@ function GetLocation({ navigation, route }) {
                     ? Location.Accuracy.Lowest
                     : Location.Accuracy.High,
             }).then(({ coords }) => {
-                console.log(coords);
+                console.log('coords', coords);
                 if (coords) {
                     if (route.params && route.params.latitude) {
                         userLocation = { latitude: route.params.latitude, longitude: route.params.longitude, latitudeDelta, longitudeDelta };
@@ -81,6 +81,10 @@ function GetLocation({ navigation, route }) {
                         userLocation = { latitude: coords.latitude, longitude: coords.longitude, latitudeDelta, longitudeDelta };
                     }
                 }
+                else {
+                    userLocation = { latitude: 24.7135517, longitude: 46.6752957, latitudeDelta, longitudeDelta };
+                }
+
             })
 
 
@@ -267,7 +271,7 @@ function GetLocation({ navigation, route }) {
                             <>
                                 <MapView
                                     // provider={PROVIDER_GOOGLE}
-                                    userInterfaceStyle={'dark'}
+                                    // userInterfaceStyle={'dark'}
                                     ref={mapRef}
                                     onRegionChangeComplete={(e) => _handleMapRegionChange(e)}
                                     style={{ width: '100%', height: '100%', flex: 1, }}

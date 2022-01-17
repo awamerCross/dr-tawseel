@@ -43,7 +43,7 @@ function Basket({ navigation }) {
 
     const fetchData = async () => {
 
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
 
         let userLocation = {};
         if (status !== 'granted') {

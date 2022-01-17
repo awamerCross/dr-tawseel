@@ -99,6 +99,7 @@ const ar = {
   totalPrice: "السعر الكلي",
   cardHolder: "حامل البطاقة",
   cash: "كاش",
+  cashPay: 'الدفع كاش',
   payNow: "ادفع الآن",
   chooseService: "اختر الخدمة المفضلة لك",
   payInfo: "معلومات الدفع",
@@ -289,9 +290,12 @@ const ar = {
   selectLocation: 'برجاء تحديد موقع التسليم',
   recievePay: 'الدفع عند الاستلام',
   byVisa: 'الدفع عن طريق الفيزا',
+  byVisaMaster: 'الدفع عن طريق الفيزا و الماستر كارد',
   byWallet: 'الدفع عن طريق المحفظة',
   byMada: 'الدفع عن طريق مدي',
   byApple: 'الدفع عن طريق Apple Pay',
+  byStc: 'الدفع عن طريق Stc',
+
   delevierAddress: 'عنوان التوصيل',
   delevierPrice: 'سعر التوصيل',
   specialOrder: 'طلب خاص',
@@ -470,6 +474,13 @@ const ar = {
   Captin: 'كابتن',
   DrPolicy: 'باستخدام تطبيق دكتور توصيل فانك توافق علي سياسة الخصوصيه وشروط الاحكام',
   StcAcc: 'حساب STC',
-  JoinTel: 'انضم الي قناتنا ع التليجرام'
+  JoinTel: 'انضم الي قناتنا ع التليجرام',
+  adddepartment: 'قريباً سيتم اضافة متاجر ب منطقتك',
+  ByMaster: 'الدفع عن طريق ماستر كارد',
+  successCharge: 'تم شحن المحفظه بنجاح',
+  rateClient: 'تقييم العميل',
+  ratedelgate: 'تقييم المندوب',
+  byapplePay: 'الدفع عن  طريق Apple Pay',
+
 };
 export default ar;

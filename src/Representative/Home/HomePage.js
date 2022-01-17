@@ -31,7 +31,6 @@ const { width, height } = Dimensions.get('window')
 const latitudeDelta = 0.0922;
 const longitudeDelta = 0.0421;
 
-const IS_IOS = Platform.OS === "ios";
 
 function HomePage({ navigation }) {
     const [refreshing, setRefreshing] = React.useState(false);
@@ -39,7 +38,7 @@ function HomePage({ navigation }) {
     const [spinner, setSpinner] = useState(true);
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const myOrders = useSelector(state => state.delegate.orders);
+    const myOrders = useSelector(state => state.delegate?.orders);
     const user = useSelector(state => state.Auth.user ? state.Auth.user.data : null);
 
     let loadingAnimated = []
@@ -105,34 +104,38 @@ function HomePage({ navigation }) {
     const FetchLocations = async () => {
         let location;
         let locationSuccess = false;
+        if (!mapRegion.latitude) {
+            while (!locationSuccess) {
+                try {
+                    let { status } = await Location.requestForegroundPermissionsAsync();
 
-        while (!locationSuccess) {
-            try {
-                let { status } = await Location.requestPermissionsAsync();
+                    if (status === 'granted') {
+                        location = await Location.getCurrentPositionAsync({
+                            accuracy: Location.Accuracy.Low,
+                            enableHighAccuracy: true
+                        })
+                        locationSuccess = true
+                        setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
+                        dispatch(getDelegateOrders(lang, token, 'READY', location.coords.latitude, location.coords.longitude)).then(() => setSpinner(false))
 
-                if (status === 'granted') {
-                    location = await Location.getCurrentPositionAsync({
-                        accuracy: Location.Accuracy.Low,
-                        enableHighAccuracy: true
-                    })
-                    locationSuccess = true
-                    setMapRegion({ latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta, longitudeDelta });
-                    dispatch(getDelegateOrders(lang, token, 'READY', location.coords.latitude, location.coords.longitude)).then(() => setSpinner(false))
+                    } else {
+                        alert('صلاحيات تحديد موقعك الحالي ملغاه');
+                    }
+                } catch (error) {
+                    console.log(error);
 
-                } else {
-                    alert('صلاحيات تحديد موقعك الحالي ملغاه');
                 }
-            } catch (error) {
-                console.log(error);
-
             }
+        }
+        else {
+            dispatch(getDelegateOrders(lang, token, 'READY', mapRegion.latitude, mapRegion.longitude)).then(() => setSpinner(false))
 
         }
 
     }
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
-            setSpinner(true)
+
             await FetchLocations()
 
         })
@@ -156,18 +159,14 @@ function HomePage({ navigation }) {
 
 
 
-
-
-
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
 
-            let type = notification.request.content.data.type;
-            let OrderId = notification.request.content.data.order_id;
+            let type = notification?.request?.content?.data.type;
+            let OrderId = notification?.request?.content?.data.order_id;
 
             if (type === 'special_order' && OrderId) {
                 FetchLocations()
-
             }
         });
 
@@ -176,12 +175,11 @@ function HomePage({ navigation }) {
 
     useEffect(() => {
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
-            console.log(res.notification);
-            let notification = res.notification;
+            let notification = res?.notification;
 
-            let type = notification.request.content.data.type;
-            let OrderId = notification.request.content.data.order_id;
-            let room = notification.request.content.data.room;
+            let type = notification?.request?.content.data.type;
+            let OrderId = notification?.request?.content.data.order_id;
+            let room = notification?.request?.content.data.room;
 
             if (type === 'block') {
                 dispatch(logout(token))
@@ -205,7 +203,6 @@ function HomePage({ navigation }) {
         return () => subscription.remove();
 
     }, []);
-    console.log(mapRegion);
 
     return (
         <View style={{ flex: 1, backgroundColor: Colors.bg }}>
@@ -253,7 +250,7 @@ function HomePage({ navigation }) {
                 spinner ?
                     _renderRows(loadingAnimated, 5, '2rows', width * .89, 100, { flexDirection: 'column', }, { borderRadius: 5, })
                     :
-                    myOrders &&
+
                     <FlatList
                         data={myOrders}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

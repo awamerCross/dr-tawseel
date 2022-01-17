@@ -1,6 +1,5 @@
 import axios from "axios";
 import CONST from "../consts";
-import { AsyncStorage } from "react-native";
 import { ToasterNative } from "../common/ToasterNatrive";
 
 export const getBanners = (lang) => {
@@ -12,6 +11,6 @@ export const getBanners = (lang) => {
 			params: { lang },
 		}).then(response => {
 			dispatch({ type: 'getBanners', payload: response.data });
-		}).catch(err => onsole.log(err))
+		}).catch(err => console.log(err))
 	}
 };

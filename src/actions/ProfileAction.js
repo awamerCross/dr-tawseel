@@ -15,7 +15,7 @@ export const GetProfileAction = (token, lang) => {
             params: { lang }
         }).then(response => {
             dispatch({ type: 'GetProfileAction', data: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 
@@ -42,7 +42,7 @@ export const UpdateProfileAction = (token, name, phone, email, avatar, lang, id,
             }
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'bottom')
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 
@@ -66,7 +66,7 @@ export const EditPasswordSettingsProfile = (token, old_password, current_passwor
             ToasterNative(res.data.message, res.data.success ? "success" : "danger", 'bottom')
 
         }
-        ).catch(err => onsole.log(err))
+        ).catch(err => console.log(err))
 
 
     }

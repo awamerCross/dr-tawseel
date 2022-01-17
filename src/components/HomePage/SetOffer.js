@@ -54,12 +54,11 @@ function SetOffer({ navigation, route }) {
     });
 
     const [initMap, setInitMap] = useState(true);
-    const [showAddress, setShowAddress] = useState(false);
 
     const fetchData = async () => {
         setCost('')
 
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
         let userLocation = {};
         if (status !== 'granted') {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
@@ -71,7 +70,7 @@ function SetOffer({ navigation, route }) {
             setInitMap(false);
             setMapRegion(userLocation);
 
-            mapRef.current.animateToRegion(userLocation, 150)
+            mapRef?.current?.animateToRegion(userLocation, 150)
         }
     };
 
@@ -81,7 +80,7 @@ function SetOffer({ navigation, route }) {
 
     function handleNotification(notification) {
         if (notification && notification.origin !== 'received') {
-            let { type, room } = notification.request.content.data;
+            let { type, room } = notification?.request?.content.data;
 
             if (type === 'chat' && room) {
                 setShowModal(false)
@@ -97,8 +96,6 @@ function SetOffer({ navigation, route }) {
     }, [city, route.params]);
 
 
-    console.log(orderDetails);
-    console.log(cost);
     function setNewOffer() {
         // { orderDetails.shipping_range.from } - { orderDetails.shipping_range.to }
         if (cost >= orderDetails.shipping_range.from && cost <= orderDetails.shipping_range.to) {
@@ -138,9 +135,10 @@ function SetOffer({ navigation, route }) {
                             style={{ width: '100%', height: '100%', flex: 1 }}
                             initialRegion={mapRegion}>
                             <Polyline
+                                lineDashPattern={[0]}
                                 coordinates={[
-                                    { latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
-                                    { latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to },
+                                    { latitude: orderDetails?.address.latitude_provider, longitude: orderDetails.address.longitude_provider },
+                                    { latitude: orderDetails?.address.latitude_to, longitude: orderDetails.address.longitude_to },
                                 ]}
                                 strokeColor={Colors.sky}
                                 strokeWidth={3}
@@ -150,7 +148,8 @@ function SetOffer({ navigation, route }) {
                                 <Image source={require('../../../assets/images/map_pin.png')} resizeMode={'contain'} style={{ width: 40, height: 40 }} />
                             </MapView.Marker>
 
-                            <MapView.Marker coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} title={i18n.t('deliveryPoint')}>
+                            <MapView.Marker
+                                coordinate={{ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider }} title={i18n.t('deliveryPoint')}>
                                 <Image source={require('../../../assets/images/home_location.png')} resizeMode={'contain'} style={{ width: 40, height: 40 }} />
                             </MapView.Marker>
 
@@ -164,7 +163,7 @@ function SetOffer({ navigation, route }) {
 
 
                         <View style={{ flexDirection: 'row', width: '100%', borderBottomColor: '#ddd', borderBottomWidth: 1, paddingVertical: 5, height: '30%' }}>
-                            <TouchableOpacity onPress={() => mapRef.current.animateToRegion({ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', borderLeftColor: '#ddd', borderLeftWidth: 1, padding: 5 }}>
+                            <TouchableOpacity onPress={() => mapRef?.current?.animateToRegion({ latitude: orderDetails.address.latitude_to, longitude: orderDetails.address.longitude_to, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', borderLeftColor: '#ddd', borderLeftWidth: 1, padding: 5 }}>
                                 <Image source={require('../../../assets/images/driver_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
                                 <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
                                     <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('receiptPoint')}</Text>
@@ -172,7 +171,7 @@ function SetOffer({ navigation, route }) {
                                     <Text style={[styles.sText, { color: Colors.fontBold, alignSelf: 'flex-start', writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }]}> يبعد عنك : {orderDetails.address.distance_to} </Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => mapRef.current.animateToRegion({ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', justifyContent: 'flex-start', padding: 5 }}>
+                            <TouchableOpacity onPress={() => mapRef?.current?.animateToRegion({ latitude: orderDetails.address.latitude_provider, longitude: orderDetails.address.longitude_provider, latitudeDelta: 0.0005, longitudeDelta: 0.0001 }, 150)} style={{ flexDirection: 'row', width: '50%', justifyContent: 'flex-start', padding: 5 }}>
                                 <Image source={require('../../../assets/images/home_location.png')} style={{ width: 30, height: 30, marginRight: 1 }} resizeMode={'contain'} />
                                 <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%' }}>
                                     <Text style={[styles.sText, { color: Colors.IconBlack, alignSelf: 'flex-start' }]}>{i18n.t('deliveryPoint')}</Text>

@@ -22,7 +22,6 @@ import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { Label } from "native-base";
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import { ToasterNative } from '../../common/ToasterNatrive';
 
 
@@ -66,15 +65,11 @@ function SendComplaiment({ navigation }) {
         return imgBlock
     }
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    };
+    
 
     const _pickImage = async (i) => {
         askPermissionsAsync();
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.launchCameraAsync();
 
         if (status === 'granted') {
             let result = await ImagePicker.launchImageLibraryAsync({

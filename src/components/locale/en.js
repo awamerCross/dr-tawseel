@@ -468,5 +468,14 @@ const en = {
   DrPolicy: 'By using the Dr Tawseel app, you agree to the privacy policy and terms of conditions',
   StcAcc: 'STC Account',
   JoinTel: 'Join our telegram channel',
+  adddepartment: 'Soon we will be adding stores in your area',
+  byStc: 'Pay with Stc',
+  ByMaster: 'Pay with Master Card',
+  successCharge: 'The wallet has been successfully shipped',
+  rateClient: 'Rate Client',
+  ratedelgate: 'Rate Delgate',
+  cashPay: 'cash payment',
+  byVisaMaster: 'Payment by Visa and MasterCard',
+  byapplePay: 'Payment by Apple pay',
 };
 export default en;

@@ -50,8 +50,6 @@ function NotificationsList({ navigation }) {
     }
 
     function renderConfirm() {
-
-
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
                 <BTN title={i18n.t('accept')} spinner={isSubmitted} onPress={() => acceptOfferAction(orderData.offerID, orderData.order_id)} ContainerStyle={{ borderRadius: 20, width: '35%', marginTop: 0, }} TextStyle={{ fontSize: 12, color: Colors.IconBlack }} />

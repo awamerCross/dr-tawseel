@@ -28,7 +28,7 @@ export const BasketStoreDetailes = (id, token, lang, coupon, latitude, longitude
 
 
 
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
         })
     }
 }
@@ -48,7 +48,7 @@ export const DeleteBasketStoreCart = (cart_id, id, token,) => {
             }).then(response => {
                 ToasterNative(response.data.message, 'danger', 'bottom')
 
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
         })
 
     }
@@ -64,7 +64,7 @@ export const CalculateCountProduct = (cart_id, id, token, type) => {
                 data: { cart_id, id, type, device_id: deviceId },
                 headers: token ? { Authorization: 'Bearer ' + token, } : null,
             }).then(response => {
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
         })
     }
 }
@@ -85,7 +85,7 @@ export const ValdiateCoupon = (token, coupon) => {
 
 
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
 
     }
 
@@ -102,7 +102,7 @@ export const GetDliveryCost = (id, latitude, longitude, token) => {
                 headers: token ? { Authorization: 'Bearer ' + token, } : null,
             }).then(response => {
                 dispatch({ type: 'GetDliveryCost', data: response.data });
-            }).catch(err => onsole.log(err))
+            }).catch(err => console.log(err))
         })
     }
 }
@@ -116,7 +116,7 @@ export const GetSavedLoacation = (token) => {
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             dispatch({ type: 'GetSavedLoacation', data: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
 
     }
 
@@ -138,7 +138,7 @@ export const CofirmOrder = (token, provider_id, latitude, longitude, address, pa
             }
             ToasterNative(response.data.message, response.data.success ? "success" : 'danger', 'bottom')
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
 
     }
 

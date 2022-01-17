@@ -28,20 +28,25 @@ function DepartmentsDetailes({ navigation, route }) {
     const dispatch = useDispatch();
     const [loading, setloading] = useState(true);
     const [StoreKey, setStoreKey] = useState('')
-    const [search, setSearch] = useState(null);
-    let loadingAnimated = [];
+    const [search, setSearch] = useState('');
+    const [Depounce, setDepounce] = useState(search);
 
-    const focused = useIsFocused()
 
     useEffect(() => {
-        if (focused) {
-            setSearch('')
-        }
-        setloading(true)
+
+        const TimeOut = setTimeout(() => {
+            setDepounce(search)
+        }, 100);
+
+        return () => clearTimeout(TimeOut);
+
+    }, [search])
+
+    useEffect(() => {
         if (!MapsRegion?.mapRegion?.latitude) {
             (async () => {
                 setStoreKey('')
-                let { status } = await Location.requestPermissionsAsync();
+                let { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     alert('صلاحيات تحديد موقعك الحالي ملغاه');
 
@@ -57,23 +62,15 @@ function DepartmentsDetailes({ navigation, route }) {
             dispatch(getGooglePlaces(lang, null, search, MapsRegion?.mapRegion?.latitude, MapsRegion?.mapRegion?.longitude, null)).then(() => setloading(false))
 
         }
-    }, [focused]);
+        // return () => { setSearch('') }
+    }, [Depounce])
+
+    let loadingAnimated = [];
+
 
 
 
     const onEndReached = () => dispatch(FetchMoreGooglePlaces(setloadingMore, lang, StoreKey, search, mapRegion.latitude, mapRegion.longitude))
-
-    const placeSearch = (e) => {
-        setloading(true)
-        setSearch(e)
-        if (e == '') {
-            dispatch(getGooglePlaces(lang, StoreKey, null, mapRegion.latitude, mapRegion.longitude, null)).then(() => setloading(false))
-        }
-        setTimeout(() => {
-            dispatch(getGooglePlaces(lang, StoreKey, e, mapRegion.latitude, mapRegion.longitude, null)).then(() => setloading(false))
-
-        }, 3000);
-    }
 
     const changePlaceType = (category) => {
         setStoreKey(category);
@@ -132,9 +129,11 @@ function DepartmentsDetailes({ navigation, route }) {
                 styleCont={{ height: 45 }}
                 image={require('../../../assets/images/search.png')}
                 LabelStyle={{ backgroundColor: 'transparent' }}
-                onChangeText={(e) => placeSearch(e)}
+                // onChangeText={(e) => placeSearch(e)}
                 value={search}
-                onSubmitEditing={() => placeSearch(search)}
+                // onSubmitEditing={() => placeSearch(search)}
+                onChangeText={(e) => setSearch(e)}
+
             />
 
             <SelectCats changePlaceType={(e) => changePlaceType(e)} />

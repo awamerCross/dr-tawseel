@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, AppState, } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, AppState, Platform } from 'react-native'
 import Colors from '../../consts/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import StarRating from "react-native-star-rating";
@@ -10,12 +10,10 @@ import i18n from "../locale/i18n";
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import axios from "axios";
-import { Platform } from 'react-native'
 
 import HeaderHome from '../../common/HeaderHome';
 import { _renderRows } from '../../common/LoaderImage';
 import { useIsFocused } from '@react-navigation/native';
-import { ToasterNative } from '../../common/ToasterNatrive';
 import CONST from "../../consts";
 import { GetBasketLength } from '../../actions/BasketLength';
 
@@ -38,7 +36,6 @@ function HomeScreen({ navigation }) {
     const BasketLength = useSelector(state => state.BasketLength.BasketLength?.count);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null)
     const dispatch = useDispatch();
-    const isFocused = useIsFocused();
 
     let loadingAnimated = [];
     const [spinner, setSpinner] = useState(true);
@@ -102,7 +99,7 @@ function HomeScreen({ navigation }) {
     };
 
     const fetchData = async () => {
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
             await Location.getCurrentPositionAsync({
                 accuracy: IS_IOS
@@ -132,9 +129,9 @@ function HomeScreen({ navigation }) {
         const subscription = Notifications.addNotificationResponseReceivedListener(res => {
             let notification = res.notification;
 
-            let type = notification.request.content.data.type;
-            let OrderId = notification.request.content.data.order_id
-            let room = notification.request.content.data.room
+            let type = notification?.request?.content?.data.type;
+            let OrderId = notification?.request?.content?.data.order_id
+            let room = notification?.request?.content?.data.room
 
             if (type === 'block') {
                 dispatch(logout(token))
@@ -153,8 +150,19 @@ function HomeScreen({ navigation }) {
             }
 
         });
+        const subscriptions = Notifications.addNotificationReceivedListener(res => {
+            let notification = res.notification;
 
-        return () => subscription.remove();
+            let type = notification?.request?.content.data.type;
+            let OrderId = notification?.request?.content.data.order_id
+            let room = notification?.request?.content.data.room
+
+            if (type === 'block') {
+                dispatch(logout(token))
+            }
+        });
+
+        return () => { subscription.remove(); subscriptions.remove() };
 
     }, []);
 

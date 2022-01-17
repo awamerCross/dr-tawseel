@@ -11,6 +11,6 @@ export const getQuestions = (lang) => {
             params: { lang },
         }).then(response => {
             dispatch({ type: 'getQuestions', payload: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };

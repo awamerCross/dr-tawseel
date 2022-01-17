@@ -2,12 +2,13 @@
   "expo": {
     "name": "دكتور توصيل DR.tawsel",
     "slug": "DRTawseel",
+    "scheme": "drtawseel",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "9.1.1",
+    "version": "13.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -46,7 +47,7 @@
       "package": "shabaka.drtawsel.com",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 110,
+      "versionCode": 133,
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",

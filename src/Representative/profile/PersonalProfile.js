@@ -8,7 +8,6 @@ import { Toaster } from '../../common/Toaster';
 import i18n from "../../components/locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 
 import RNPickerSelect from 'react-native-picker-select';
 import { Label } from 'native-base';
@@ -28,11 +27,7 @@ function PersonalProfile({ navigation }) {
 
     const dispatch = useDispatch();
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    };
+   
 
     return (
         user ?

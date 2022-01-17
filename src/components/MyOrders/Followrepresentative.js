@@ -34,16 +34,23 @@ function Followrepresentative({ navigation, route }) {
     let markerRef = useRef(null);
 
     const [region, setRegion] = useState({
-        latitude: address.latitude_provider,
-        longitude: address.longitude_provider,
+        latitude: address?.latitude_provider,
+        longitude: address?.longitude_provider,
+        latitudeDelta: 0.00922,
+        longitudeDelta: 0.00421
+    });
+
+    const [Store, setStore] = useState({
+        latitude: address?.latitude_provider,
+        longitude: address?.longitude_provider,
         latitudeDelta: 0.00922,
         longitudeDelta: 0.00421
     });
 
 
     const [currentLocation, setCurrentLocation] = useState({
-        latitude: 24.7135517,
-        longitude: 46.6752957,
+        latitude: address?.latitude_to,
+        longitude: address?.longitude_to,
         latitudeDelta,
         longitudeDelta
     });
@@ -59,7 +66,7 @@ function Followrepresentative({ navigation, route }) {
     }
 
     useEffect(() => {
-        joinRoom({ room: orderDetails.order_id });
+        joinRoom({ room: orderDetails?.order_id });
         socket.on('locationUpdated', (data) => {
             console.log('Now u see me', data);
             setRegion({
@@ -90,7 +97,7 @@ function Followrepresentative({ navigation, route }) {
     }
 
     const fetchData = async () => {
-        let { status } = await Location.requestPermissionsAsync();
+        let { status } = await Location.requestForegroundPermissionsAsync();
         let userLocation = {};
         if (status !== 'granted') {
             alert('صلاحيات تحديد موقعك الحالي ملغاه');
@@ -103,7 +110,7 @@ function Followrepresentative({ navigation, route }) {
                 userLocation = { latitude, longitude, latitudeDelta, longitudeDelta };
             }
 
-            setCurrentLocation(userLocation)
+            // setCurrentLocation(userLocation)
         }
 
     };
@@ -137,15 +144,15 @@ function Followrepresentative({ navigation, route }) {
                             followUserLocation
                             minZoomLevel={1}
                             loadingEnabled>
-                            <Polyline coordinates={routeCoordinates} strokeWidth={15} />
+                            <Polyline coordinates={routeCoordinates} strokeWidth={15} lineDashPattern={[1]} />
 
                             {/*end point -- me -- */}
 
                             <MapView.Marker
                                 ref={markerRef}
                                 coordinate={{
-                                    latitude: address.latitude_to,
-                                    longitude: address.longitude_to,
+                                    latitude: region.latitude,
+                                    longitude: region.longitude,
                                     latitudeDelta: 0.001,
                                     longitudeDelta: 0.005
                                 }}
@@ -158,8 +165,8 @@ function Followrepresentative({ navigation, route }) {
                             <MapView.Marker
                                 ref={markerRef}
                                 coordinate={{
-                                    latitude: region.latitude,
-                                    longitude: region.longitude,
+                                    latitude: Store.latitude,
+                                    longitude: Store.longitude,
                                     latitudeDelta: 0.001,
                                     longitudeDelta: 0.005
                                 }}

@@ -12,7 +12,7 @@ export const getRooms = (lang, token,) => {
             headers: { Authorization: 'Bearer ' + token, },
         }).then(response => {
             dispatch({ type: 'getRooms', payload: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 
@@ -26,7 +26,7 @@ export const getInbox = (lang, token, room) => {
             headers: { Authorization: 'Bearer ' + token },
         }).then(response => {
             dispatch({ type: 'getInbox', payload: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 
@@ -40,7 +40,7 @@ export const sendNewMessage = (lang, token, message, order_id) => {
             headers: { Authorization: 'Bearer ' + token },
         }).then(response => {
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 

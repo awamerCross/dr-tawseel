@@ -23,7 +23,7 @@ export const sendRate = (lang, token, rated_id, rate, comment) => {
                     textAlign: 'center'
                 }
             });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 };
 

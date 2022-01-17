@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, Modal, FlatList } from 'react-native'
-import { AppLoading } from 'expo';
+import AppLoading from "expo-app-loading";
 
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';

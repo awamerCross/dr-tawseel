@@ -1,11 +1,8 @@
 import React from 'react'
-import { View, Dimensions, StyleSheet } from 'react-native';
+import { View,  StyleSheet } from 'react-native';
 import Colors from '../consts/Colors';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
-
-const { width } = Dimensions.get('window');
-const { height } = Dimensions.get('window');
-
+import {LinearGradient} from 'expo-linear-gradient'
 
 export const _renderRows = (loadingAnimated, numberRow, uniqueKey, width, height, Containner, ShimerPlaceholder) => {
     let shimmerRows = [];
@@ -19,6 +16,7 @@ export const _renderRows = (loadingAnimated, numberRow, uniqueKey, width, height
                 height={height}
                 colorShimmer={[Colors.sky, Colors.sky, Colors.sky]}
                 duration={2600}
+                LinearGradient={LinearGradient}
             />
         )
     }

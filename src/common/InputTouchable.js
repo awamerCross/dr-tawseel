@@ -32,7 +32,6 @@ const InputTouchable = ({
                 {label}
             </Text>
             <TouchableOpacity style={[styles.Wrap, WrapStyle]} onPress={onPress}>
-
                 <Text style={{ fontFamily: 'flatMedium' }}    >
                     {value}
                 </Text>
@@ -40,10 +39,7 @@ const InputTouchable = ({
                     <Image source={image} style={[styles.image, imgStyle, { width: 20, height: 20 }]} resizeMode='contain' />
                 </View>
             </TouchableOpacity>
-
-
         </View>
-
 
     );
 };

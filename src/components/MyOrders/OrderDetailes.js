@@ -18,6 +18,10 @@ import * as Linking from 'expo-linking';
 const { width, height } = Dimensions.get('window')
 const isIOS = Platform.OS === 'ios';
 
+
+
+//368
+
 function OrderDetailes({ navigation, route }) {
 
     const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
@@ -40,7 +44,7 @@ function OrderDetailes({ navigation, route }) {
         setSpinner(true)
         dispatch(getOrderDetails(lang, token, orderId, latitude, longitude)).then(() => setSpinner(false))
     }
- 
+
     function getLocation() {
         Location.watchPositionAsync({
             enableHighAccuracy: true,
@@ -380,34 +384,39 @@ function OrderDetailes({ navigation, route }) {
                             </View>
 
 
-                            <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
-                                <View style={styles.accordion}>
-                                    <Text style={[styles.DText, {
-                                        color: Colors.sky,
-                                        fontSize: 16
-                                    }]}>{i18n.t('payMethod')}</Text>
-                                </View>
 
-                                <View style={[{
-                                    width: '100%',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    paddingHorizontal: 15,
-                                    backgroundColor: '#fff',
-                                    borderWidth: 1,
-                                    borderColor: '#ddd',
-                                    height: 50,
-                                }]}>
-                                    <Icon type={'FontAwesome'} name={'money'}
-                                        style={{ color: Colors.sky, fontSize: 15 }} />
-                                    <Text style={[styles.nText, { fontSize: 13 }]}>{orderDetails.payment_text}</Text>
-                                </View>
-                            </View>
 
+                            {
+                                user && user.user_type === 3 && orderDetails.type === 'special' && orderDetails.status === 'READY' ?
+                                    null :
+                                    <View style={{ flexDirection: 'column', borderWidth: 1, borderColor: '#ddd', marginTop: 5 }}>
+                                        <View style={styles.accordion}>
+                                            <Text style={[styles.DText, {
+                                                color: Colors.sky,
+                                                fontSize: 16
+                                            }]}>{i18n.t('payMethod')}</Text>
+                                        </View>
+
+                                        <View style={[{
+                                            width: '100%',
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            paddingHorizontal: 15,
+                                            backgroundColor: '#fff',
+                                            borderWidth: 1,
+                                            borderColor: '#ddd',
+                                            height: 50,
+                                        }]}>
+                                            <Icon type={'FontAwesome'} name={'money'}
+                                                style={{ color: Colors.sky, fontSize: 15 }} />
+                                            <Text style={[styles.nText, { fontSize: 13 }]}>{orderDetails?.payment_text}</Text>
+                                        </View>
+                                    </View>
+                            }
                             <TouchableOpacity onPress={() => {
                                 setToggle(!toggle), setIsOpen(false)
                             }}>
-                                <View style={styles.accordion}>
+                                <View style={[styles.accordion, { paddingTop: 10 }]}>
                                     <Text style={[styles.DText, {
                                         color: Colors.sky,
                                         fontSize: 16
@@ -447,6 +456,7 @@ function OrderDetailes({ navigation, route }) {
                                                                 <Text style={[styles.nText, {
                                                                     color: Colors.sky,
                                                                     fontSize: 11,
+                                                                    marginTop: 20
                                                                 }]}>{product.name.length > 15 ? (product.name).substr(0, 15) + '...' : product.name}</Text>
                                                                 <TouchableOpacity onPress={() => {
                                                                     setClick(true);
@@ -497,7 +507,7 @@ function OrderDetailes({ navigation, route }) {
                                                             }
                                                         </View>
                                                         <Text
-                                                            style={[styles.sText, { alignSelf: 'flex-start' }]}> {orderDetails.details} </Text>
+                                                            style={[styles.sText, { alignSelf: 'flex-start', marginTop: 20 }]}> {orderDetails.details} </Text>
                                                     </View>
                                             }
                                         </>

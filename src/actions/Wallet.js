@@ -16,7 +16,7 @@ export const GetWallet = (token, lang) => {
 
             dispatch({ type: 'Get_Wallet', data: response.data.data });
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }
 
@@ -31,7 +31,7 @@ export const GetAccountBanks = (token, lang) => {
             params: { lang }
         }).then((response) => {
             dispatch({ type: 'Get_MyBankes', data: response.data });
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }
 
@@ -49,7 +49,7 @@ export const Withdrawwallet = (token, account_number, lang, navigation) => {
             }
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'top')
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }
 
@@ -68,11 +68,11 @@ export const SendTransferFromACc = (token, lang, AccountId, base64, Bankname, ac
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'bottom')
 
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }
 
-export const PayWithWallet = (token, order_id, lang, onSendsMsg) => {
+export const PayWithWallet = (token, order_id, lang, setshowRateuserModal) => {
     return async (dispatch) => {
         await axios({
             method: 'POST',
@@ -83,10 +83,10 @@ export const PayWithWallet = (token, order_id, lang, onSendsMsg) => {
         }).then((response) => {
 
             if (response.data.success) {
-                onSendsMsg()
+                setshowRateuserModal(true)
             }
             ToasterNative(response.data.message, response.data.success ? "success" : "danger", 'top')
 
-        }).catch(err => onsole.log(err))
+        }).catch(err => console.log(err))
     }
 }

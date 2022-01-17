@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, Linking, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard, AppState } from 'react-native'
+import { ScrollView, View, Image, TouchableOpacity, Text, StyleSheet, Dimensions, FlatList, TextInput, I18nManager, ActivityIndicator, KeyboardAvoidingView, Platform, Keyboard, AppState } from 'react-native'
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 
@@ -36,6 +36,8 @@ import CONST from "../../consts";
 import * as Notifications from "expo-notifications";
 import { PayWithWallet } from '../../actions/Wallet';
 import { WebView } from "react-native-webview";
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from "expo-linking";
 
 
 window.navigator.userAgent = 'react-native';
@@ -46,7 +48,6 @@ const { width, height } = Dimensions.get('window')
 function OrderChatting({ navigation, route }) {
 
     const { receiver, sender, orderDetails } = route.params;
-
     const socket = SocketIOClient('https://drtawsel.4hoste.com:4544/', { jsonp: false });
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
@@ -66,14 +67,12 @@ function OrderChatting({ navigation, route }) {
     const [zoomBillModal, setZoomBillModal] = useState(false);
     const [cost, setCost] = useState(0);
     const ScrollViewRef = useRef();
-    let total = Number(orderDetails.shipping) + Number(cost);
+    let total = Number(orderDetails?.shipping) + Number(cost);
     const [top, setTop] = useState(0);
-    console.log(top);
     const [EditMaodVisible, setEditMaodVisible] = useState(false)
     const [photo, setPhoto] = useState('');
     const [base64, setBase64] = useState('');
     const [starCount, setStarCount] = useState(0);
-    const [IsDeliverMoadl, setIsDeliverMoadl] = useState(false)
     const [showModal, setShowModal] = useState(false);
     const [showRateModal, setShowRateModal] = useState(false);
     const [selectedRadion, setSelectedRadio] = useState(0)
@@ -84,6 +83,7 @@ function OrderChatting({ navigation, route }) {
     const [GetPayment, setGetPayment] = useState('');
     const [WebViews, setWebViews] = useState(false);
     const [spinnerPayment, setSpinnerPayment] = useState(false);
+    const [showRateuserModal, setshowRateuserModal] = useState(false);
 
 
 
@@ -117,7 +117,7 @@ function OrderChatting({ navigation, route }) {
         setMsg('')
         setTimeout(() => {
             dispatch(getInbox(lang, token, orderDetails.room)).then(() => {
-                ScrollViewRef.current.scrollToEnd()
+                ScrollViewRef?.current?.scrollToEnd()
             })
         })
 
@@ -148,7 +148,6 @@ function OrderChatting({ navigation, route }) {
         if (!result.cancelled) {
             setPhoto(result.uri);
             setBase64(result.base64);
-            setTop(0)
 
         }
         setTimeout(() => {
@@ -158,30 +157,29 @@ function OrderChatting({ navigation, route }) {
     };
 
     const _pickImageFrpmCamera = async () => {
-        const { status } = await Camera.requestPermissionsAsync();
 
-        if (status === 'granted') {
-            let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        try {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            console.log('status camera', status);
 
-                base64: true,
-                aspect: [4, 3],
-                quality: .5,
-            });
+            if (status == 'granted') {
+                let result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
 
-            if (!result.cancelled) {
-                setPhoto(result.uri);
-                setBase64(result.base64);
-                setTop(0)
+                    base64: true,
+                    quality: .5,
+                });
+                if (!result.cancelled) {
+                    setPhoto(result.uri);
+                    setBase64(result.base64);
+                }
+                setTimeout(() => {
+                    setShowBillModal(true)
+
+                }, 500);
             }
-            setTimeout(() => {
-                setShowBillModal(true)
-
-            }, 1000);
-        }
-        else {
-            ToasterNative(i18n.t('CammeraErr'), "danger", 'top')
-
+        } catch (error) {
+            console.log('error', error);
         }
     }
 
@@ -190,9 +188,9 @@ function OrderChatting({ navigation, route }) {
 
         dispatch(sendBill(lang, token, orderDetails.order_id, total, base64)).then(() => {
             setBase64('')
-            setCost(0)
             setBillSpinner(false)
             setShowBillModal(false)
+            setshowRateuserModal(false)
             emitMsg()
             fetchData()
         }).catch(() => {
@@ -210,10 +208,11 @@ function OrderChatting({ navigation, route }) {
 
         const unsubscribe = navigation.addListener('focus', () => {
             fetchData()
+
             // if (order.status === 'DELIVER' || order.status === 'DELIVERED'){
             //     setShowRateModal(true)
             // }
-            if (user && user.user_type === 3) {
+            if (user && user?.user_type === 3) {
                 getLocation();
             }
         })
@@ -229,12 +228,12 @@ function OrderChatting({ navigation, route }) {
 
         setEditMaodVisible(false)
         setShowBillModal(false)
+        setPaymentFinished(false)
         fetchData()
         joinRoom()
         socket.on('get_message', () => fetchData());
         setPhoto('');
         setBase64('');
-        setCost(0)
 
 
         const subscription = Notifications.addNotificationReceivedListener(res => {
@@ -247,8 +246,11 @@ function OrderChatting({ navigation, route }) {
 
                 if (res.request.content.data.room.order.status == 'DELIVERED') {
                     setShowRateModal(true)
+                    setCost(0)
 
                 }
+
+
             }
 
         });
@@ -279,7 +281,6 @@ function OrderChatting({ navigation, route }) {
             });
         };
     }, [navigation, route, route?.params])
-
 
 
 
@@ -358,7 +359,7 @@ function OrderChatting({ navigation, route }) {
             )
         }
 
-        if (rateMsg && starCount) {
+        if (rateMsg != '' && starCount != 0) {
             return (
 
                 <TouchableOpacity onPress={() => sendRateMsg()} style={[styles.container, { backgroundColor: Colors.sky, margin: 20 }]} >
@@ -381,6 +382,40 @@ function OrderChatting({ navigation, route }) {
         }
 
     }
+    function renderConfirmRate() {
+
+        if (isSubmitted) {
+            return (
+                <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: 30, marginBottom: 30 }]}>
+                    <ActivityIndicator size="large" color={Colors.sky} style={{ alignSelf: 'center' }} />
+                </View>
+            )
+        }
+
+        if (rateMsg != '' && starCount != 0) {
+            return (
+
+                <TouchableOpacity onPress={() => sendRateDelgateMsg()} style={[styles.container, { backgroundColor: Colors.sky, margin: 20 }]} >
+                    <Text style={[styles.sText, { padding: 20, color: '#fff', fontSize: 16 }]}>
+                        {i18n.t('send')}
+                    </Text>
+                </TouchableOpacity>
+
+            );
+        } else {
+
+            return (
+                <TouchableOpacity disabled={true} style={[styles.container, { backgroundColor: Colors.sky, margin: 20 }]} >
+                    <Text style={[styles.sText, { padding: 20, color: '#fff', fontSize: 16 }]}>
+                        {i18n.t('send')}
+                    </Text>
+                </TouchableOpacity>
+            );
+
+        }
+
+    }
+
 
     function getLocation() {
         Location.watchPositionAsync({
@@ -403,39 +438,53 @@ function OrderChatting({ navigation, route }) {
 
     function sendRateMsg() {
         setIsSubmitted(true)
-        dispatch(sendRate(lang, token, order.delegate_id, starCount, rateMsg)).then(() => { setIsSubmitted(false); navigation.navigate('SuccessEvaluation'); setShowRateModal(false) })
+        dispatch(sendRate(lang, token, order?.user?.id, starCount, rateMsg)).then(() => { setIsSubmitted(false); navigation.navigate('SuccessEvaluation'); setShowRateModal(false) })
+        setRateMsg('');
+        setStarCount(0);
+    }
+
+    function sendRateDelgateMsg() {
+        setIsSubmitted(true)
+        dispatch(sendRate(lang, token, order?.delegate_id, starCount, rateMsg)).then(() => {
+            setIsSubmitted(false); navigation.navigate('SuccessEvaluation'); setshowRateuserModal(false)
+        })
         setRateMsg('');
         setStarCount(0);
     }
     let loadingAnimated = []
 
 
-
     function onSendsMsg() {
         setMsg('')
-        dispatch(sendNewMessage(lang, token, 'لقد قمت بتحويل المبلغ', orderDetails.order_id)).then(() => {
+        dispatch(sendNewMessage(lang, token, `تم دفع مبلغ ${order?.price} ريال( ${order?.payment_type}) بنجاح ، سيتم معالجة المدفوعات وتحويل مستحقاتك .`, orderDetails?.order_id)).then(() => {
             //   fetchData()
             emitMsg();
             Keyboard.dismiss()
+            setshowRateuserModal(true)
             // ScrollViewRef.current.scrollToEnd({ animated: true })
             // ScrollViewRef.current.scrollToEnd({ animated: true })
         })
     }
 
-    const PayForWallet = () => dispatch(PayWithWallet(token, order?.order_id, lang, onSendsMsg));
+    const PayForWallet = () => dispatch(PayWithWallet(token, order?.order_id, lang, setshowRateuserModal));
 
     function _onLoad(state, navigation) {
+        console.log('state', state);
         if (!PaymentFinished) {
+
             if (state.url.indexOf('?status=') != -1) {
+
                 let status = state.url.split("status=")[1].split('&')[0];
                 if (status == '1') {
-
+                    onSendsMsg()
                     Toast.show({
                         text: i18n.t('successPayment'),
                         type: "success",
-                        duration: 3000
+                        duration: 3000,
+                        fontFamily: 'flatMedium',
+
                     });
-                    onSendsMsg()
+
 
                 } else {
 
@@ -449,12 +498,51 @@ function OrderChatting({ navigation, route }) {
                 }
                 setPaymentFinished(true)
                 return setWebViews(false)
+
             }
-            // else {
-            //     return setWebViews(false)
-            // }
-            console.log(state);
         }
+        // else {
+        //     return setWebViews(false)
+        // }
+
+
+
+    }
+
+    const [Result, setResult] = useState(null);
+
+    const _handleApplePayAsync = async () => {
+
+        let paymentURL = `https://drtawsel.aait-sa.com/payment/${order?.order_id}/${order?.payment_type}?linkingUri=${Linking.makeUrl("/?"
+        )}`;
+        console.log("paymentURL ApplePay", paymentURL);
+        let result = await WebBrowser.openBrowserAsync(paymentURL, {
+            enableDefaultShareMenuItem: false,
+            showTitle: false,
+        });
+        Linking.addEventListener("url", (event) => {
+            console.log("url Actions", event);
+            WebBrowser.dismissBrowser();
+
+            if (event?.url?.indexOf('?status=') != -1) {
+
+                let status = event?.url?.split("status=")[1]
+                console.log('====================================');
+                console.log(status);
+                console.log('====================================');
+                if (status == 1) {
+                    onSendsMsg()
+                }
+                else {
+                    Toast.show({
+                        text: i18n.t('error'),
+                        type: "danger",
+                        duration: 3000
+                    });
+                }
+            }
+
+        });
 
     }
 
@@ -596,7 +684,7 @@ function OrderChatting({ navigation, route }) {
                                 <StarRating
                                     disabled={false}
                                     maxStars={5}
-                                    rating={order && order.rate}
+                                    rating={user?.user_type === 3 ? order?.user?.rate : order?.rate}
                                     fullStarColor={'#fec104'}
                                     starSize={13}
                                     starStyle={{ marginHorizontal: 0 }}
@@ -615,20 +703,20 @@ function OrderChatting({ navigation, route }) {
                             }
 
                             {
-                                order && order.status !== 'DELIVERED' ?
+                                order && order?.status !== 'DELIVERED' ?
                                     <>
                                         <TouchableOpacity onPress={() => Linking.openURL('tel:' + receiver.phone)} >
                                             <Image source={require('../../../assets/images/callchat.png')} style={styles.ResImgNm} />
                                         </TouchableOpacity>
 
                                         {
-                                            user && user.user_type === 2 ?
+                                            user && user?.user_type === 2 ?
 
                                                 <TouchableOpacity onPress={() => navigation.navigate('Followrepresentative', { address: orderDetails.address, orderDetails })}>
                                                     <Image source={require('../../../assets/images/mapchat.png')} style={[styles.ResImgNm]} />
                                                 </TouchableOpacity>
                                                 :
-                                                user && user.user_type === 3 ?
+                                                user && user?.user_type === 3 ?
                                                     < TouchableOpacity
                                                         onPress={() => navigateToMap(orderDetails.address.latitude_to, orderDetails.address.longitude_to)}>
                                                         <Image source={require('../../../assets/images/mapchat.png')} style={[styles.ResImgNm]} />
@@ -647,8 +735,8 @@ function OrderChatting({ navigation, route }) {
                     </View>
                     <TouchableOpacity style={{ marginLeft: 70, marginTop: 5 }} onPress={() => setShowRateModal(!showRateModal)}>
                         {
-                            order && order.status && order.status == 'DELIVERED' ?
-                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 13, alignSelf: 'flex-start' }]}>{i18n.t('rateOrder')} </Text>
+                            order && order.status && order.status == 'DELIVERED' && user?.user_type == 3 ?
+                                <Text style={[{ fontFamily: 'flatMedium', color: Colors.sky, fontSize: 13, alignSelf: 'flex-start' }]}>{i18n.t('rateClient')} </Text>
                                 :
                                 null
                         }
@@ -656,7 +744,7 @@ function OrderChatting({ navigation, route }) {
                 </View>
 
                 {
-                    order && user && user.user_type == 3 && button && order.status !== 'DELIVERED' ?
+                    order && user && user?.user_type == 3 && button && order.status !== 'DELIVERED' ?
                         <View style={{ backgroundColor: Colors.sky, width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, justifyContent: 'space-between' }}>
                             <Text style={[styles.sText, { color: '#fff', fontFamily: 'flatMedium' }]}>{button.button_text}</Text>
                             {
@@ -674,12 +762,17 @@ function OrderChatting({ navigation, route }) {
                         user && user?.user_type == 2 && order?.payment_type != 'cash' && order?.payment_status == 0 && order?.bill_created == 1 ?
                             <View style={{ backgroundColor: Colors.sky, width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, justifyContent: 'space-between' }}>
                                 <Text style={[styles.sText, { color: '#fff' }]}>{'تآكيد الدفع'}</Text>
-                                <TouchableOpacity onPress={order.payment_type == 'wallet' ? PayForWallet : () => setShowPay(true)} style={{ backgroundColor: '#fff', height: 35, alignItems: 'center', padding: 3, borderRadius: 5, width: 70, justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={
+                                    order?.payment_type == 'wallet' ? PayForWallet
+                                        :
+                                        order?.payment_type == 'ApplePay' ? _handleApplePayAsync
+                                            :
+                                            () => { setSpinnerPayment(true); setTimeout(() => setWebViews(true), 1000) }} style={{ backgroundColor: '#fff', height: 35, alignItems: 'center', padding: 3, borderRadius: 5, width: 70, justifyContent: 'center' }}>
                                     {
                                         order.payment_type == 'wallet' ?
                                             <Image source={require('../../../assets/images/Wallt.png')} style={[styles.ResImgNm, { marginTop: 0 }]} resizeMode={'contain'} />
                                             :
-                                            <Image source={require('../../../assets/images/visa.png')} style={[styles.ResImgNm, { marginTop: 0, borderRadius: 5 }]} resizeMode={'contain'} />
+                                            <Image source={require('../../../assets/images/Pay.png')} style={[styles.ResImgNm, { marginTop: 0, borderRadius: 5 }]} resizeMode={'contain'} />
 
                                     }
                                 </TouchableOpacity>
@@ -703,43 +796,6 @@ function OrderChatting({ navigation, route }) {
                             messages ? messages.map((message, i) => renderMessage(message, i)) : null}
 
                     {/* Delivered  order*/}
-                    <View style={styles.centeredView}>
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={IsDeliverMoadl}
-                        >
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10 }} onPress={() => setIsDeliverMoadl(false)}>
-                                        <Image source={require('../../../assets/images/close.png')} style={[styles.ResImgNm, {
-                                            alignSelf: 'center', marginLeft: 0, marginTop: 0,
-                                            width: 20, height: 20
-                                        }]} />
-                                    </TouchableOpacity>
-                                    <Image source={require('../../../assets/images/yass.jpg')} style={styles.ResIm} />
-                                    <Text style={[styles.sText, { color: Colors.IconBlack, marginTop: 10 }]}>ياسر البطل</Text>
-                                    <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 15, alignSelf: 'center' }}>
-                                        <StarRating
-                                            maxStars={5}
-                                            rating={starCount}
-                                            selectedStar={(rating) => setStarCount(rating)}
-                                            fullStarColor={'#fec104'}
-                                            starSize={24}
-                                            starStyle={{ marginHorizontal: 5 }}
-                                        />
-                                    </View>
-                                    <InputIcon
-                                        placeholder={i18n.t('writeComment')}
-                                        inputStyle={{ backgroundColor: '#eaeaea', borderColor: '#eaeaea', textAlignVertical: 'top', paddingTop: 10, borderRadius: 5 }}
-                                        styleCont={{ height: width * .3, marginHorizontal: 10, width: '90%', alignSelf: 'center' }}
-                                        LabelStyle={{ bottom: width * .42, backgroundColor: 0, left: 10, color: Colors.IconBlack }}
-                                    />
-                                    <BTN title={i18n.t('sendRate')} onPress={() => { setIsDeliverMoadl(false); navigation.navigate('SuccessEvaluation') }} ContainerStyle={{ marginTop: 10, borderRadius: 20 }} TextStyle={{ fontSize: 13 }} />
-                                </View>
-                            </View>
-                        </Modal>
-                    </View>
 
                     {/* cancelOrder */}
 
@@ -808,7 +864,7 @@ function OrderChatting({ navigation, route }) {
                     >
                         <View style={[{ backgroundColor: '#fff', width: '90%', overflow: 'hidden', alignSelf: 'center' }]}>
                             <View style={{ backgroundColor: Colors.sky, paddingHorizontal: 20, paddingVertical: 15, marginBottom: 15, justifyContent: 'center' }}>
-                                <Text style={[{ fontFamily: 'flatMedium', color: '#fff', fontSize: 14, textAlign: 'center' }]}>{i18n.t('rateOrder')}</Text>
+                                <Text style={[{ fontFamily: 'flatMedium', color: '#fff', fontSize: 14, textAlign: 'center' }]}>{i18n.t('rateClient')}</Text>
                             </View>
 
                             <Image source={{ uri: receiver.avatar }} style={[styles.ResIm, { borderRadius: 5 }]} />
@@ -839,6 +895,48 @@ function OrderChatting({ navigation, route }) {
 
                         </View>
                     </Modal>
+
+
+                    <Modal
+                        onBackdropPress={() => setshowRateuserModal(!showRateModal)}
+                        onBackButtonPress={() => setshowRateuserModal(!showRateModal)}
+                        isVisible={showRateuserModal}
+                        style={[styles.bgModel, { justifyContent: 'center' }]}
+                        avoidKeyboard={true}
+                    >
+                        <View style={[{ backgroundColor: '#fff', width: '90%', overflow: 'hidden', alignSelf: 'center' }]}>
+                            <View style={{ backgroundColor: Colors.sky, paddingHorizontal: 20, paddingVertical: 15, marginBottom: 15, justifyContent: 'center' }}>
+                                <Text style={[{ fontFamily: 'flatMedium', color: '#fff', fontSize: 14, textAlign: 'center' }]}>{i18n.t('ratedelgate')}</Text>
+                            </View>
+
+                            <Image source={{ uri: receiver.avatar }} style={[styles.ResIm, { borderRadius: 5 }]} />
+                            <Text style={[styles.sText, { color: Colors.IconBlack, marginTop: 10 }]}>{receiver.name}</Text>
+                            <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 15, alignSelf: 'center' }}>
+                                <StarRating
+                                    maxStars={5}
+                                    rating={starCount}
+                                    selectedStar={(rating) => setStarCount(rating)}
+                                    fullStarColor={'#fec104'}
+                                    starSize={20}
+                                    starStyle={{ marginHorizontal: 5 }}
+                                />
+                            </View>
+
+                            <Textarea
+                                style={{
+                                    backgroundColor: '#eaeaea', borderColor: '#eaeaea', textAlignVertical: 'top', paddingTop: 10, height: 150, marginTop: 10,
+                                    width: '85%', alignSelf: 'center', fontFamily: 'flatMedium', fontSize: 13, textAlign: I18nManager.isRTL ? 'right' : 'left', borderRadius: 5
+                                }}
+                                onChangeText={(e) => setRateMsg(e)}
+                                value={rateMsg}
+                                placeholder={i18n.t('writeComment')}
+                                placeholderTextColor={Colors.fontNormal}
+                            />
+
+                            {renderConfirmRate()}
+
+                        </View>
+                    </Modal>
                 </ScrollView>
 
                 {/* Points Bottom */}
@@ -848,7 +946,7 @@ function OrderChatting({ navigation, route }) {
                     order && order.status && order.status !== 'DELIVERED' ?
                         <View style={{ bottom: 0, flexDirection: 'row', width, height: 70, backgroundColor: Colors.bg, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 15 }}>
                             {
-                                user && user.user_type === 2 ?
+                                user && user?.user_type === 2 ?
                                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                                         <Image source={require('../../../assets/images/more_gray.png')} style={{ width: 10 }} resizeMode='contain' />
                                     </TouchableOpacity>
@@ -860,7 +958,7 @@ function OrderChatting({ navigation, route }) {
                                 style={[styles.textInput, { borderColor: Colors.fontNormal }, { borderRadius: 10, backgroundColor: '#eaeaea', borderColor: '#eaeaea', padding: 10, marginHorizontal: 5 }]}
                                 value={msg}
                                 onChangeText={setMsg}
-                                onFocus={() => ScrollViewRef.current.scrollToEnd({ animated: true })}
+                                onFocus={() => ScrollViewRef?.current?.scrollToEnd({ animated: true })}
                                 placeholder={i18n.t('writeUrMsg')}
                             />
 
@@ -900,7 +998,6 @@ function OrderChatting({ navigation, route }) {
                         <View style={{ width: '100%' }}>
                             <View>
                                 <TouchableOpacity onPress={() => {
-                                    setTop(0);
                                     setShowBillModal(!showBillModal);
                                     setTimeout(() => setEditMaodVisible(true), 2000)
                                 }}>
@@ -926,7 +1023,7 @@ function OrderChatting({ navigation, route }) {
                                             left: 5,
                                             marginVertical: 5
                                         }}
-                                        onChangeText={setCost}
+                                        onChangeText={(e) => setCost(e)}
                                         editable={true}
                                         keyboardType='numeric'
                                         value={cost}
@@ -1003,18 +1100,17 @@ function OrderChatting({ navigation, route }) {
 
                 <TouchableOpacity style={styles.centeredView2} onPress={() => setEditMaodVisible(false)}>
 
-                    <View style={[styles.modalView2, { top: top }]}>
+                    <View style={[styles.modalView2,]}>
                         <View style={{ margin: 20, backgroundColor: Colors.bg }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                                <TouchableOpacity onPress={() => { setTop(10000); _pickImageFrpmCamera().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                <TouchableOpacity onPress={() => { _pickImageFrpmCamera().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
                                     <Image source={require('../../../assets/images/camer.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
                                     <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}>{i18n.t('pickImg')} </Text>
 
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { setTop(10000); _pickImage().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
+                                <TouchableOpacity onPress={() => { _pickImage().then(() => setEditMaodVisible(false)) }} style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', padding: 10 }}>
                                     <Image source={require('../../../assets/images/gallery.png')} resizeMode={'contain'} style={{ width: 35, height: 35 }} />
                                     <Text style={[styles.sText, { fontFamily: 'flatMedium', color: Colors.IconBlack }]}> {i18n.t('pickCamera')}</Text>
-
                                 </TouchableOpacity>
                             </View>
 
@@ -1048,6 +1144,8 @@ function OrderChatting({ navigation, route }) {
 
             <Modal
                 animationType="slide"
+                onBackdropPress={() => setShowPay(false)}
+                onBackButtonPress={() => setShowPay(false)}
                 transparent={true}
                 style={{ bottom: -18, }}
                 isVisible={ShowPay} >
@@ -1110,8 +1208,9 @@ function OrderChatting({ navigation, route }) {
 
             >
                 <View style={{ flex: 1 }}>
+
                     <WebView
-                        source={{ uri: `https://drtawsel.aait-sa.com/payment/${order?.order_id}/${GetPayment}?fbclid=IwAR10qp1PR5Zc-FauPUzm0IGv8gHFvZAdUtZ6mgpdG57zPtJ5M2_zmEuIRz4` }}
+                        source={{ uri: `https://drtawsel.aait-sa.com/payment/${order?.order_id}/${order?.payment_type}` }}
                         domStorageEnabled={true}
                         startInLoadingState={true}
                         scalesPageToFit={false}

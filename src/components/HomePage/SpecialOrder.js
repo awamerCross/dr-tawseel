@@ -10,21 +10,20 @@ import {
     Text,
     Modal,
     FlatList,
-    ActivityIndicator,
     I18nManager
 } from 'react-native'
-import { Button, Textarea, Toast, } from 'native-base'
+import { Button, Icon, Textarea, Toast, } from 'native-base'
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import Colors from '../../consts/Colors';
 import BTN from '../../common/BTN';
 import { InputIcon } from '../../common/InputText';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import { useSelector, useDispatch } from 'react-redux';
-import { setPlace, specialOrder } from '../../actions'
+import { getPlaces, setPlace, specialOrder } from '../../actions'
 import { ValdiateCoupon } from '../../actions/BsketDetailesAction';
 import { InputTouchable } from '../../common/InputTouchable';
+import PayModal from "react-native-modal";
 
 const { width } = Dimensions.get('window')
 const { height } = Dimensions.get('window')
@@ -45,6 +44,7 @@ function SpecialOrder({ navigation, route }) {
         latitudeDelta,
         longitudeDelta
     });
+    const places = useSelector(state => state.places?.places);
 
     const [deliverCityName, setDeliverCityName] = useState('');
     const [activeDeliverAddress, setActiveDeliverAddress] = useState(false);
@@ -56,14 +56,46 @@ function SpecialOrder({ navigation, route }) {
         longitudeDelta
     });
 
-    const [selectedRadion, setSelectedRadio] = useState(0);
-    const [paymentType, setPaymentType] = useState('cash');
-    const [data, setData] = useState([
-        { id: 1, title: i18n.t('recievePay'), key: 'cash' },
-        { id: 2, title: i18n.t('byWallet'), key: 'wallet' },
-        { id: 3, title: i18n.t('online'), key: 'online' },
+    const [paymentType, setPaymentType] = useState('');
+    const [PaymentName, setPaymentName] = useState('');
 
-    ]);
+    const [SelctLocation, setSelctLocation] = useState('');
+
+    const AllPayment = [
+        {
+            name: 'byMada',
+            key: 'mada',
+            Image: require('../../../assets/images/mda.png'),
+        },
+        {
+            name: 'cashPay',
+            key: 'cash',
+            Image: require('../../../assets/images/money.png'),
+        },
+        {
+            name: 'byWallet',
+            key: 'wallet',
+            Image: require('../../../assets/images/Wallt.png'),
+        },
+        {
+            name: 'byStc',
+            key: 'STC_PAY',
+            Image: require('../../../assets/images/StcPay.png'),
+        },
+        {
+            name: 'byVisaMaster',
+            key: 'master',
+            Image: require('../../../assets/images/masterVisa.jpeg'),
+        },
+        {
+            name: 'byapplePay',
+            key: 'ApplePay',
+            Image: require('../../../assets/images/applePayement.png'),
+        },
+
+    ]
+
+
 
     const [modalVisible, setModalVisible] = useState(false);
     const [saveLocmMdalVisible, setSaveLocmMdalVisible] = useState(false);
@@ -73,15 +105,22 @@ function SpecialOrder({ navigation, route }) {
     const dispatch = useDispatch();
     const lang = useSelector(state => state.lang.lang);
     const token = useSelector(state => state.Auth.user ? state.Auth.user.data.token : null);
-    const [Cuboun, setCuboun] = useState('')
+    const [Cuboun, setCuboun] = useState('');
+    const [PaymentModal, setPaymentModal] = useState(false);
+    const [locationModal, setLocationModal] = useState(false);
+    const [SavelocationModal, setSavelocationModal] = useState(false);
+
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             base64 = []
             setIsSpin(false);
+
             setPhotos([]);
             setCityName('');
+            setPaymentType('')
             setDeliverCityName('');
+            setPaymentName('')
             setDesc('');
             setOrderTime(i18n.t('_1h'))
             if (route.params?.cityName) {
@@ -93,7 +132,7 @@ function SpecialOrder({ navigation, route }) {
                 setDeliverMapRegion(route.params.deliverMapRegion)
             }
         });
-
+        dispatch(getPlaces(lang, token))
         return unsubscribe;
     }, [navigation, route.params?.cityName, route.params?.deliverCityName]);
 
@@ -155,18 +194,10 @@ function SpecialOrder({ navigation, route }) {
         return imgBlock
     }
 
-    function handleChange(key, index) {
-        setSelectedRadio(index);
-        setPaymentType(key);
-    }
 
-    const askPermissionsAsync = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    };
+
 
     const _pickImage = async (i) => {
-        askPermissionsAsync();
 
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -203,7 +234,7 @@ function SpecialOrder({ navigation, route }) {
     }
 
     function renderBtn() {
-        if (cityName == '' || deliverCityName == '' || desc == '') {
+        if (cityName == '' || deliverCityName == '' || desc == '' || paymentType == '') {
             return (
                 <Button style={{ marginVertical: 10, borderRadius: 20, backgroundColor: '#999', width: '85%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }} disabled={true}>
                     <Text style={[styles.sText, { color: '#fff', textAlign: 'center', alignSelf: 'center' }]}>{i18n.t('sentOrder')}</Text>
@@ -211,12 +242,40 @@ function SpecialOrder({ navigation, route }) {
             )
         }
 
-
-
         return (
             <BTN title={i18n.t('sentOrder')} onPress={() => setSpecialOrder()} spinner={isSpin} ContainerStyle={{ marginBottom: 5, borderRadius: 10 }} />
         )
     }
+
+    const confirmSelctArriveLocation = () => {
+        setLocationModal(false);
+
+        if (SelctLocation == 'ChooseSavedPlaces') {
+            setSavelocationModal(true)
+        }
+        else if (SelctLocation == 'manuallyLoc') {
+            pointType == 'deliveryLocation' ?
+
+                navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'deliveryLocation' })
+                :
+                navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })
+        }
+    }
+
+    const ConfirmSelectPlace = (item) => {
+        setSavelocationModal(false)
+        if (pointType == 'deliveryLocation') {
+
+            setCityName(item?.address)
+            setMapRegion({ latitude: item?.latitude, longitude: item?.longitude })
+        }
+        else if (pointType == 'delPoint') {
+            setDeliverCityName(item?.address)
+            setDeliverMapRegion({ latitude: item?.latitude, longitude: item?.longitude })
+        }
+
+    }
+
 
 
 
@@ -231,9 +290,9 @@ function SpecialOrder({ navigation, route }) {
                         styleCont={{ width: '75%' }}
                         LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
                         image={require('../../../assets/images/locationgray.png')}
-                        onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'deliveryLocation' })}
+                        onPress={() => { setLocationModal(true); setPointType('deliveryLocation') }}
                         editable={false}
-                        value={cityName ? cityName : ''}
+                        value={cityName ? cityName?.length > 30 ? (cityName).substr(0, 30) + '...' : cityName : ''}
                     />
                     <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true); setPointType('deliveryLocation') }}>
                         <View style={{ backgroundColor: '#eaeaea', width: 45, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
@@ -249,8 +308,8 @@ function SpecialOrder({ navigation, route }) {
                         LabelStyle={{ bottom: 60, backgroundColor: 0, color: Colors.IconBlack, left: 5, marginVertical: 5 }}
                         styleCont={{ width: '75%', marginTop: 0 }}
                         image={require('../../../assets/images/locationgray.png')}
-                        onPress={() => navigation.navigate('getLocation', { pathName: 'SpecialOrder', type: 'delPoint' })} editable={false}
-                        value={deliverCityName ? deliverCityName : ''}
+                        onPress={() => { setLocationModal(true); setPointType('delPoint') }} editable={false}
+                        value={deliverCityName ? deliverCityName?.length > 30 ? (deliverCityName).substr(0, 33) + '...' : deliverCityName : ''}
                     />
                     <TouchableOpacity onPress={() => { setSaveLocmMdalVisible(true); setPointType('delPoint') }} style={{ backgroundColor: '#eaeaea', width: 45, height: 45, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
                         <Image source={activeDeliverAddress == '' ? require('../../../assets/images/star.png') : require('../../../assets/images/yellowstar.png')} style={{ width: 20, height: 20, padding: 10, borderRadius: 100, alignSelf: 'center' }} resizeMode='contain' />
@@ -289,43 +348,14 @@ function SpecialOrder({ navigation, route }) {
 
                 />
 
-                <View style={[{ marginBottom: 10 }, styles.container]}>
-                    <Text style={[styles.sText, { marginVertical: 20, color: '#000', alignSelf: 'flex-start' }]}>{i18n.t('selectPayment')}</Text>
+                <TouchableOpacity style={styles.BtnBay} onPress={() => setPaymentModal(true)}>
+                    <Icon type='MaterialCommunityIcons' name='credit-card-settings-outline' style={{ fontSize: 22, color: Colors.IconBlack }} />
+                    <Text style={styles.pay}>{i18n.t('selectPayment')}</Text>
+                </TouchableOpacity>
 
-                    <FlatList data={data}
-                        keyExtractor={(item) => (item.id).toString()}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <View>
-                                    <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: width * .04, }}>
-                                        <TouchableOpacity onPress={() => handleChange(item.key, index)} style={{ flexDirection: 'row', alignItems: 'center', height: 20 }}>
-                                            <View style={{
-                                                height: 16,
-                                                width: 16,
-                                                borderRadius: 12,
-                                                borderWidth: 2,
-                                                borderColor: selectedRadion === index ? Colors.sky : Colors.fontNormal,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                            }}>
-                                                {
-                                                    selectedRadion === index ?
-                                                        <View style={{
-                                                            height: 8,
-                                                            width: 8,
-                                                            borderRadius: 6,
-                                                            backgroundColor: Colors.sky,
-                                                        }} />
-                                                        : null
-                                                }
-                                            </View>
-                                            <Text style={[styles.sText, { color: selectedRadion === index ? Colors.sky : Colors.fontNormal, left: 8 }]}>{item.title}</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            )
-                        }} />
-                </View>
+
+                <Text style={[styles.pay, { alignSelf: 'center', marginTop: 30 }]}>{PaymentName ? i18n.t(PaymentName) : null}</Text>
+
 
                 <TouchableOpacity onPress={_pickImage}>
                     <Image source={require('../../../assets/images/fileupload.png')} style={styles.fileupload} resizeMode='contain' />
@@ -340,6 +370,33 @@ function SpecialOrder({ navigation, route }) {
 
                 {renderBtn()}
             </ScrollView>
+
+
+
+            <PayModal
+                animationType="slide"
+                style={{ flex: 1, width: '100%', marginStart: 0, marginTop: 60, marginBottom: 0, }}
+                onBackButtonPress={() => setPaymentModal(false)}
+                onBackdropPress={() => setPaymentModal(false)}
+                onSwipeComplete={() => setPaymentModal(false)}
+                swipeDirection={["down"]}
+                isVisible={PaymentModal} >
+                <View style={[styles.centeredViews, { borderTopRightRadius: 20, borderTopLeftRadius: 20, }]}>
+                    {
+                        AllPayment.map((Pay, index) => {
+                            return (
+                                <TouchableOpacity key={index.toString()} onPress={() => { setPaymentType(Pay.key); setPaymentName(Pay.name) }} style={[styles.modalView, { marginTop: 20, marginHorizontal: '2%', width: '95%', backgroundColor: paymentType == Pay.key ? '#9A9A9A' : 'white' }]}>
+                                    <View style={{ flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center', marginHorizontal: 20, paddingVertical: 10 }}>
+                                        <Image source={Pay.Image} style={{ width: 40, height: 40 }} resizeMode='contain' />
+                                        <Text style={styles.payText}>{i18n.t(Pay.name)}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                    <BTN title={i18n.t('confirm')} onPress={() => setPaymentModal(false)} ContainerStyle={{ marginBottom: 5, borderRadius: 20, backgroundColor: Colors.sky, marginTop: 20 }} />
+                </View>
+            </PayModal>
 
             <Modal
                 animationType="slide"
@@ -423,6 +480,63 @@ function SpecialOrder({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
+
+
+
+            <PayModal
+                animationType="slide"
+                style={{ flex: 1, width: '100%', marginStart: 0, marginTop: '100%', marginBottom: 0, }}
+                onBackButtonPress={() => setLocationModal(false)}
+                onBackdropPress={() => setLocationModal(false)}
+                onSwipeComplete={() => setLocationModal(false)}
+                swipeDirection={["down"]}
+                isVisible={locationModal} >
+                <View style={[styles.centeredViews, { borderTopRightRadius: 20, borderTopLeftRadius: 20, }]}>
+                    <View style={{ alignItems: 'center', alignSelf: 'flex-start', margin: 20 }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30 }} onPress={() => setSelctLocation('ChooseSavedPlaces')}>
+                            <Icon
+                                type="Feather"
+                                name={SelctLocation == 'ChooseSavedPlaces' ? 'check-circle' : 'circle'}
+                                color={Colors.secondary}
+                            />
+                            <Text style={{ marginHorizontal: 20, fontFamily: 'flatMedium' }}>{i18n.t('ChooseSavedPlaces')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20, alignSelf: 'flex-start' }} onPress={() => setSelctLocation('manuallyLoc')}>
+                            <Icon
+                                type="Feather"
+                                name={SelctLocation == 'manuallyLoc' ? 'check-circle' : 'circle'}
+                                color={Colors.secondary}
+                            />
+                            <Text style={{ marginHorizontal: 20, fontFamily: 'flatMedium' }}>{i18n.t('manuallyLoc')}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <BTN title={i18n.t('confirm')} onPress={confirmSelctArriveLocation} ContainerStyle={{ marginBottom: 5, borderRadius: 20, backgroundColor: Colors.sky, marginTop: 20 }} />
+                </View>
+            </PayModal>
+
+            <PayModal
+                animationType="slide"
+                style={{ flex: 1, width: '100%', marginStart: 0, marginBottom: 0, }}
+                onBackButtonPress={() => setSavelocationModal(false)}
+                onBackdropPress={() => setSavelocationModal(false)}
+                onSwipeComplete={() => setSavelocationModal(false)}
+                swipeDirection={["down"]}
+                isVisible={SavelocationModal} >
+                <View style={[styles.centeredViews, { borderTopRightRadius: 20, borderTopLeftRadius: 20, marginTop: 40, overflow: 'hidden', }]}>
+                    {
+                        places?.map((place, i) => (
+                            <TouchableOpacity style={styles.card} key={i.toString()} onPress={() => ConfirmSelectPlace(place)}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Image source={require('../../../assets/images/pinblue.png')} style={styles.iconImg} resizeMode='contain' />
+                                        <Text style={styles.yText}>{(place.name).substr(0, 35)}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                </View>
+            </PayModal>
         </View>
     )
 }
@@ -487,6 +601,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#737373',
 
     },
+
+    centeredViews: {
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: '#F5F6FA',
+
+    },
+
     modalView: {
         backgroundColor: "white",
         borderRadius: 5,
@@ -499,6 +621,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3.84,
         elevation: 5,
+
     },
     Btn: {
         borderRadius: 30
@@ -512,6 +635,36 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         marginTop: 15
     },
+    card: {
+        shadowColor: Colors.bg,
+        backgroundColor: Colors.bg,
+        flexDirection: 'row',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 1,
+        marginVertical: 5,
+        width: '100%',
+        padding: 20
+    },
+    pay: {
+        fontFamily: 'flatMedium',
+        color: Colors.IconBlack,
+        fontSize: 16,
+        marginHorizontal: 10
+
+    },
+    payText: {
+        fontFamily: 'flatMedium',
+        color: Colors.IconBlack,
+        fontSize: 14,
+        marginHorizontal: 10
+
+    },
+    yText: {
+        fontFamily: 'flatLight',
+        color: Colors.fontNormal,
+        fontSize: 14
+    },
     labelText: {
         left: 25,
         alignSelf: "flex-start",
@@ -522,6 +675,7 @@ const styles = StyleSheet.create({
 
 
     },
+    BtnBay: { flexDirection: 'row', alignItems: 'center', marginTop: 50, backgroundColor: Colors.sky, width: '50%', borderRadius: 20, paddingVertical: 15, justifyContent: 'center', alignSelf: 'center' }
 })
 
 export default SpecialOrder

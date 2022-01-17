@@ -71,8 +71,8 @@ function Department({ navigation, route }) {
                         :
                         ProviderDetaile &&
                             ProviderDetaile.length == 0 ?
-                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 60 }}>
-                                <Text style={[styles.sText, { alignSelf: 'center', fontSize: 20, }]}>{i18n.t('Soon')}</Text>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 160, flex: 1 }}>
+                                <Text style={[styles.sText, { alignSelf: 'center', fontSize: 16, }]}>{i18n.t('adddepartment')}</Text>
                             </View>
 
 

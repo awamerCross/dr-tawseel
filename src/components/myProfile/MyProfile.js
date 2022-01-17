@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ScrollView, View, Image, StyleSheet, Dimensions, Text, TouchableOpacity, I18nManager, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import Colors from '../../consts/Colors';
 import { InputIcon } from '../../common/InputText';
 import BTN from '../../common/BTN';

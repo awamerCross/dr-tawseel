@@ -6,7 +6,6 @@ import { InputIcon } from '../../common/InputText';
 import Header from '../../common/Header';
 import i18n from "../locale/i18n";
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import { Button, Textarea } from "native-base";
 import { ToasterNative } from '../../common/ToasterNatrive';
 import { getPlaceDetails } from "../../actions";

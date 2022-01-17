@@ -11,12 +11,12 @@ import Colors from '../consts/Colors';
 const { width } = Dimensions.get('window')
 const isIOS = Platform.OS === 'ios';
 
-function Header({ label, image, onPress }) {
+function Header({ label, image, onPress, styleContainer }) {
 
     const navigation = useNavigation()
     return (
 
-        <View style={styles.container}>
+        <View style={[styles.container, styleContainer]}>
             <ImageBackground source={require('../../assets/images/bluBack.png')} style={[styles.BigImg, { transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }], }]} resizeMode='contain' >
                 <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} style={{ alignSelf: 'center' }}>
                     <Image source={require('../../assets/images/menue.png')} style={[styles.MenueImg, { padding: 10, transform: I18nManager.isRTL ? [{ rotateY: '0deg' }] : [{ rotateY: '-180deg' }] }]} />
